@@ -70,6 +70,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    document.addEventListener("keydown", function(event) {
+        // Check if the pressed key is the spacebar (keyCode 32 or key " ")
+        if (event.keyCode === 32 || event.key === " ") {
+            // Prevent default behavior (e.g., scrolling the page)
+            event.preventDefault();
+            
+            audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        }
+    });
+    
+    
+
     function playRandomMP3() {
         if (jazzMode){playRandomjazzMode();return}
         
