@@ -7,6 +7,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let audioPlayedOnce = false;
     let fileList = [];
+    
+    // Load dark mode preference from localStorage
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById("darkModeIcon").textContent = "☀️";
+    }
 
     darkModeButton.addEventListener("click", function() {
         toggleDarkMode();
@@ -71,5 +78,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.body.classList.toggle("dark-mode");
         const darkModeIcon = document.getElementById("darkModeIcon");
         darkModeIcon.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+        
+        // Save dark mode preference to localStorage
+        localStorage.setItem('darkMode', document.body.classList.contains("dark-mode"));
     }
 });
