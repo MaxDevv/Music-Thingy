@@ -7,11 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let audioPlayedOnce = false;
     let fileList = [];
-    
+
     // Load dark mode preference from localStorage
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', '#333');
         document.getElementById("darkModeIcon").textContent = "☀️";
     }
 
@@ -75,11 +76,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function toggleDarkMode() {
-        document.body.classList.toggle("dark-mode");
+        const isDarkMode = document.body.classList.toggle("dark-mode");
         const darkModeIcon = document.getElementById("darkModeIcon");
-        darkModeIcon.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+        darkModeIcon.textContent = isDarkMode ? "☀️" : "🌙";
+        
+        // Update theme color in the HTML head
+        const themeColor = isDarkMode ? "#333" : "#f0f0f0";
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
         
         // Save dark mode preference to localStorage
-        localStorage.setItem('darkMode', document.body.classList.contains("dark-mode"));
+        localStorage.setItem('darkMode', isDarkMode);
     }
 });
