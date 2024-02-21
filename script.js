@@ -4,7 +4,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const nextButton = document.getElementById("nextButton");
     const skipButton = document.getElementById("skipButton");
     const darkModeButton = document.getElementById("darkModeButton");
-
+    const jazzModeButton = document.getElementById("jazzMode");
+    jazzMode = localStorage.getItem('jazzMode') === 'true';
+    if (jazzMode) {
+        jazzModeButton.textContent = "Neo-Soul Mode";
+    } else {
+        jazzModeButton.textContent = "Jazz Mode";
+    }
     let audioPlayedOnce = false;
     let fileList = [];
 
@@ -53,8 +59,20 @@ document.addEventListener("DOMContentLoaded", function() {
     skipButton.addEventListener("click", function() {
         playRandomMP3();
     });
+    jazzModeButton.addEventListener("click", function() {
+        jazzMode = !jazzMode;
+        fileList = [];
+        localStorage.setItem('jazzMode', jazzMode);
+        if (jazzMode) {
+            jazzModeButton.textContent = "Neo-Soul Mode";
+        } else {
+            jazzModeButton.textContent = "Jazz Mode";
+        }
+    });
 
     function playRandomMP3() {
+        if (jazzMode){playRandomjazzMode();return}
+        
         if (fileList.length === 0) {
             // Fetch the list of MP3 files from x.txt
             fetch('x.txt')
@@ -72,6 +90,26 @@ document.addEventListener("DOMContentLoaded", function() {
         const randomIndex = Math.floor(Math.random() * fileList.length);
         const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
         audioPlayer.src = `mp3s/${randomFile}`;
+        audioPlayer.play();
+    }
+    function playRandomjazzMode() {
+        if (fileList.length === 0) {
+            // Fetch the list of MP3 files from x.txt
+            fetch('y.txt')
+                .then(response => response.text())
+                .then(text => {
+                    fileList = text.trim().split('\n');
+                    playRandomjazzMode(); // Retry playing a random MP3 after fetching the list
+                })
+                .catch(error => {
+                    console.error('Error fetching file list:', error);
+                });
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * fileList.length);
+        const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+        audioPlayer.src = `ezmp3s/${randomFile}`;
         audioPlayer.play();
     }
 
