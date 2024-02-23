@@ -14,6 +14,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let audioPlayedOnce = false;
     let fileList = [];
 
+    audioPlayer.addEventListener('pause',function() { audioPlayer.isPlaying = false },false);
+    audioPlayer.addEventListener('playing',function() { audioPlayer.isPlaying = true },false); 
+
+
     // Load dark mode preference from localStorage
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     if (isDarkMode) {
@@ -75,16 +79,22 @@ document.addEventListener("DOMContentLoaded", function() {
         if (event.keyCode === 32 || event.key === " ") {
             // Prevent default behavior (e.g., scrolling the page)
             event.preventDefault();
-            
-            audioPlayer.currentTime = 0;
-            audioPlayer.play();
+            if (!audioPlayer.isPlaying) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause(); 
+            }
         }
     });
     document.addEventListener("click", function(event) {
         // Check if the clicked element is the document body
         if (event.target === document.body) {
-            audioPlayer.currentTime = 0;
-            audioPlayer.play();
+            
+            if (!audioPlayer.isPlaying) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause(); 
+            }
         }
     });
     
