@@ -80,6 +80,13 @@ document.addEventListener("DOMContentLoaded", function() {
             audioPlayer.play();
         }
     });
+    document.addEventListener("click", function(event) {
+        // Check if the clicked element is the document body
+        if (event.target === document.body) {
+            audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        }
+    });
     
     
 
