@@ -5,10 +5,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const skipButton = document.getElementById("skipButton");
     const darkModeButton = document.getElementById("darkModeButton");
     const modeButton = document.getElementById("modeButton");
+    const completedSpan = document.getElementById("completionCounter");
     modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul"];
     modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s"];
     mode = localStorage.getItem('mode');
-
+    
+    completed = 0;
     if (mode) {
         modeButton.textContent = getNextMode();
     } else {
@@ -62,6 +64,12 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
         playRandomMP3();
+        
+        completed += 1;
+        completedSpan.textContent = completed+"/10 Completed"
+        if (completed >= 10){
+            completedSpan.textContent = completed+"/10 Completed :D 🎉🎉🎉"
+        }
     });
 
     skipButton.addEventListener("click", function() {
