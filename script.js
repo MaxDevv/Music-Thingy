@@ -6,9 +6,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const darkModeButton = document.getElementById("darkModeButton");
     const modeButton = document.getElementById("modeButton");
     const completedSpan = document.getElementById("completionCounter");
+    const vibeModeButton = document.getElementById("vibeButton");
     modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul"];
     modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s"];
     mode = localStorage.getItem('mode');
+    vibeMode = localStorage.getItem('vibeMode');
+    if (vibeMode!="true") {vibeMode = false;}
+    vibeModeButton.textContent = "Vibe "+((vibeMode) ? "Off" : "On");
     
     completed = 0;
     if (mode) {
@@ -48,7 +52,11 @@ document.addEventListener("DOMContentLoaded", function() {
             startButton.textContent = "Replay";
         }
     });
-
+    vibeModeButton.addEventListener("click", function(){
+        vibeMode = !vibeMode;
+        localStorage.setItem('vibeMode', vibeMode);
+        vibeModeButton.textContent = "Vibe "+((vibeMode) ? "Off" : "On");
+    })
     nextButton.addEventListener("click", function() {
         // Make a GET request to trigger the function for incrementing the counter
         fetch('https://script.google.com/macros/s/AKfycbzUtqxNn8g98Z85Vih_V6eOkz3mBqzGmYhEWieHHj0YcpsjS1fnk_OUmBCRzx-ZEpRZWw/exec?action=increment')
@@ -109,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var timeoutID;
     var startTime = null;
     var currentSource = null;
-    
+    firstLoop = true;
     // Event listener for the loadedmetadata event
     audioPlayer.addEventListener('loadedmetadata', handleMetadataLoaded);
     
@@ -123,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function handleMetadataLoaded() {
       clearTimeout(timeoutID); // Clear timeout when metadata is loaded
       var duration = audioPlayer.duration;
+      firstLoop = true;
       
       // Check if the source has changed
       if (audioPlayer.currentSrc !== currentSource) {
@@ -158,20 +167,42 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Function to handle playing the audio and setting timeout
     function playAudioWithTimeout() {
-      audioPlayer.currentTime = startTime;
-      audioPlayer.play();
-      // Set timeout to pause after 5 seconds
-      timeoutID = setTimeout(function() {
-        pauseAfter5Secs();
-      }, 1000);
+        if (vibeMode) {
+            if (firstLoop) {
+                audioPlayer.currentTime = (((startTime - 30)>0) ? startTime - 30 : 0);
+            
+                audioPlayer.play();
+                // Set timeout to pause after 5 seconds
+                timeoutID = setTimeout(function() {
+                    pauseAfterCertainTimeInSecs((Date.now()/1000), (((startTime - 30)>0) ? 30 : startTime)+5)
+                }, 1000);
+                firstLoop = false;
+            } else {
+                audioPlayer.currentTime = startTime;
+                audioPlayer.play();
+                // Set timeout to pause after 5 seconds
+                timeoutID = setTimeout(function() {
+                    pauseAfterCertainTimeInSecs((Date.now()/1000), 5)
+                }, 1000);
+            }
+        } else {
+            audioPlayer.currentTime = startTime;
+            audioPlayer.play();
+            // Set timeout to pause after 5 seconds
+            timeoutID = setTimeout(function() {
+                pauseAfterCertainTimeInSecs((Date.now()/1000), 5)
+            }, 1000);
+            firstLoop = false;
+        }
     }
     
-    function pauseAfter5Secs() {
-        if ((audioPlayer.currentTime - startTime) >= 5){
+    function pauseAfterCertainTimeInSecs(actualStartTime, timeInSecs) {
+        console.log(timeInSecs);
+        if (((Date.now()/1000) - actualStartTime) >= timeInSecs){
             audioPlayer.pause();
         } else {
             timeoutID = setTimeout(function() {
-                pauseAfter5Secs();
+                pauseAfterCertainTimeInSecs(actualStartTime,timeInSecs);
             }, 100);
         }
     }
