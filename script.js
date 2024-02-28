@@ -4,20 +4,24 @@ document.addEventListener("DOMContentLoaded", function() {
     const nextButton = document.getElementById("nextButton");
     const skipButton = document.getElementById("skipButton");
     const darkModeButton = document.getElementById("darkModeButton");
-    const jazzModeButton = document.getElementById("jazzMode");
-    jazzMode = localStorage.getItem('jazzMode') === 'true';
-    if (jazzMode) {
-        jazzModeButton.textContent = "Neo-Soul Mode";
+    const modeButton = document.getElementById("modeButton");
+    modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul"];
+    modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s"];
+    mode = localStorage.getItem('mode');
+
+    if (mode) {
+        modeButton.textContent = getNextMode();
     } else {
-        jazzModeButton.textContent = "Jazz Mode";
+        mode = modes[1];
     }
+
     let audioPlayedOnce = false;
     let fileList = [];
 
     audioPlayer.addEventListener('pause',function() { audioPlayer.isPlaying = false },false);
     audioPlayer.addEventListener('playing',function() { audioPlayer.isPlaying = true },false); 
 
-
+    
     // Load dark mode preference from localStorage
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     if (isDarkMode) {
@@ -34,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (audioPlayedOnce) {
             // Replay audio
             audioPlayer.currentTime = 0;
-            audioPlayer.play();
+            playAudioWithTimeout();
         } else {
             // Play random MP3
             playRandomMP3();
@@ -63,15 +67,11 @@ document.addEventListener("DOMContentLoaded", function() {
     skipButton.addEventListener("click", function() {
         playRandomMP3();
     });
-    jazzModeButton.addEventListener("click", function() {
-        jazzMode = !jazzMode;
+    modeButton.addEventListener("click", function() {
+        mode = getNextMode();
+        localStorage.setItem('mode', mode);
+        modeButton.textContent = getNextMode();
         fileList = [];
-        localStorage.setItem('jazzMode', jazzMode);
-        if (jazzMode) {
-            jazzModeButton.textContent = "Neo-Soul Mode";
-        } else {
-            jazzModeButton.textContent = "Jazz Mode";
-        }
     });
 
     document.addEventListener("keydown", function(event) {
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // Prevent default behavior (e.g., scrolling the page)
             event.preventDefault();
             if (!audioPlayer.isPlaying) {
-                audioPlayer.play();
+                playAudioWithTimeout();
             } else {
                 audioPlayer.pause(); 
             }
@@ -91,56 +91,112 @@ document.addEventListener("DOMContentLoaded", function() {
         if (event.target === document.body) {
             
             if (!audioPlayer.isPlaying) {
-                audioPlayer.play();
+                playAudioWithTimeout();
             } else {
                 audioPlayer.pause(); 
             }
         }
     });
+
+    var timeoutID;
+    var startTime = null;
+    var currentSource = null;
     
+    // Event listener for the loadedmetadata event
+    audioPlayer.addEventListener('loadedmetadata', handleMetadataLoaded);
     
+    // Event listener for the play button
+    audioPlayer.addEventListener("play", handlePlay);
+    
+    // Event listener for the pause button
+    audioPlayer.addEventListener("pause", handlePause);
+    
+    // Function to handle loadedmetadata event
+    function handleMetadataLoaded() {
+      clearTimeout(timeoutID); // Clear timeout when metadata is loaded
+      var duration = audioPlayer.duration;
+      
+      // Check if the source has changed
+      if (audioPlayer.currentSrc !== currentSource) {
+        currentSource = audioPlayer.currentSrc;
+        // Set a new random start time if the source is new
+        startTime = getRandomStartTime(duration);
+      }
+      
+      // Call playAudioWithTimeout when metadata is loaded
+      playAudioWithTimeout();
+    }
+    
+    // Function to handle play event
+    function handlePlay() {
+      clearTimeout(timeoutID); // Clear existing timeout
+      playAudioWithTimeout(); // Call playAudioWithTimeout when play button is clicked
+    }
+    
+    // Function to handle pause event
+    function handlePause() {
+      clearTimeout(timeoutID); // Clear existing timeout
+    }
+    
+    // Function to get a random start time
+    function getRandomStartTime(duration) {
+      // If duration is less than 5 seconds, start at 0
+      if (duration < 5) {
+        return 0;
+      }
+      // Generate a random start time between 0 and duration - 5
+      return Math.floor(Math.random() * (duration - 5));
+    }
+    
+    // Function to handle playing the audio and setting timeout
+    function playAudioWithTimeout() {
+      audioPlayer.currentTime = startTime;
+      audioPlayer.play();
+      // Set timeout to pause after 5 seconds
+      timeoutID = setTimeout(function() {
+        pauseAfter5Secs();
+      }, 1000);
+    }
+    
+    function pauseAfter5Secs() {
+        if ((audioPlayer.currentTime - startTime) >= 5){
+            audioPlayer.pause();
+        } else {
+            timeoutID = setTimeout(function() {
+                pauseAfter5Secs();
+            }, 100);
+        }
+    }
+
+    function getNextMode(){
+        modeIndex = modes.indexOf(mode)+1;
+        if (modeIndex == modes.length){
+            modeIndex = 0;
+        }
+        return modes[modeIndex];
+    }
 
     function playRandomMP3() {
-        if (jazzMode){playRandomjazzMode();return}
-        
-        if (fileList.length === 0) {
-            // Fetch the list of MP3 files from x.txt
-            fetch('x.txt')
+        if (fileList.length === 0){
+            fetch(`${modesFolder[modes.indexOf(mode)]}/list.txt`)
                 .then(response => response.text())
                 .then(text => {
                     fileList = text.trim().split('\n');
-                    playRandomMP3(); // Retry playing a random MP3 after fetching the list
+                    const randomIndex = Math.floor(Math.random() * fileList.length);
+                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                    audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                    playAudioWithTimeout();
                 })
                 .catch(error => {
                     console.error('Error fetching file list:', error);
                 });
-            return;
-        }
+        } else {
+            const randomIndex = Math.floor(Math.random() * fileList.length);
+            const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+            audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
 
-        const randomIndex = Math.floor(Math.random() * fileList.length);
-        const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-        audioPlayer.src = `mp3s/${randomFile}`;
-        audioPlayer.play();
-    }
-    function playRandomjazzMode() {
-        if (fileList.length === 0) {
-            // Fetch the list of MP3 files from x.txt
-            fetch('y.txt')
-                .then(response => response.text())
-                .then(text => {
-                    fileList = text.trim().split('\n');
-                    playRandomjazzMode(); // Retry playing a random MP3 after fetching the list
-                })
-                .catch(error => {
-                    console.error('Error fetching file list:', error);
-                });
-            return;
+            playAudioWithTimeout();
         }
-
-        const randomIndex = Math.floor(Math.random() * fileList.length);
-        const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-        audioPlayer.src = `ezmp3s/${randomFile}`;
-        audioPlayer.play();
     }
 
     function toggleDarkMode() {
@@ -156,3 +212,4 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem('darkMode', isDarkMode);
     }
 });
+
