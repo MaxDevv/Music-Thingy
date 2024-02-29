@@ -7,12 +7,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const modeButton = document.getElementById("modeButton");
     const completedSpan = document.getElementById("completionCounter");
     const vibeModeButton = document.getElementById("vibeButton");
+    const numberInput = document.getElementById("numberInput");
     modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul"];
     modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s"];
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode!="true") {vibeMode = false;}
     vibeModeButton.textContent = "Vibe "+((vibeMode) ? "Off" : "On");
+    vibeTime = parseInt(numberInput.value);
     
     completed = 0;
     if (mode) {
@@ -39,6 +41,10 @@ document.addEventListener("DOMContentLoaded", function() {
     darkModeButton.addEventListener("click", function() {
         toggleDarkMode();
     });
+
+    numberInput.addEventListener("change", function() {
+        vibeTime = parseInt(numberInput.value);
+    })
 
     startButton.addEventListener("click", function() {
         if (audioPlayedOnce) {
@@ -77,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
         completedSpan.textContent = completed+"/10 Completed"
         if (completed >= 10){
             completedSpan.textContent = completed+"/10 Completed :D 🎉🎉🎉"
+            finishedSession();
         }
     });
 
@@ -144,6 +151,20 @@ document.addEventListener("DOMContentLoaded", function() {
       playAudioWithTimeout();
     }
     
+    function finishedSession() {
+        alert("Session completed :D")
+        if (confirm("Wanna Celebrate with some music?")) {
+            const randomIndex = Math.floor(Math.random() * fileList.length);
+            const randomFile = fileList[randomIndex].trim();
+            audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+            audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        } else if (confirm("Then wanna start a new session?")) {
+            location.reload();
+        } else {
+            alert("alright, have fun :D");
+        }
+    }
     // Function to handle play event
     function handlePlay() {
       clearTimeout(timeoutID); // Clear existing timeout
@@ -169,12 +190,12 @@ document.addEventListener("DOMContentLoaded", function() {
     function playAudioWithTimeout() {
         if (vibeMode) {
             if (firstLoop) {
-                audioPlayer.currentTime = (((startTime - 30)>0) ? startTime - 30 : 0);
+                audioPlayer.currentTime = (((startTime - vibeTime)>0) ? startTime - vibeTime : 0);
             
                 audioPlayer.play();
                 // Set timeout to pause after 5 seconds
                 timeoutID = setTimeout(function() {
-                    pauseAfterCertainTimeInSecs((Date.now()/1000), (((startTime - 30)>0) ? 30 : startTime)+5)
+                    pauseAfterCertainTimeInSecs((Date.now()/1000), (((startTime - vibeTime)>0) ? vibeTime : startTime)+5)
                 }, 1000);
                 firstLoop = false;
             } else {
@@ -201,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (((Date.now()/1000) - actualStartTime) >= timeInSecs){
             audioPlayer.pause();
         } else {
+            clearTimeout(timeoutID);
             timeoutID = setTimeout(function() {
                 pauseAfterCertainTimeInSecs(actualStartTime,timeInSecs);
             }, 100);
