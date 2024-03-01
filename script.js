@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (vibeMode!="true") {vibeMode = false;}
     vibeModeButton.textContent = "Vibe "+((vibeMode) ? "Off" : "On");
     vibeTime = parseInt(numberInput.value);
-    
+    celebrateMode = false;
     completed = 0;
     if (mode) {
         modeButton.textContent = getNextMode();
@@ -157,8 +157,8 @@ document.addEventListener("DOMContentLoaded", function() {
             const randomIndex = Math.floor(Math.random() * fileList.length);
             const randomFile = fileList[randomIndex].trim();
             audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
-            audioPlayer.currentTime = 0;
             audioPlayer.play();
+            celebrateMode = true;
         } else if (confirm("Then wanna start a new session?")) {
             location.reload();
         } else {
@@ -190,7 +190,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function playAudioWithTimeout() {
 
         clearTimeout(timeoutID);
-        if (vibeMode) {
+        if (celebrateMode) {
+            audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        } else if (vibeMode) {
             if (firstLoop) {
                 audioPlayer.currentTime = (((startTime - vibeTime)>0) ? startTime - vibeTime : 0);
             
