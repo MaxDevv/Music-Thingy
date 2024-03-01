@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const completedSpan = document.getElementById("completionCounter");
     const vibeModeButton = document.getElementById("vibeButton");
     const numberInput = document.getElementById("numberInput");
-    modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul"];
-    modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s"];
+    modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul", "Everything i wanted"];
+    modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted"];
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode!="true") {vibeMode = false;}
@@ -188,6 +188,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Function to handle playing the audio and setting timeout
     function playAudioWithTimeout() {
+
+        clearTimeout(timeoutID);
         if (vibeMode) {
             if (firstLoop) {
                 audioPlayer.currentTime = (((startTime - vibeTime)>0) ? startTime - vibeTime : 0);
