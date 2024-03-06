@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const completedSpan = document.getElementById("completionCounter");
     const vibeModeButton = document.getElementById("vibeButton");
     const numberInput = document.getElementById("numberInput");
-    modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul", "Everything i wanted", "studio-ghibi Mode", "Literally Just Ichikia"];
-    modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito"];
+    modes = ["Neo-Soul Mode", "Jazz Mode", "Full Neo-Soul", "Everything i wanted", "studio-ghibi Mode", "Literally Just Ichikia", "nintendo"];
+    modesFolder = ["mp3s", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo"];
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode!="true") {vibeMode = false;}
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (confirm("Then wanna start a new session?")) {
             location.reload();
         } else {
-            alert("alright, have fun :D");
+            if(!alert("alright, have fun :D")) window.close();
         }
     }
     // Function to handle play event
