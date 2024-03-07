@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => {
                 console.error('Error incrementing counter:', error);
             });
+        audioPlayer.currentSrc = (Math.random() + 1).toString(36).substring(7);
 
         playRandomMP3();
         
@@ -88,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     skipButton.addEventListener("click", function() {
+        audioPlayer.currentSrc = (Math.random() + 1).toString(36).substring(7);
         playRandomMP3();
     });
     modeButton.addEventListener("click", function() {
