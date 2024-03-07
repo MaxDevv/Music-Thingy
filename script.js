@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (confirm("Then wanna start a new session?")) {
             location.reload();
         } else {
-            if(!alert("alright, have fun :D")) window.close();
+            if(!alert("alright, have fun :D")) window.open('', '_parent', '').close();;
         }
     }
     // Function to handle play event
