@@ -77,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('Error incrementing counter:', error);
             });
         startTime = getRandomStartTime(audioPlayer.duration);
-
         playRandomMP3();
         
         completed += 1;
