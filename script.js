@@ -57,24 +57,16 @@ document.addEventListener("DOMContentLoaded", function() {
             audioPlayedOnce = true;
             startButton.textContent = "Replay";
             // Mark hour as completed
-            fetch('https://practice-reminder.azurewebsites.net/api/completed_hour?code=uweYVDnQ30h3dNkQhm6X7xVDtVycyiQah1GMoIL9gmzkAzFuViCmLQ==&completed=true')
-                .then(response => {
-                    // Check if the response is successful (status code between 200 and 299)
-                    if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                    }
-                    // Parse the JSON in the response
-                    return response.json();
-                })
-                .then(data => {
-                    // Use the data received from the response
-                    console.log(data);
-                })
-                .catch(error => {
-                    // Handle errors that may occur during the fetch operation
-                    console.error('There was a problem with your fetch operation:', error);
-                });
-
+            fetch('https://practice-reminder.azurewebsites.net/api/completed_hour?code=uweYVDnQ30h3dNkQhm6X7xVDtVycyiQah1GMoIL9gmzkAzFuViCmLQ==&completed=true', {
+                method: 'GET',
+                mode: 'no-cors' // This mode prevents CORS errors
+              })
+              .then(() => {
+                console.log('Ping request sent successfully');
+              })
+              .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+              });
         }
     });
     vibeModeButton.addEventListener("click", function(){
