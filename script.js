@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const vibeModeButton = document.getElementById("vibeButton");
     const numberInput = document.getElementById("numberInput");
     const currentModeSpan = document.getElementById("currentMode");
-    keepGoing = false;
+    keepGoing = true;
     modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox"];
     modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune"];
     mode = localStorage.getItem('mode');
