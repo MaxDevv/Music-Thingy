@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const numberInput = document.getElementById("numberInput");
     const currentModeSpan = document.getElementById("currentMode");
     keepGoing = false;
-    modes = ["Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox"];
-    modesFolder = ["ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune"];
+    modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox"];
+    modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune"];
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode!="true") {vibeMode = false;}
@@ -275,25 +275,63 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function playRandomMP3() {
-        if (fileList.length === 0){
-            fetch(`${modesFolder[modes.indexOf(mode)]}/list.txt`)
+        list = "list.txt"
+        if (modesFolder[modes.indexOf(mode)] == "all/..") {
+            modesFolder[modes.indexOf(mode)] = "all"
+        }
+        if (modesFolder[modes.indexOf(mode)] == "all") {
+            fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
                 .then(response => response.text())
                 .then(text => {
                     fileList = text.trim().split('\n');
-                    const randomIndex = Math.floor(Math.random() * fileList.length);
-                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
-                    playAudioWithTimeout();
-                })
+                    randomIndex = Math.floor(Math.random() * fileList.length);
+                    randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                    list = randomFile
+                    modesFolder[modes.indexOf(mode)] = "all/.."
+                    fileList = []
+                    fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                    // fetch("all/../studio-ghibi/list.txt")
+                        .then(response => response.text())
+                        .then(text => {
+                            fileList = text.trim().split('\n');
+                            const randomIndex = Math.floor(Math.random() * fileList.length);
+                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                            audioPlayer.src = `${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`;
+                            playAudioWithTimeout();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching file list:', error);
+                        });
+                    })
                 .catch(error => {
                     console.error('Error fetching file list:', error);
-                });
+            });
+            
+            
         } else {
-            const randomIndex = Math.floor(Math.random() * fileList.length);
-            const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-            audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+            if (fileList.length === 0){
+                fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                // fetch("all/../studio-ghibi/list.txt")
+                    .then(response => response.text())
+                    .then(text => {
+            
+                        fileList = text.trim().split('\n');
+                        console.log(fileList)
+                        const randomIndex = Math.floor(Math.random() * fileList.length);
+                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                        playAudioWithTimeout();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+                    });
+            } else {
+                const randomIndex = Math.floor(Math.random() * fileList.length);
+                const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
 
-            playAudioWithTimeout();
+                playAudioWithTimeout();
+            }
         }
     }
 
