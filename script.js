@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const audioPlayer = document.getElementById("audioPlayer");
     const startButton = document.getElementById("startButton");
     const nextButton = document.getElementById("nextButton");
+    const rewardButton = document.getElementById("rewardButton");
     const skipButton = document.getElementById("skipButton");
     const darkModeButton = document.getElementById("darkModeButton");
     const modeButton = document.getElementById("modeButton");
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const vibeModeButton = document.getElementById("vibeButton");
     const numberInput = document.getElementById("numberInput");
     const currentModeSpan = document.getElementById("currentMode");
-    
+    keepGoing = false;
     modes = ["Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox"];
     modesFolder = ["ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune"];
     mode = localStorage.getItem('mode');
@@ -94,11 +95,25 @@ document.addEventListener("DOMContentLoaded", function() {
         playRandomMP3();
         
         completed += 1;
-        completedSpan.textContent = completed+"/10 Completed"
-        if (completed >= 10){
-            completedSpan.textContent = completed+"/10 Completed :D 🎉🎉🎉"
+        completedSpan.textContent = completed+"/25 Completed"
+        if (completed >= 25){
+            completedSpan.textContent = completed+"/25 Completed :D 🎉🎉🎉"
             finishedSession();
         }
+    });
+    rewardButton.addEventListener("click", function() {
+        // Make a GET request to trigger the function for incrementing the counter
+        fetch('https://script.google.com/macros/s/AKfycbzUtqxNn8g98Z85Vih_V6eOkz3mBqzGmYhEWieHHj0YcpsjS1fnk_OUmBCRzx-ZEpRZWw/exec?action=increment')
+            .then(response => {
+                if (response.ok) {
+                    console.log('Counter incremented successfully.');
+                } else {
+                    console.error('Error incrementing counter:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error incrementing counter:', error);
+            });
     });
 
     skipButton.addEventListener("click", function() {
@@ -168,6 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function finishedSession() {
+        if (keepGoing == true) return;
         alert("Session completed :D")
         if (confirm("Wanna Celebrate with some music?")) {
             const randomIndex = Math.floor(Math.random() * fileList.length);
@@ -175,8 +191,8 @@ document.addEventListener("DOMContentLoaded", function() {
             audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
             audioPlayer.play();
             celebrateMode = true;
-        } else if (confirm("Then wanna start a new session?")) {
-            location.reload();
+        } else if (confirm("Then wanna keep going?")) {
+            keepGoing = true
         } else {
             if(!alert("alright, have fun :D")) window.open('', '_parent', '').close();;
         }
