@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let audioPlayedOnce = false;
     let fileList = [];
-
+    inspireOnLoad();
     audioPlayer.addEventListener('pause',function() { audioPlayer.isPlaying = false },false);
     audioPlayer.addEventListener('playing',function() { audioPlayer.isPlaying = true },false); 
 
@@ -151,6 +151,15 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
+
+
+    function inspireOnLoad() {
+        if (window.location.hash.indexOf("inspire") > -1) {
+            vibeMode = true;
+            playRandomMP3();
+            vibeMode = false;
+        }
+    }
 
     var timeoutID;
     var startTime = null;
