@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     vibeTime = parseInt(numberInput.value);
     celebrateMode = false;
     completed = 0;
+    completionsNeeded = 25
     if (mode) {
         modeButton.textContent = getNextMode();
         currentModeSpan.textContent = mode+" - ";
@@ -95,9 +96,9 @@ document.addEventListener("DOMContentLoaded", function() {
         playRandomMP3();
         
         completed += 1;
-        completedSpan.textContent = completed+"/25 Completed"
+        completedSpan.textContent = completed+"/"+completionsNeeded+" Completed"
         if (completed >= 25){
-            completedSpan.textContent = completed+"/25 Completed :D 🎉🎉🎉"
+            completedSpan.textContent = completed+"/"+completionsNeeded+" Completed :D 🎉🎉🎉"
             finishedSession();
         }
     });
@@ -160,7 +161,15 @@ document.addEventListener("DOMContentLoaded", function() {
             vibeMode = false;
         }
     }
-
+    
+        function quickSession() {
+        if (window.location.hash.indexOf("quick") > -1) {
+            completionsNeeded = 5
+            completedSpan.textContent = completed+"/"+completionsNeeded+" Completed"
+        }
+    }
+    quickSession()
+    
     var timeoutID;
     var startTime = null;
     var currentSource = null;
