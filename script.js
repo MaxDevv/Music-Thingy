@@ -42,6 +42,25 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('meta[name="theme-color"]').setAttribute('content', '#333');
         document.getElementById("darkModeIcon").textContent = "☀️";
     }
+    function parseQueryString() {
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      var queryString = {};
+      for (var i=0; i<vars.length; i++) {
+        var pair = vars[i].split("=");
+        queryString[pair[0]] = pair[1];
+      }
+      return queryString;
+    }
+
+    
+      var queryParams = parseQueryString();
+      var hash = queryParams["hash"];
+      if (hash) {
+        // Use hash to navigate to content
+        window.location.href = "#" + hash;
+      }
+    
 
     darkModeButton.addEventListener("click", function() {
         toggleDarkMode();
