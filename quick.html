@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="57x57" href="./apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melodic Replication Practice</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <button id="darkModeButton">
+        <span id="darkModeIcon">🌙</span>
+    </button>
+    <div class="container">
+        <audio controls id="audioPlayer">
+            Your browser does not support the audio element.
+        </audio>
+        <button id="startButton">Start Session :D</button>
+        <button id="nextButton">Next & Mark as Completed</button>
+        <button id="rewardButton">Give urself a point :D</button>
+        <button id="skipButton">Skip</button>
+        <div>
+            <button id="vibeButton" style="margin-right: 0.31vw;">Vibe On</button>
+            <input type="number" id="numberInput" min="1" max="100" value="15">
+        </div>
+        <div>
+            <span id="currentMode">Jazz - </span>
+            <button id="modeButton">Jazz Mode</button>
+        </div>
+        <span id="completionCounter">0/25 Completed</span>
+        
+    </div>
+    <!-- Add this button where you want the install button to appear
+    <button id="installButton" style="display: none;">Install App</button>
+
+    <script>
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the browser's default prompt
+            e.preventDefault();
+            // Store the event to use it later
+            deferredPrompt = e;
+            // Show your custom install button
+            document.getElementById('installButton').style.display = 'block';
+        });
+
+        // Handle the custom install button click
+        document.getElementById('installButton').addEventListener('click', () => {
+            // Trigger the browser's install prompt
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    // Reset the deferredPrompt variable
+                    deferredPrompt = null;
+                    // Hide the install button
+                    document.getElementById('installButton').style.display = 'none';
+                });
+            }
+        });
+    </script> -->
+
+    <script src="quick.js"></script>
+</body>
+
+</html>
