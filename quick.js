@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
         function quickSession() {
-        if (window.location.hash.indexOf("quick") > -1) {
+        if (true) {
             completionsNeeded = 5
             completedSpan.textContent = completed+"/"+completionsNeeded+" Completed"
         }
