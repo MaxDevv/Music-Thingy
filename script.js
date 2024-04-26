@@ -10,9 +10,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const vibeModeButton = document.getElementById("vibeButton");
     const numberInput = document.getElementById("numberInput");
     const currentModeSpan = document.getElementById("currentMode");
+    const sheetImage = document.getElementById("sheetImage");
+    
     keepGoing = true;
-    modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox"];
-    modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune"];
+    modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music"];
+    modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music"];
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode!="true") {vibeMode = false;}
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     vibeTime = parseInt(numberInput.value);
     celebrateMode = false;
     completed = 0;
-    completionsNeeded = 25
+    completionsNeeded = 5;
     if (mode) {
         modeButton.textContent = getNextMode();
         currentModeSpan.textContent = mode+" - ";
@@ -116,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         completed += 1;
         completedSpan.textContent = completed+"/"+completionsNeeded+" Completed"
-        if (completed >= 25){
+        if (completed >= completionsNeeded){
             completedSpan.textContent = completed+"/"+completionsNeeded+" Completed :D 🎉🎉🎉"
             finishedSession();
         }
@@ -137,7 +139,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     skipButton.addEventListener("click", function() {
-        startTime = getRandomStartTime(audioPlayer.duration);
+        if (modesFolder[modes.indexOf(mode)] != "sheet-music") {
+            startTime = getRandomStartTime(audioPlayer.duration);
+        }
         playRandomMP3();
     });
     modeButton.addEventListener("click", function() {
@@ -311,8 +315,21 @@ document.addEventListener("DOMContentLoaded", function() {
         return modes[modeIndex];
     }
 
+    function hideAudioShowSheet() {
+        audioPlayer.classList.add("hidden");
+        audioPlayer.classList.remove("shown");
+        sheetImage.classList.remove("hidden");
+        sheetImage.classList.add("shown");
+    }
+    function hideSheetShowAudio() {
+        sheetImage.classList.add("hidden");
+        sheetImage.classList.remove("shown");
+        audioPlayer.classList.remove("hidden");
+        audioPlayer.classList.add("shown");
+    }
     function playRandomMP3() {
         list = "list.txt"
+        
         if (modesFolder[modes.indexOf(mode)] == "all/..") {
             modesFolder[modes.indexOf(mode)] = "all"
         }
@@ -345,7 +362,32 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             
             
-        } else {
+        } else if (modesFolder[modes.indexOf(mode)] == "sheet-music") {
+            if (fileList.length === 0){
+                fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                // fetch("all/../studio-ghibi/list.txt")
+                    .then(response => response.text())
+                    .then(text => {
+            
+                        fileList = text.trim().split('\n');
+                        console.log(fileList)
+                        const randomIndex = Math.floor(Math.random() * fileList.length);
+                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                        hideAudioShowSheet();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+                    });
+            } else {
+                const randomIndex = Math.floor(Math.random() * fileList.length);
+                const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                hideAudioShowSheet();
+                playAudioWithTimeout();
+            }
+        }
+        else {
             if (fileList.length === 0){
                 fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
                 // fetch("all/../studio-ghibi/list.txt")
@@ -357,6 +399,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         const randomIndex = Math.floor(Math.random() * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                        hideSheetShowAudio();
                         playAudioWithTimeout();
                     })
                     .catch(error => {
@@ -366,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const randomIndex = Math.floor(Math.random() * fileList.length);
                 const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                 audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
-
+                hideSheetShowAudio();
                 playAudioWithTimeout();
             }
         }
