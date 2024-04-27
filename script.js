@@ -318,6 +318,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function hideAudioShowSheet() {
+        audioPlayer.src = "";
         audioPlayer.classList.add("hidden");
         audioPlayer.classList.remove("shown");
         sheetImage.classList.remove("hidden");
@@ -341,8 +342,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     .then(response => response.text())
                     .then(text => {
                         fileList = text.trim().split('\n');
-                        randomIndex = Math.floor(Math.random() * fileList.length);
-                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        index = fileList.indexOf('sheet-music');
+                        if (index !== -1) {
+                            removedItem = fileList.splice(index, 1)[0];
+                            randomIndex = Math.floor(Math.random() * fileList.length);
+                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                            fileList.splice(index, 0, removedItem);
+                        } else {
+                            randomIndex = Math.floor(Math.random() * fileList.length);
+                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        }
                         list = randomFile
                         modesFolder[modes.indexOf(mode)] = "all/.."
                         fileList = []
@@ -354,6 +363,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 const randomIndex = Math.floor(Math.random() * fileList.length);
                                 randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                                 audioPlayer.src = `${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`;
+                                hideSheetShowAudio();
                                 playAudioWithTimeout();
                             })
                             .catch(error => {
@@ -364,30 +374,30 @@ document.addEventListener("DOMContentLoaded", function() {
                         console.error('Error fetching file list:', error);
                 });
             } else {
-                fileList = [];
-                if (fileList.length === 0){
-                    fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
-                    // fetch("all/../studio-ghibi/list.txt")
-                        .then(response => response.text())
-                        .then(text => {
-                
-                            fileList = text.trim().split('\n');
-                            console.log(fileList)
-                            const randomIndex = Math.floor(Math.random() * fileList.length);
-                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
-                            hideAudioShowSheet();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching file list:', error);
-                        });
-                } else {
-                    const randomIndex = Math.floor(Math.random() * fileList.length);
-                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
-                    hideAudioShowSheet();
-                    playAudioWithTimeout();
-                }
+            fileList= [];
+            if (fileList.length === 0){
+                fetch(`${modesFolder[modes.indexOf("sheet-music")]}/${list}`)
+                // fetch("all/../studio-ghibi/list.txt")
+                    .then(response => response.text())
+                    .then(text => {
+            
+                        fileList = text.trim().split('\n');
+                        console.log(fileList)
+                        const randomIndex = Math.floor(Math.random() * fileList.length);
+                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        sheetImage.src = `${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`;
+                        hideAudioShowSheet();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+                    });
+            } else {
+                const randomIndex = Math.floor(Math.random() * fileList.length);
+                const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                hideAudioShowSheet();
+                playAudioWithTimeout();
+            }
             }
             
             
