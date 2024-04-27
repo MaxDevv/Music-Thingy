@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         mode = modes[1];
     }
-
+    if (mode == "sheet-music"){
+        hideAudioShowSheet();
+    }
     let audioPlayedOnce = false;
     let fileList = [];
     inspireOnLoad();
@@ -334,35 +336,63 @@ document.addEventListener("DOMContentLoaded", function() {
             modesFolder[modes.indexOf(mode)] = "all"
         }
         if (modesFolder[modes.indexOf(mode)] == "all") {
-            fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
-                .then(response => response.text())
-                .then(text => {
-                    fileList = text.trim().split('\n');
-                    randomIndex = Math.floor(Math.random() * fileList.length);
-                    randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    list = randomFile
-                    modesFolder[modes.indexOf(mode)] = "all/.."
-                    fileList = []
+            if (Math.random() > 0.35){
+                fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                    .then(response => response.text())
+                    .then(text => {
+                        fileList = text.trim().split('\n');
+                        randomIndex = Math.floor(Math.random() * fileList.length);
+                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        list = randomFile
+                        modesFolder[modes.indexOf(mode)] = "all/.."
+                        fileList = []
+                        fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                        // fetch("all/../studio-ghibi/list.txt")
+                            .then(response => response.text())
+                            .then(text => {
+                                fileList = text.trim().split('\n');
+                                const randomIndex = Math.floor(Math.random() * fileList.length);
+                                randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                                audioPlayer.src = `${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`;
+                                playAudioWithTimeout();
+                            })
+                            .catch(error => {
+                                console.error('Error fetching file list:', error);
+                            });
+                        })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+                });
+            } else {
+                fileList = [];
+                if (fileList.length === 0){
                     fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
                     // fetch("all/../studio-ghibi/list.txt")
                         .then(response => response.text())
                         .then(text => {
+                
                             fileList = text.trim().split('\n');
+                            console.log(fileList)
                             const randomIndex = Math.floor(Math.random() * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            audioPlayer.src = `${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`;
-                            playAudioWithTimeout();
+                            sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                            hideAudioShowSheet();
                         })
                         .catch(error => {
                             console.error('Error fetching file list:', error);
                         });
-                    })
-                .catch(error => {
-                    console.error('Error fetching file list:', error);
-            });
+                } else {
+                    const randomIndex = Math.floor(Math.random() * fileList.length);
+                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                    sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                    hideAudioShowSheet();
+                    playAudioWithTimeout();
+                }
+            }
             
             
         } else if (modesFolder[modes.indexOf(mode)] == "sheet-music") {
+            fileList= [];
             if (fileList.length === 0){
                 fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
                 // fetch("all/../studio-ghibi/list.txt")
