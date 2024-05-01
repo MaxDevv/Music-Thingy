@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const numberInput = document.getElementById("numberInput");
     const currentModeSpan = document.getElementById("currentMode");
     const sheetImage = document.getElementById("sheetImage");
+    const techniqueText = document.getElementById("techniqueText");
     
     keepGoing = true;
     modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music"];
@@ -319,16 +320,28 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function hideAudioShowSheet() {
         audioPlayer.src = "";
+        techniqueText.classList.add("hidden");
+        techniqueText.classList.remove("shown");
         audioPlayer.classList.add("hidden");
         audioPlayer.classList.remove("shown");
         sheetImage.classList.remove("hidden");
         sheetImage.classList.add("shown");
     }
     function hideSheetShowAudio() {
+        techniqueText.classList.add("hidden");
+        techniqueText.classList.remove("shown");
         sheetImage.classList.add("hidden");
         sheetImage.classList.remove("shown");
         audioPlayer.classList.remove("hidden");
         audioPlayer.classList.add("shown");
+    }
+    function hideAllShowText() {
+        techniqueText.classList.add("shown");
+        techniqueText.classList.remove("hidden");
+        sheetImage.classList.add("hidden");
+        sheetImage.classList.remove("shown");
+        audioPlayer.classList.remove("shown");
+        audioPlayer.classList.add("hidden");
     }
     function playRandomMP3() {
         list = "list.txt"
@@ -373,31 +386,40 @@ document.addEventListener("DOMContentLoaded", function() {
                     .catch(error => {
                         console.error('Error fetching file list:', error);
                 });
+            } else if (Math.random() > 10) {
+                fileList= [];
+                if (fileList.length === 0){
+                    fetch(`${modesFolder[modes.indexOf("sheet-music")]}/${list}`)
+                    // fetch("all/../studio-ghibi/list.txt")
+                        .then(response => response.text())
+                        .then(text => {
+                
+                            fileList = text.trim().split('\n');
+                            console.log(fileList)
+                            const randomIndex = Math.floor(Math.random() * fileList.length);
+                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                            sheetImage.src = `${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`;
+                            hideAudioShowSheet();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching file list:', error);
+                        });
+                } else {
+                    const randomIndex = Math.floor(Math.random() * fileList.length);
+                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                    sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
+                    hideAudioShowSheet();
+                    playAudioWithTimeout();
+                }
             } else {
-            fileList= [];
-            if (fileList.length === 0){
-                fetch(`${modesFolder[modes.indexOf("sheet-music")]}/${list}`)
-                // fetch("all/../studio-ghibi/list.txt")
-                    .then(response => response.text())
-                    .then(text => {
-            
-                        fileList = text.trim().split('\n');
-                        console.log(fileList)
-                        const randomIndex = Math.floor(Math.random() * fileList.length);
-                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                        sheetImage.src = `${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`;
-                        hideAudioShowSheet();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file list:', error);
-                    });
-            } else {
-                const randomIndex = Math.floor(Math.random() * fileList.length);
-                const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
-                hideAudioShowSheet();
-                playAudioWithTimeout();
-            }
+                hideAllShowText();
+                techniqueExercises = [
+                    ["Ascending Chords in A major", "Ascending Chords in A minor", "Ascending Chords in A# major", "Ascending Chords in A# minor", "Ascending Chords in B major", "Ascending Chords in B minor", "Ascending Chords in C major", "Ascending Chords in C minor", "Ascending Chords in C# major", "Ascending Chords in C# minor", "Ascending Chords in D major", "Ascending Chords in D minor", "Ascending Chords in D# major", "Ascending Chords in D# minor", "Ascending Chords in E major", "Ascending Chords in E minor", "Ascending Chords in F major", "Ascending Chords in F minor", "Ascending Chords in F# major", "Ascending Chords in F# minor", "Ascending Chords in G major", "Ascending Chords in G minor", "Ascending Chords in G# major", "Ascending Chords in G# minor", "Descending Chords in A major", "Descending Chords in A minor", "Descending Chords in A# major", "Descending Chords in A# minor", "Descending Chords in B major", "Descending Chords in B minor", "Descending Chords in C major", "Descending Chords in C minor", "Descending Chords in C# major", "Descending Chords in C# minor", "Descending Chords in D major", "Descending Chords in D minor", "Descending Chords in D# major", "Descending Chords in D# minor", "Descending Chords in E major", "Descending Chords in E minor", "Descending Chords in F major", "Descending Chords in F minor", "Descending Chords in F# major", "Descending Chords in F# minor", "Descending Chords in G major", "Descending Chords in G minor", "Descending Chords in G# major", "Descending Chords in G# minor"],
+                    ['Spider Exercise 1234', 'Spider Exercise 1243', 'Spider Exercise 1324', 'Spider Exercise 1342', 'Spider Exercise 1423', 'Spider Exercise 1432', 'Spider Exercise 2134', 'Spider Exercise 2143', 'Spider Exercise 2314', 'Spider Exercise 2341', 'Spider Exercise 2413', 'Spider Exercise 2431', 'Spider Exercise 3124', 'Spider Exercise 3142', 'Spider Exercise 3214', 'Spider Exercise 3241', 'Spider Exercise 3412', 'Spider Exercise 3421', 'Spider Exercise 4123', 'Spider Exercise 4132', 'Spider Exercise 4213', 'Spider Exercise 4231', 'Spider Exercise 4312', 'Spider Exercise 4321', 'Diagonal Spider Exercise 1234', 'Diagonal Spider Exercise 1243', 'Diagonal Spider Exercise 1324', 'Diagonal Spider Exercise 1342', 'Diagonal Spider Exercise 1423', 'Diagonal Spider Exercise 1432', 'Diagonal Spider Exercise 2134', 'Diagonal Spider Exercise 2143', 'Diagonal Spider Exercise 2314', 'Diagonal Spider Exercise 2341', 'Diagonal Spider Exercise 2413', 'Diagonal Spider Exercise 2431', 'Diagonal Spider Exercise 3124', 'Diagonal Spider Exercise 3142', 'Diagonal Spider Exercise 3214', 'Diagonal Spider Exercise 3241', 'Diagonal Spider Exercise 3412', 'Diagonal Spider Exercise 3421', 'Diagonal Spider Exercise 4123', 'Diagonal Spider Exercise 4132', 'Diagonal Spider Exercise 4213', 'Diagonal Spider Exercise 4231', 'Diagonal Spider Exercise 4312', 'Diagonal Spider Exercise 4321']
+                ];
+                temp = techniqueExercises[Math.floor(Math.random() * techniqueExercises.length)];
+                temp = temp[Math.floor(Math.random() * temp.length)];
+                techniqueText.textContent = temp+" at "+(55+Math.floor((Date.now()/1000)/86400)-19844)+" bpm";
             }
             
             
