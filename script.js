@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function() {
             modesFolder[modes.indexOf(mode)] = "all"
         }
         if (modesFolder[modes.indexOf(mode)] == "all") {
-            if (Math.random() > 0.35){
+            if (Math.random() > 0.20){
                 fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
                     .then(response => response.text())
                     .then(text => {
