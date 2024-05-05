@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
     vibeTime = parseInt(numberInput.value);
     celebrateMode = false;
     completed = 0;
+    //completionsNeeded = 5;
     completionsNeeded = Math.round(20*1.01**Math.trunc(((Date.now()/1000)-1714708800)/86400));
     if (mode) {
         modeButton.textContent = getNextMode();
