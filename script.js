@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
     completed = 0;
     //completionsNeeded = 5;
     completionsNeeded = Math.round(20*1.01**Math.trunc(((Date.now()/1000)-1714708800)/86400));
+    completedSpan.textContent = completed+"/"+completionsNeeded+" Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
         currentModeSpan.textContent = mode+" - ";
@@ -231,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (keepGoing == true) return;
         alert("Session completed :D")
         if (confirm("Wanna Celebrate with some music?")) {
-            const randomIndex = Math.floor(Math.random() * fileList.length);
+            const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
             const randomFile = fileList[randomIndex].trim();
             audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
             audioPlayer.play();
@@ -260,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return 0;
       }
       // Generate a random start time between 0 and duration - 5
-      return Math.floor(Math.random() * (duration - 5));
+      return Math.floor(Math.random(486783555478) * (duration - 5));
     }
     
     // Function to handle playing the audio and setting timeout
@@ -351,7 +352,8 @@ document.addEventListener("DOMContentLoaded", function() {
             modesFolder[modes.indexOf(mode)] = "all"
         }
         if (modesFolder[modes.indexOf(mode)] == "all") {
-            if (Math.random() > 0.20){
+            practiceType = Math.random(486783555478);
+            if (practiceType > 0.375){
                 fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
                     .then(response => response.text())
                     .then(text => {
@@ -359,11 +361,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         index = fileList.indexOf('sheet-music');
                         if (index !== -1) {
                             removedItem = fileList.splice(index, 1)[0];
-                            randomIndex = Math.floor(Math.random() * fileList.length);
+                            randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                             fileList.splice(index, 0, removedItem);
                         } else {
-                            randomIndex = Math.floor(Math.random() * fileList.length);
+                            randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         }
                         list = randomFile
@@ -374,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             .then(response => response.text())
                             .then(text => {
                                 fileList = text.trim().split('\n');
-                                const randomIndex = Math.floor(Math.random() * fileList.length);
+                                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                                 randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                                 audioPlayer.src = `${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`;
                                 hideSheetShowAudio();
@@ -387,7 +389,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     .catch(error => {
                         console.error('Error fetching file list:', error);
                 });
-            } else if (Math.random() > 0.10) {
+            } else if (practiceType > 0.275) {
                 fileList= [];
                 if (fileList.length === 0){
                     fetch(`${modesFolder[modes.indexOf("sheet-music")]}/${list}`)
@@ -397,7 +399,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                             fileList = text.trim().split('\n');
                             console.log(fileList)
-                            const randomIndex = Math.floor(Math.random() * fileList.length);
+                            const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                             sheetImage.src = `${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`;
                             hideAudioShowSheet();
@@ -406,7 +408,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             console.error('Error fetching file list:', error);
                         });
                 } else {
-                    const randomIndex = Math.floor(Math.random() * fileList.length);
+                    const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                     const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                     sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
                     hideAudioShowSheet();
@@ -418,10 +420,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 chords = ['Ascending 7th Chords in Bb Minor', 'Ascending 7th Chords in C Major', 'Ascending 7th Chords in F# Major', 'Ascending 7th Chords in B Minor', 'Ascending 7th Chords in G Major', 'Ascending 7th Chords in Db Major', 'Ascending 7th Chords in D Minor', 'Ascending 7th Chords in C# Minor', 'Ascending 7th Chords in A Minor', 'Ascending 7th Chords in B Major', 'Ascending 7th Chords in D Major', 'Ascending 7th Chords in Ab Major', 'Ascending 7th Chords in G# Minor', 'Ascending 7th Chords in Bb Major', 'Ascending 7th Chords in C Minor', 'Ascending 7th Chords in F# Minor', 'Ascending 7th Chords in G Minor', 'Ascending 7th Chords in A Major']
                 techniqueExercises = [
                     chords,
-                    ['Spider Exercise 1234', 'Spider Exercise 1243', 'Spider Exercise 1324', 'Spider Exercise 1342', 'Spider Exercise 1423', 'Spider Exercise 1432', 'Spider Exercise 2134', 'Spider Exercise 2143', 'Spider Exercise 2314', 'Spider Exercise 2341', 'Spider Exercise 2413', 'Spider Exercise 2431', 'Spider Exercise 3124', 'Spider Exercise 3142', 'Spider Exercise 3214', 'Spider Exercise 3241', 'Spider Exercise 3412', 'Spider Exercise 3421', 'Spider Exercise 4123', 'Spider Exercise 4132', 'Spider Exercise 4213', 'Spider Exercise 4231', 'Spider Exercise 4312', 'Spider Exercise 4321', 'Diagonal Spider Exercise 1234', 'Diagonal Spider Exercise 1243', 'Diagonal Spider Exercise 1324', 'Diagonal Spider Exercise 1342', 'Diagonal Spider Exercise 1423', 'Diagonal Spider Exercise 1432', 'Diagonal Spider Exercise 2134', 'Diagonal Spider Exercise 2143', 'Diagonal Spider Exercise 2314', 'Diagonal Spider Exercise 2341', 'Diagonal Spider Exercise 2413', 'Diagonal Spider Exercise 2431', 'Diagonal Spider Exercise 3124', 'Diagonal Spider Exercise 3142', 'Diagonal Spider Exercise 3214', 'Diagonal Spider Exercise 3241', 'Diagonal Spider Exercise 3412', 'Diagonal Spider Exercise 3421', 'Diagonal Spider Exercise 4123', 'Diagonal Spider Exercise 4132', 'Diagonal Spider Exercise 4213', 'Diagonal Spider Exercise 4231', 'Diagonal Spider Exercise 4312', 'Diagonal Spider Exercise 4321']
+                    ['Spider Exercise 1234', 'Spider Exercise 1243', 'Spider Exercise 1324', 'Spider Exercise 1342', 'Spider Exercise 1423', 'Spider Exercise 1432', 'Spider Exercise 2134', 'Spider Exercise 2143', 'Spider Exercise 2314', 'Spider Exercise 2341', 'Spider Exercise 2413', 'Spider Exercise 2431', 'Spider Exercise 3124', 'Spider Exercise 3142', 'Spider Exercise 3214', 'Spider Exercise 3241', 'Spider Exercise 3412', 'Spider Exercise 3421', 'Spider Exercise 4123', 'Spider Exercise 4132', 'Spider Exercise 4213', 'Spider Exercise 4231', 'Spider Exercise 4312', 'Spider Exercise 4321', 'Diagonal Spider Exercise 1234', 'Diagonal Spider Exercise 1243', 'Diagonal Spider Exercise 1324', 'Diagonal Spider Exercise 1342', 'Diagonal Spider Exercise 1423', 'Diagonal Spider Exercise 1432', 'Diagonal Spider Exercise 2134', 'Diagonal Spider Exercise 2143', 'Diagonal Spider Exercise 2314', 'Diagonal Spider Exercise 2341', 'Diagonal Spider Exercise 2413', 'Diagonal Spider Exercise 2431', 'Diagonal Spider Exercise 3124', 'Diagonal Spider Exercise 3142', 'Diagonal Spider Exercise 3214', 'Diagonal Spider Exercise 3241', 'Diagonal Spider Exercise 3412', 'Diagonal Spider Exercise 3421', 'Diagonal Spider Exercise 4123', 'Diagonal Spider Exercise 4132', 'Diagonal Spider Exercise 4213', 'Diagonal Spider Exercise 4231', 'Diagonal Spider Exercise 4312', 'Diagonal Spider Exercise 4321'],
+                    ['Tap whilst playing the ii-V-I Jazz Standard: Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iii-VI-ii-V Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I-vi-ii-V Jazz: Cmaj7 - Am7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Imaj7-IVmaj7-ii7-V7 Jazz: Cmaj7 - Fmaj7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the vi-ii-V-I Jazz: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iim7b5-V7alt-im7 Jazz: Dm7b5 - G7alt - Cm7 progression, in the Key of C minor', 'Tap whilst playing the IVmaj7#11 - #IVdim7 - Imin7 - bII7 Jazz: Fmaj7#11 - F#dim7 - Cm7 - Db7 progression, in the Key of C minor', 'Tap whilst playing the I - #Idim7 - IImin7 - V7 Jazz: Cmaj7 - C#dim7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I7 - VI7 - II7 - V7 Jazz: C7 - A7 - D7 - G7 progression, in the Key of C major', 'Tap whilst playing the iii7 - VI7 - ii7 - V7 Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove: Em7 - A7 - D9 - G7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Groove 1: Am - C - Em - G progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion: Dm7 - G7 - C9 - Fmaj7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 2: Dm - G - Em - A progression, in the Key of D minor', 'Tap whilst playing the Funk Jam: G7 - C7 - F7 - Bb7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Arpeggios: Dmaj7 - Bm7 - F#m7 - Gmaj7 progression, in the Key of D major', 'Tap whilst playing the Funky Blues: E7 - A7 - B7 - E7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Modal: Emaj7 - F#m7 - G#m7 - Amaj7 progression, in the Key of E major', 'Tap whilst playing the Funk Fusion II: Em7 - A7 - Dmaj7 - Gmaj7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Chromatic: Dm7 - Dbmaj7 - Cm7 - Bbmaj7 progression, in the Key of C minor', 'Tap whilst playing the Jazz Blues: C7 - F7 - Gm7 - C7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove II: Em7 - A7 - D7 - G7 progression, in the Key of E minor', 'Tap whilst playing the Math Rock Groove 3: G - Bm - D - F# progression, in the Key of G major', 'Tap whilst playing the Fusion Vibe: Am7 - D7 - Gmaj7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Jazz Turnaround: Dm7 - G7 - Cmaj7 - A7 progression, in the Key of C major', 'Tap whilst playing the Funky Rhythm: G9 - C9 - F9 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Experiment: F#m - Dmaj7 - Bm - Emaj7 progression, in the Key of D major', 'Tap whilst playing the Jazz Waltz: Dm7 - G7 - Cmaj7 - Am7 progression, in the Key of C major', 'Tap whilst playing the Funk Fusion III: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Math Rock Groove 4: A - C#m - E - G#m progression, in the Key of A major', 'Tap whilst playing the Jazz Fusion: Dm7 - G7 - Cmaj7 - Fmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Groove: C7 - F9 - G7 - C9 progression, in the Key of C major', 'Tap whilst playing the Math Rock Riff: E - G - D - A progression, in the Key of E minor', 'Tap whilst playing the Jazz Modal Vibe: Dm7 - Em7 - Am7 - Dm7 progression, in the Key of A minor', 'Tap whilst playing the Funk Jam II: D9 - G9 - C9 - F9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 5: Bm - D - F#m - A progression, in the Key of B minor', 'Tap whilst playing the Jazz Ballad: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Blues II: A7 - D7 - E7 - A7 progression, in the Key of A major', 'Tap whilst playing the Math Rock Fusion: G#m - F#m - Emaj7 - B progression, in the Key of G# minor', 'Tap whilst playing the Jazz Bossa Nova: Am7 - D7 - Gmaj7 - Bm7b5 progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion IV: Cm7 - F7 - Bbmaj7 - Ebmaj7 progression, in the Key of Bb major', 'Tap whilst playing the Math Rock Groove 6: F - A#m - D# - Gm progression, in the Key of F major', 'Tap whilst playing the Jazz Funk Jam: G7 - C9 - F7 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Funky Riff: E7 - A7 - D7 - G7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Experiment II: D - F#m - Bm - G progression, in the Key of D major', 'Tap whilst playing the Jazz Fusion II: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove III: Bm7 - E7 - Am7 - D7 progression, in the Key of B minor', 'Tap whilst playing the Math Rock Groove 7: D#m - G# - C#m - F# progression, in the Key of D# minor', 'Tap whilst playing the Jazz Funk Fusion: Am7 - D9 - Gmaj7 - C9 progression, in the Key of C major', 'Tap whilst playing the Funky Modal Vibe: Gm7 - Cm7 - F7 - Bb7 progression, in the Key of Bb major'],
+                    
                 ];
-                temp = techniqueExercises[Math.floor(Math.random() * techniqueExercises.length)];
-                temp = temp[Math.floor(Math.random() * temp.length)];
+                temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * techniqueExercises.length)];
+                temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
                 techniqueText.textContent = temp+" at "+(55+Math.floor((Date.now()/1000)/86400)-19844)+" bpm";
                 if (temp.includes("Chords")){
                     sheetImage.src = "Chords/"+temp.replace("#", "Sharp")+".png";
@@ -441,7 +445,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
                         fileList = text.trim().split('\n');
                         console.log(fileList)
-                        const randomIndex = Math.floor(Math.random() * fileList.length);
+                        const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
                         hideAudioShowSheet();
@@ -450,7 +454,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         console.error('Error fetching file list:', error);
                     });
             } else {
-                const randomIndex = Math.floor(Math.random() * fileList.length);
+                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                 const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                 sheetImage.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
                 hideAudioShowSheet();
@@ -466,7 +470,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
                         fileList = text.trim().split('\n');
                         console.log(fileList)
-                        const randomIndex = Math.floor(Math.random() * fileList.length);
+                        const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
                         hideSheetShowAudio();
@@ -476,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         console.error('Error fetching file list:', error);
                     });
             } else {
-                const randomIndex = Math.floor(Math.random() * fileList.length);
+                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                 const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                 audioPlayer.src = `${modesFolder[modes.indexOf(mode)]}/${randomFile}`;
                 hideSheetShowAudio();
