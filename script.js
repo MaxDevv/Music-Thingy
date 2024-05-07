@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 ];
                 temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * techniqueExercises.length)];
                 temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
-                techniqueText.textContent = temp+" at "+(55+Math.floor((Date.now()/1000)/86400)-19844)+" bpm";
+                techniqueText.textContent = temp+" at "+(55+Math.floor((Date.now()/1000)/86400)-19850)+" bpm";
                 if (temp.includes("Chords")){
                     sheetImage.src = "Chords/"+temp.replace("#", "Sharp")+".png";
                     sheetImage.classList.add("shown");
