@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     completed = 0;
 
     //completionsNeeded = 5;
-    completionsNeeded = Math.round(20 * 1.01 ** Math.trunc(((Date.now() / 1000) - 1714708800) / 86400));
+                completionsNeeded = Math.round(20 * 1.01 ** ((((Date.now() / 1000) - 1714708800) / 86400)+29));
     completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
