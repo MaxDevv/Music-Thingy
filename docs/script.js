@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     completed = 0;
 
     //completionsNeeded = 5;
-                completionsNeeded = Math.round(20 * 1.01 ** ((((Date.now() / 1000) - 1714708800) / 86400)+29));
+                completionsNeeded = Math.round(20 * 1.02 ** ((((Date.now() / 1000) - 1714708800) / 86400)+9));
     completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
@@ -492,7 +492,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 ];
                 temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * techniqueExercises.length-1)];
                 bpm = temp[temp.length-1];
+                
                 temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
+                if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
                 techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
                 if (temp.includes("Chords")) {
                     sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
