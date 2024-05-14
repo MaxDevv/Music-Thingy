@@ -13,10 +13,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const sheetImage = document.getElementById("sheetImage");
     const techniqueText = document.getElementById("techniqueText");
     const defaultTimeout = 7;
-    const fileHost = "https://github.com/MaxDevv/Music-Thingy/raw/main/";
+    const fileHost = "https://raw.githubusercontent.com/MaxDevv/Music-Thingy/main/";
+    const corsProxy = ``;
     keepGoing = true;
     modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
     modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music", "Music-Backing-Tracks", "jazz"];
+    specialModesFolder = ["all", "sheet-music", "Music-Backing-Tracks"];
+    plainModesFolder = modesFolder.filter(item => !specialModesFolder.includes(item));
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode != "true") { vibeMode = false; }
@@ -236,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (confirm("Wanna Celebrate with some music?")) {
             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
             const randomFile = fileList[randomIndex].trim();
-            audioPlayer.src = encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+            audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
             audioPlayer.play();
             celebrateMode = true;
         } else if (confirm("Then wanna keep going?")) {
@@ -373,6 +376,9 @@ document.addEventListener("DOMContentLoaded", function () {
             techniqueText.classList.remove("hidden");
         } else techniqueText.innerText += "\n "+alwaysRemember;
     }
+    function encodeURIComponent(f){
+        return f;
+    }
     function playRandomMP3() {
         list = "list.txt"
         timeout = defaultTimeout;
@@ -383,45 +389,27 @@ document.addEventListener("DOMContentLoaded", function () {
         if (modesFolder[modes.indexOf(mode)] == "all") {
             practiceType = Math.random(486783555478);
             if (practiceType > 0.35) {
-                fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
-                    .then(response => response.text())
-                    .then(text => {
-                        fileList = text.trim().split('\n');
-                        index = fileList.indexOf('sheet-music');
-                        if (index !== -1) {
-                            removedItem = fileList.splice(index, 1)[0];
-                            randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            fileList.splice(index, 0, removedItem);
-                        } else {
-                            randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                        }
-                        list = randomFile
-                        modesFolder[modes.indexOf(mode)] = "all/.."
-                        fileList = []
-                        fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
-                            // fetch("all/../studio-ghibi/list.txt")
-                            .then(response => response.text())
+                tempMode = plainModesFolder[Math.trunc(Math.random()*plainModesFolder.length)];
+                fetch(corsProxy + encodeURIComponent(fileHost + `${tempMode}/${list}`))
+                        // fetch("all/../studio-ghibi/list.txt")
+                        .then(response => response.text())
                             .then(text => {
                                 fileList = text.trim().split('\n');
                                 const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                                 randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                                audioPlayer.src = encodeURIComponent(fileHost + `${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`);
+                                console.log(`${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`);
+                                list = tempMode;
+                                audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`));
                                 hideSheetShowAudio();
                                 playAudioWithTimeout();
                             })
                             .catch(error => {
                                 console.error('Error fetching file list:', error);
                             });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file list:', error);
-                    });
             } else if (practiceType > 0.25) {
                 fileList = [];
                 if (fileList.length === 0) {
-                    fetch(`${modesFolder[modes.indexOf("sheet-music")]}/${list}`)
+                    fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf("sheet-music")]}/${list}`))
                         // fetch("all/../studio-ghibi/list.txt")
                         .then(response => response.text())
                         .then(text => {
@@ -430,7 +418,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             console.log(fileList)
                             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            sheetImage.src = encodeURIComponent(fileHost + `${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`);
+                            sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`));
                             hideAudioShowSheet();
                             audioPlayer.pause();
                         })
@@ -440,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                     const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    sheetImage.src = encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                    sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                     hideAudioShowSheet();
                     playAudioWithTimeout();
                 }
@@ -450,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 mode = "Music-Backing-Tracks";
                 fileList = [];
                 if (fileList.length === 0) {
-                    fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                    fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
                         // fetch("all/../studio-ghibi/list.txt")
                         .then(response => response.text())
                         .then(text => {
@@ -459,7 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             console.log(fileList)
                             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            audioPlayer.src = encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                            audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                             keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
                             hideSheetShowAudio();
                             keyText.classList.add("shown");
@@ -473,7 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                     const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    audioPlayer.src = encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                    audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                     keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
                     hideSheetShowAudio();
                     keyText.classList.add("shown");
@@ -507,7 +495,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
                 techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
                 if (temp.includes("Chords")) {
-                    sheetImage.src = encodeURIComponent(fileHost + "Chords/" + temp.replace("#", "Sharp") + ".png");
+                    sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
                     sheetImage.classList.add("shown");
                     sheetImage.classList.remove("hidden");
                 } 
@@ -518,7 +506,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (modesFolder[modes.indexOf(mode)] == "sheet-music") {
             fileList = [];
             if (fileList.length === 0) {
-                fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
                     // fetch("all/../studio-ghibi/list.txt")
                     .then(response => response.text())
                     .then(text => {
@@ -527,7 +515,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log(fileList)
                         const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                        sheetImage.src = encodeURIComponent(fileHost+`${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                        sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                         hideAudioShowSheet();
                     })
                     .catch(error => {
@@ -536,14 +524,14 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                 const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                sheetImage.src = encodeURIComponent(fileHost+`${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                 hideAudioShowSheet();
                 playAudioWithTimeout();
             }
         }
         else {
             if (fileList.length === 0) {
-                fetch(`${modesFolder[modes.indexOf(mode)]}/${list}`)
+                fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
                     // fetch("all/../studio-ghibi/list.txt")
                     .then(response => response.text())
                     .then(text => {
@@ -552,7 +540,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log(fileList);
                         const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                        audioPlayer.src = encodeURIComponent(fileHost+`${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                        audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                         hideSheetShowAudio();
                         playAudioWithTimeout();
                     })
@@ -562,7 +550,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                 const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                audioPlayer.src = encodeURIComponent(fileHost+`${modesFolder[modes.indexOf(mode)]}/${randomFile}`);
+                audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
                 hideSheetShowAudio();
                 playAudioWithTimeout();
             }
