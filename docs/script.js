@@ -495,6 +495,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
                 if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
+                keys = ["C# Minor", "G Minor", "D Minor", "E Minor", "E Major", "C Minor", "Gb Major", "C# Major", "B Minor", "Ab Major", "D Major", "F Minor", "G Major", "Bb Minor", "A Minor", "Db Major", "A# Minor", "Eb Minor", "A Major", "C Major", "Bb Major", "D# Minor", "F# Major", "Cb Major", "G# Minor", "Ab Minor", "Eb Major", "F# Minor", "B Major", "F Major"]
+                if (temp.search(/([a-g]|[A-G])(#|b|)\s(major|minor)/i) != -1) {
+                    temp = temp.replace(/([a-g]|[A-G])(#|b|)\s(major|minor)/i, keys[Math.floor(Math.random(4867833525234) * keys.length)]);
+                }
                 techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
                 if (temp.includes("Chords")) {
                     sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
