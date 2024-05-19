@@ -32,20 +32,28 @@
     <button id="darkModeButton">
         <span id="darkModeIcon">🌙</span>
     </button>
-    <div class="container">
+    <script src="opensheetmusicdisplay.min.js"></script>
+    
+    <div class="container stretch">
+
+    <div id="tempOsmdContainer" class="hidden"></div>
         <audio controls id="audioPlayer" class="hidden">
             Your browser does not support the audio element.
         </audio>
+
         <details id="keyText" class="hidden" style="color: #c9c9c9; font-size: large;" >
             <summary>Key: </summary>
             Ballz :D
         </details>
         <span id="techniqueText" class="shown" style="color: #c9c9c9; font-size: large;" >Start :D</span>
-        <img src="sheet-music/Luffy_vs_Ratchet_One_Piece_OST_BGM_-_Kohei_Tanaka_maranoch_part_0_measure_14.png" alt="images dont work ;-;" id="sheetImage" class="hidden">
+        <img src="" alt="images dont work ;-;" id="sheetImage" class="hidden">
         <button id="startButton">Start Session :D</button>
         <button id="nextButton">Next & Mark as Completed</button>
         <button id="rewardButton">Give urself a point :D</button>
         <button id="skipButton">Skip</button>
+        <div id="osmdContainer">
+            
+        </div>
         <div>
             <button id="vibeButton" style="margin-right: 0.31vw;">Vibe On</button>
             <input type="number" id="numberInput" min="1" max="100" value="15">
@@ -57,42 +65,6 @@
         <span id="completionCounter">0/5 Completed</span>
         
     </div>
-    <!-- Add this button where you want the install button to appear
-    <button id="installButton" style="display: none;">Install App</button>
-
-    <script>
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the browser's default prompt
-            e.preventDefault();
-            // Store the event to use it later
-            deferredPrompt = e;
-            // Show your custom install button
-            document.getElementById('installButton').style.display = 'block';
-        });
-
-        // Handle the custom install button click
-        document.getElementById('installButton').addEventListener('click', () => {
-            // Trigger the browser's install prompt
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    // Reset the deferredPrompt variable
-                    deferredPrompt = null;
-                    // Hide the install button
-                    document.getElementById('installButton').style.display = 'none';
-                });
-            }
-        });
-    </script> -->
-
     <script src="script.js"></script>
 </body>
 

@@ -12,8 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const currentModeSpan = document.getElementById("currentMode");
     const sheetImage = document.getElementById("sheetImage");
     const techniqueText = document.getElementById("techniqueText");
+    const osmdIframe = document.getElementById("osmdIframe");
+    const tempOsmdContainer = document.getElementById("tempOsmdContainer");
     const defaultTimeout = 7;
-    const fileHost = "https://raw.githubusercontent.com/MaxDevv/Music-Thingy/main/";
+    var fileHost = "https://raw.githubusercontent.com/MaxDevv/Music-Thingy/main/";
+    // check if host is 127.0.0.1 or localhost or 0.0.0.0 or smth like that and set fileHost to nothing if true
+    if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" || window.location.hostname === "0.0.0.0") {
+        fileHost = "../";
+    }
+    
     const corsProxy = ``;
     keepGoing = true;
     modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
@@ -27,6 +34,13 @@ document.addEventListener("DOMContentLoaded", function () {
     vibeTime = parseInt(numberInput.value);
     celebrateMode = false;
     completed = 0;
+    var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("tempOsmdContainer");
+        osmd.setOptions({
+            backend: "svg",
+            drawTitle: false,
+            drawingParameters: "compacttight",
+            autoResize: true // don't display title, composer etc., smaller margins
+        });
 
     //completionsNeeded = 5;
                 completionsNeeded = Math.round(20 * 1.02 ** ((((Date.now() / 1000) - 1714708800) / 86400)+9));
@@ -64,15 +78,70 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return queryString;
     }
-
-
-    var queryParams = parseQueryString();
-    var hash = queryParams["hash"];
-    if (hash) {
-        // Use hash to navigate to content
-        window.location.href = "#" + hash;
+    function getRandomDifficulty() {
+        diffucilty = [1, (Math.floor(Math.round((((Date.now() / 1000) - 1716068447) / 86400))/10)+1), 10].sort((a,b) => a-b)[1];
+        return diffucilty;
     }
-
+    // iframe load
+    function loadRandomSheet(difficulty) {
+        difficulty = difficulty || getRandomDifficulty();
+        
+        var folder = "sheet-music/" + difficulty + "/";
+        fetch(corsProxy + encodeURIComponent(fileHost + folder + "/list.txt"))
+        // fetch("all/../studio-ghibi/list.txt")
+        .then(response => response.text())
+            .then(text => {
+                fileList = text.trim().split('\n');
+                console.log(fileList)
+                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                randomFile = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(folder + randomFile));
+                osmd.load(randomFile)
+                    .then(function() {
+                        tempOsmdContainer.style.width = "100%";
+                        osmd.render();
+                        scoreWidth = String(parseInt(osmd.graphic.musicPages[0].musicSystems[0].PositionAndShape.size.width)*10);
+                        scoreWidth = scoreWidth.concat("px");
+                        tempOsmdContainer.style.width = scoreWidth;
+                        osmd.render();
+                        
+                        adjustStyles();
+                    });
+            });
+    }
+    loadRandomSheet();
+        // Function to adjust styles
+        
+        const adjustStyles = () => {
+            const osmdCanvasPage1 = document.getElementById('osmdCanvasPage1');
+            const osmdSvgPage1 = document.getElementById('osmdSvgPage1');
+    
+            if (osmdCanvasPage1) {
+              osmdCanvasPage1.style.width = '100%';
+            }
+    
+            if (osmdSvgPage1) {
+              osmdSvgPage1.setAttribute('width', '100%');
+              osmdSvgPage1.setAttribute('height', 'auto');
+            }
+          };
+    
+          // Observe changes to the tempOsmdContainer
+          const observer = new MutationObserver((mutationsList, observer) => {
+            for (let mutation of mutationsList) {
+              if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                adjustStyles();
+              }
+            }
+          });
+    
+          observer.observe(tempOsmdContainer, { childList: true, subtree: true });
+      var queryParams = parseQueryString();
+      var hash = queryParams["hash"];
+      if (hash) {
+          // Use hash to navigate to content
+          window.location.href = "#" + hash;
+      }
 
     darkModeButton.addEventListener("click", function () {
         toggleDarkMode();
@@ -330,34 +399,52 @@ document.addEventListener("DOMContentLoaded", function () {
         return modes[modeIndex];
     }
 
-    function hideAudioShowSheet() {
+    function hideAudio() {
         audioPlayer.src = encodeURIComponent("");
-        techniqueText.classList.add("hidden");
-        techniqueText.classList.remove("shown");
         audioPlayer.classList.add("hidden");
         audioPlayer.classList.remove("shown");
-        sheetImage.classList.remove("hidden");
-        sheetImage.classList.add("shown");
-        hideKeyText();
-        tips();
     }
-    function hideSheetShowAudio() {
-        techniqueText.classList.add("hidden");
-        techniqueText.classList.remove("shown");
-        sheetImage.classList.add("hidden");
-        sheetImage.classList.remove("shown");
+
+    function showSheet() {
+        tempOsmdContainer.classList.remove("hidden");
+        tempOsmdContainer.classList.add("shown");
+    }
+
+    function hideSheet() {
+        tempOsmdContainer.classList.add("hidden");
+        tempOsmdContainer.classList.remove("shown");
+    }
+
+    function showAudio() {
         audioPlayer.classList.remove("hidden");
         audioPlayer.classList.add("shown");
+    }
+
+    function hideAll() {
+        techniqueText.classList.add("hidden");
+        techniqueText.classList.remove("shown");
+        tempOsmdContainer.classList.add("hidden");
+        tempOsmdContainer.classList.remove("shown");
+        audioPlayer.classList.add("hidden");
+        audioPlayer.classList.remove("shown");
+    }
+
+    function hideAudioShowSheet() {
+        hideAudio();
         hideKeyText();
         tips();
+        showSheet();
     }
+
+    function hideSheetShowAudio() {
+        hideSheet();
+        hideKeyText();
+        tips();
+        showAudio();
+    }
+
     function hideAllShowText() {
-        techniqueText.classList.add("shown");
-        techniqueText.classList.remove("hidden");
-        sheetImage.classList.add("hidden");
-        sheetImage.classList.remove("shown");
-        audioPlayer.classList.remove("shown");
-        audioPlayer.classList.add("hidden");
+        hideAll();
         hideKeyText();
         tips();
     }
@@ -369,17 +456,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function tips(){
-        alwaysRemember = "Stay Confident, Play Like Air!";
-        if (!techniqueText.classList.contains("shown")){
+        alwaysRemember = "Stay Confident, Play Like Air, And Alternate Pick!";
+        if (!techniqueText.classList.contains("shown") || techniqueText.innerText.includes("Start :D")) {
             techniqueText.innerText = alwaysRemember;
             techniqueText.classList.add("shown");
             techniqueText.classList.remove("hidden");
-        } else techniqueText.innerText += "\n "+alwaysRemember;
+        } else if (!techniqueText.innerText.includes(alwaysRemember)) techniqueText.innerText += "\n "+alwaysRemember;
     }
     function encodeURIComponent(f){
         return f;
     }
     function playRandomMP3() {
+        play();
+    }
+    function play() {
         list = "list.txt"
         timeout = defaultTimeout;
 
@@ -388,6 +478,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         if (modesFolder[modes.indexOf(mode)] == "all") {
             practiceType = Math.random(486783555478);
+            practiceType = 0.16;
             if (practiceType > 0.35) {
                 tempMode = plainModesFolder[Math.trunc(Math.random()*plainModesFolder.length)];
                 fetch(corsProxy + encodeURIComponent(fileHost + `${tempMode}/${list}`))
@@ -408,31 +499,36 @@ document.addEventListener("DOMContentLoaded", function () {
                             });
             } else if (practiceType > 0.25) {
                 fileList = [];
-                if (fileList.length === 0) {
-                    fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf("sheet-music")]}/${list}`))
-                        // fetch("all/../studio-ghibi/list.txt")
-                        .then(response => response.text())
-                        .then(text => {
+                // if (fileList.length === 0) {
+                //     fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf("sheet-music")]}/${list}`))
+                //         // fetch("all/../studio-ghibi/list.txt")
+                //         .then(response => response.text())
+                //         .then(text => {
 
-                            fileList = text.trim().split('\n');
-                            console.log(fileList)
-                            const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                            randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`));
-                            hideAudioShowSheet();
-                            audioPlayer.pause();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching file list:', error);
-                        });
-                } else {
-                    const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                    hideAudioShowSheet();
-                    playAudioWithTimeout();
-                }
+                //             fileList = text.trim().split('\n');
+                //             console.log(fileList)
+                //             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                //             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                //             sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`));
+                //             hideAudioShowSheet();
+                //             audioPlayer.pause();
+                //         })
+                //         .catch(error => {
+                //             console.error('Error fetching file list:', error);
+                //         });
+                // } else {
+                //     const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                //     const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                //     sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
+                //     hideAudioShowSheet();
+                //     playAudioWithTimeout();
+                // }
+                loadRandomSheet();
+                hideAll();
+                showSheet();
+                audioPlayer.pause();
 
+                
             } else if (practiceType > 0.15) {
                 oldMode = mode;
                 mode = "Music-Backing-Tracks";
@@ -494,6 +590,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 bpm = temp[temp.length-1];
                 
                 temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
+                keys = ["C# Minor", "G Minor", "D Minor", "E Minor", "E Major", "C Minor", "Gb Major", "C# Major", "B Minor", "Ab Major", "D Major", "F Minor", "G Major", "Bb Minor", "A Minor", "Db Major", "A# Minor", "Eb Minor", "A Major", "C Major", "Bb Major", "D# Minor", "F# Major", "Cb Major", "G# Minor", "Ab Minor", "Eb Major", "F# Minor", "B Major", "F Major"]
+                if (temp.search(/([a-g]|[A-G])(#|b|)\s(major|minor)/i) != -1) {
+                    temp = temp.replace(/([a-g]|[A-G])(#|b|)\s(major|minor)/i, keys[Math.floor(Math.random(4867833525234) * keys.length)]);
+                }
                 if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
                 techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
                 if (temp.includes("Chords")) {
@@ -501,35 +601,40 @@ document.addEventListener("DOMContentLoaded", function () {
                     sheetImage.classList.add("shown");
                     sheetImage.classList.remove("hidden");
                 } 
+               
                 audioPlayer.pause();
             }
 
 
         } else if (modesFolder[modes.indexOf(mode)] == "sheet-music") {
-            fileList = [];
-            if (fileList.length === 0) {
-                fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
-                    // fetch("all/../studio-ghibi/list.txt")
-                    .then(response => response.text())
-                    .then(text => {
+            // fileList = [];
+            // if (fileList.length === 0) {
+            //     fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
+            //         // fetch("all/../studio-ghibi/list.txt")
+            //         .then(response => response.text())
+            //         .then(text => {
 
-                        fileList = text.trim().split('\n');
-                        console.log(fileList)
-                        const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                        sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                        hideAudioShowSheet();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file list:', error);
-                    });
-            } else {
-                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                hideAudioShowSheet();
-                playAudioWithTimeout();
-            }
+            //             fileList = text.trim().split('\n');
+            //             console.log(fileList)
+            //             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+            //             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+            //             sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
+            //             hideAudioShowSheet();
+            //         })
+            //         .catch(error => {
+            //             console.error('Error fetching file list:', error);
+            //         });
+            // } else {
+            //     const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+            //     const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+            //     sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
+            //     hideAudioShowSheet();
+            //     playAudioWithTimeout();
+            // }
+            loadRandomSheet();
+            hideAll();
+            showSheet();
+            audioPlayer.pause();
         }
         else {
             if (fileList.length === 0) {
