@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const techniqueText = document.getElementById("techniqueText");
     const osmdIframe = document.getElementById("osmdIframe");
     const tempOsmdContainer = document.getElementById("tempOsmdContainer");
+    const revealSheet = document.getElementById("revealSheet");
     const defaultTimeout = 7;
     var fileHost = "https://raw.githubusercontent.com/MaxDevv/Music-Thingy/main/";
     // check if host is 127.0.0.1 or localhost or 0.0.0.0 or smth like that and set fileHost to nothing if true
@@ -79,8 +80,21 @@ document.addEventListener("DOMContentLoaded", function () {
         return queryString;
     }
     function getRandomDifficulty() {
-        diffucilty = [1, (Math.floor(Math.round((((Date.now() / 1000) - 1716068447) / 86400))/10)+1), 10].sort((a,b) => a-b)[1];
+        diffucilty = [1, (Math.floor(Math.round((((Date.now() / 1000) - 1716068447) / 86400))/10)-3), 10].sort((a,b) => a-b)[1];
         return diffucilty;
+    }
+    function loadSheet(source) {
+        osmd.load(source)
+                    .then(function() {
+                        tempOsmdContainer.style.width = "100%";
+                        osmd.render();
+                        scoreWidth = String(parseInt(osmd.graphic.musicPages[0].musicSystems[0].PositionAndShape.size.width)*10);
+                        scoreWidth = scoreWidth.concat("px");
+                        tempOsmdContainer.style.width = scoreWidth;
+                        osmd.render();
+                        
+                        adjustStyles();
+                    });
     }
     // iframe load
     function loadRandomSheet(difficulty) {
@@ -96,17 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                 randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                 randomFile = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(folder + randomFile));
-                osmd.load(randomFile)
-                    .then(function() {
-                        tempOsmdContainer.style.width = "100%";
-                        osmd.render();
-                        scoreWidth = String(parseInt(osmd.graphic.musicPages[0].musicSystems[0].PositionAndShape.size.width)*10);
-                        scoreWidth = scoreWidth.concat("px");
-                        tempOsmdContainer.style.width = scoreWidth;
-                        osmd.render();
-                        
-                        adjustStyles();
-                    });
+                loadSheet(randomFile);
             });
     }
     loadRandomSheet();
@@ -229,6 +233,10 @@ document.addEventListener("DOMContentLoaded", function () {
         modeButton.textContent = getNextMode();
         currentModeSpan.textContent = mode + " - ";
         fileList = [];
+    });
+
+    revealSheet.addEventListener("click", function () {
+        showSheet();
     });
 
     document.addEventListener("keydown", function (event) {
@@ -378,6 +386,9 @@ document.addEventListener("DOMContentLoaded", function () {
         playAudioWithTimeout();
         
     }
+    function playAudioWithoutTimeout() {
+        audioPlayer.play();
+    }
     function pauseAfterCertainTimeInSecs(actualStartTime, timeInSecs) {
         console.log(timeInSecs);
         if (((Date.now() / 1000) - actualStartTime) >= timeInSecs) {
@@ -418,6 +429,15 @@ document.addEventListener("DOMContentLoaded", function () {
     function showAudio() {
         audioPlayer.classList.remove("hidden");
         audioPlayer.classList.add("shown");
+    }
+
+    function hideSheetButton() {
+        revealSheet.classList.add("hidden");
+        revealSheet.classList.remove("shown");
+    }
+    function showSheetButton() {
+        revealSheet.classList.add("shown");
+        revealSheet.classList.remove("hidden");
     }
 
     function hideAll() {
@@ -478,25 +498,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         if (modesFolder[modes.indexOf(mode)] == "all") {
             practiceType = Math.random(486783555478);
-            practiceType = 0.16;
+            practiceType = 0.36;
             if (practiceType > 0.35) {
-                tempMode = plainModesFolder[Math.trunc(Math.random()*plainModesFolder.length)];
-                fetch(corsProxy + encodeURIComponent(fileHost + `${tempMode}/${list}`))
+                // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
+                fetch(corsProxy + encodeURIComponent(fileHost + "ear-training-sources/list.txt"))
                         // fetch("all/../studio-ghibi/list.txt")
                         .then(response => response.text())
-                            .then(text => {
+                        .then(text => {
+                            randomFile = "";
+                            while (randomFile.toLowerCase().indexOf("mp3") == -1) {
                                 fileList = text.trim().split('\n');
                                 const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                                 randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                                console.log(`${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`);
-                                list = tempMode;
-                                audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${list.replace("/list.txt", "")}/${randomFile.replace("/list.txt", "")}`));
-                                hideSheetShowAudio();
-                                playAudioWithTimeout();
-                            })
-                            .catch(error => {
-                                console.error('Error fetching file list:', error);
-                            });
+                            }
+                            audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile}`));
+                            hideAll();
+                            showAudio();
+                            playAudioWithoutTimeout();
+                            loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile.replace(new RegExp(".mp3"+ '$'), '.musicxml')}`)));
+                            showSheetButton();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching file list:', error);
+                        });
             } else if (practiceType > 0.25) {
                 fileList = [];
                 // if (fileList.length === 0) {
