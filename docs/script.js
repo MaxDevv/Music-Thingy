@@ -84,6 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
         return diffucilty;
     }
     function loadSheet(source) {
+        if (tempOsmdContainer.classList.contains("hidden")){
+            wasHidden = true;
+        }
+        showSheet();
         osmd.load(source)
                     .then(function() {
                         tempOsmdContainer.style.width = "100%";
@@ -94,7 +98,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         osmd.render();
                         
                         adjustStyles();
+                        if (wasHidden) {
+                            hideSheet();
+                        }
                     });
+        
     }
     // iframe load
     function loadRandomSheet(difficulty) {
