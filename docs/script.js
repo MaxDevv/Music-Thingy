@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
             drawTitle: false,
             drawingParameters: "compacttight",
             autoResize: true, // don't display title, composer etc., smaller margins
-            drawUpToMeasureNumber: 8,
         });
 
     //completionsNeeded = 5;
@@ -134,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 loadSheet(randomFile);
             });
     }
-    loadRandomSheet();
         // Function to adjust styles
         
         const adjustStyles = () => {
@@ -744,6 +742,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 ['Spider Exercise 1234 Focusing on Alternante Picking', 'Spider Exercise 1243 Focusing on Alternante Picking', 'Spider Exercise 1324 Focusing on Alternante Picking', 'Spider Exercise 1342 Focusing on Alternante Picking', 'Spider Exercise 1423 Focusing on Alternante Picking', 'Spider Exercise 1432 Focusing on Alternante Picking', 'Spider Exercise 2134 Focusing on Alternante Picking', 'Spider Exercise 2143 Focusing on Alternante Picking', 'Spider Exercise 2314 Focusing on Alternante Picking', 'Spider Exercise 2341 Focusing on Alternante Picking', 'Spider Exercise 2413 Focusing on Alternante Picking', 'Spider Exercise 2431 Focusing on Alternante Picking', 'Spider Exercise 3124 Focusing on Alternante Picking', 'Spider Exercise 3142 Focusing on Alternante Picking', 'Spider Exercise 3214 Focusing on Alternante Picking', 'Spider Exercise 3241 Focusing on Alternante Picking', 'Spider Exercise 3412 Focusing on Alternante Picking', 'Spider Exercise 3421 Focusing on Alternante Picking', 'Spider Exercise 4123 Focusing on Alternante Picking', 'Spider Exercise 4132 Focusing on Alternante Picking', 'Spider Exercise 4213 Focusing on Alternante Picking', 'Spider Exercise 4231 Focusing on Alternante Picking', 'Spider Exercise 4312 Focusing on Alternante Picking', 'Spider Exercise 4321 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1234 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1243 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1324 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1342 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1423 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1432 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2134 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2143 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2314 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2341 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2413 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2431 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3124 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3142 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3214 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3241 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3412 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3421 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4123 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4132 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4213 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4231 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4312 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4321 Focusing on Alternante Picking', 43],
                 ['Tap whilst playing the ii-V-I Jazz Standard: Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iii-VI-ii-V Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I-vi-ii-V Jazz: Cmaj7 - Am7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Imaj7-IVmaj7-ii7-V7 Jazz: Cmaj7 - Fmaj7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the vi-ii-V-I Jazz: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iim7b5-V7alt-im7 Jazz: Dm7b5 - G7alt - Cm7 progression, in the Key of C minor', 'Tap whilst playing the IVmaj7#11 - #IVdim7 - Imin7 - bII7 Jazz: Fmaj7#11 - F#dim7 - Cm7 - Db7 progression, in the Key of C minor', 'Tap whilst playing the I - #Idim7 - IImin7 - V7 Jazz: Cmaj7 - C#dim7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I7 - VI7 - II7 - V7 Jazz: C7 - A7 - D7 - G7 progression, in the Key of C major', 'Tap whilst playing the iii7 - VI7 - ii7 - V7 Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove: Em7 - A7 - D9 - G7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Groove 1: Am - C - Em - G progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion: Dm7 - G7 - C9 - Fmaj7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 2: Dm - G - Em - A progression, in the Key of D minor', 'Tap whilst playing the Funk Jam: G7 - C7 - F7 - Bb7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Arpeggios: Dmaj7 - Bm7 - F#m7 - Gmaj7 progression, in the Key of D major', 'Tap whilst playing the Funky Blues: E7 - A7 - B7 - E7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Modal: Emaj7 - F#m7 - G#m7 - Amaj7 progression, in the Key of E major', 'Tap whilst playing the Funk Fusion II: Em7 - A7 - Dmaj7 - Gmaj7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Chromatic: Dm7 - Dbmaj7 - Cm7 - Bbmaj7 progression, in the Key of C minor', 'Tap whilst playing the Jazz Blues: C7 - F7 - Gm7 - C7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove II: Em7 - A7 - D7 - G7 progression, in the Key of E minor', 'Tap whilst playing the Math Rock Groove 3: G - Bm - D - F# progression, in the Key of G major', 'Tap whilst playing the Fusion Vibe: Am7 - D7 - Gmaj7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Jazz Turnaround: Dm7 - G7 - Cmaj7 - A7 progression, in the Key of C major', 'Tap whilst playing the Funky Rhythm: G9 - C9 - F9 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Experiment: F#m - Dmaj7 - Bm - Emaj7 progression, in the Key of D major', 'Tap whilst playing the Jazz Waltz: Dm7 - G7 - Cmaj7 - Am7 progression, in the Key of C major', 'Tap whilst playing the Funk Fusion III: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Math Rock Groove 4: A - C#m - E - G#m progression, in the Key of A major', 'Tap whilst playing the Jazz Fusion: Dm7 - G7 - Cmaj7 - Fmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Groove: C7 - F9 - G7 - C9 progression, in the Key of C major', 'Tap whilst playing the Math Rock Riff: E - G - D - A progression, in the Key of E minor', 'Tap whilst playing the Jazz Modal Vibe: Dm7 - Em7 - Am7 - Dm7 progression, in the Key of A minor', 'Tap whilst playing the Funk Jam II: D9 - G9 - C9 - F9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 5: Bm - D - F#m - A progression, in the Key of B minor', 'Tap whilst playing the Jazz Ballad: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Blues II: A7 - D7 - E7 - A7 progression, in the Key of A major', 'Tap whilst playing the Math Rock Fusion: G#m - F#m - Emaj7 - B progression, in the Key of G# minor', 'Tap whilst playing the Jazz Bossa Nova: Am7 - D7 - Gmaj7 - Bm7b5 progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion IV: Cm7 - F7 - Bbmaj7 - Ebmaj7 progression, in the Key of Bb major', 'Tap whilst playing the Math Rock Groove 6: F - A#m - D# - Gm progression, in the Key of F major', 'Tap whilst playing the Jazz Funk Jam: G7 - C9 - F7 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Funky Riff: E7 - A7 - D7 - G7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Experiment II: D - F#m - Bm - G progression, in the Key of D major', 'Tap whilst playing the Jazz Fusion II: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove III: Bm7 - E7 - Am7 - D7 progression, in the Key of B minor', 'Tap whilst playing the Math Rock Groove 7: D#m - G# - C#m - F# progression, in the Key of D# minor', 'Tap whilst playing the Jazz Funk Fusion: Am7 - D9 - Gmaj7 - C9 progression, in the Key of C major', 'Tap whilst playing the Funky Modal Vibe: Gm7 - Cm7 - F7 - Bb7 progression, in the Key of Bb major', 50],
                 ["Ascending Triplets Scale Run in A major", "Ascending Triplets Scale Run in A minor", "Ascending Triplets Scale Run in A# major", "Ascending Triplets Scale Run in A# minor", "Ascending Triplets Scale Run in B major", "Ascending Triplets Scale Run in B minor", "Ascending Triplets Scale Run in C major", "Ascending Triplets Scale Run in C minor", "Ascending Triplets Scale Run in C# major", "Ascending Triplets Scale Run in C# minor", "Ascending Triplets Scale Run in D major", "Ascending Triplets Scale Run in D minor", "Ascending Triplets Scale Run in D# major", "Ascending Triplets Scale Run in D# minor", "Ascending Triplets Scale Run in E major", "Ascending Triplets Scale Run in E minor", "Ascending Triplets Scale Run in F major", "Ascending Triplets Scale Run in F minor", "Ascending Triplets Scale Run in F# major", "Ascending Triplets Scale Run in F# minor", "Ascending Triplets Scale Run in G major", "Ascending Triplets Scale Run in G minor", "Ascending Triplets Scale Run in G# major", "Ascending Triplets Scale Run in G# minor", "Descending Triplets Scale Run in A major", "Descending Triplets Scale Run in A minor", "Descending Triplets Scale Run in A# major", "Descending Triplets Scale Run in A# minor", "Descending Triplets Scale Run in B major", "Descending Triplets Scale Run in B minor", "Descending Triplets Scale Run in C major", "Descending Triplets Scale Run in C minor", "Descending Triplets Scale Run in C# major", "Descending Triplets Scale Run in C# minor", "Descending Triplets Scale Run in D major", "Descending Triplets Scale Run in D minor", "Descending Triplets Scale Run in D# major", "Descending Triplets Scale Run in D# minor", "Descending Triplets Scale Run in E major", "Descending Triplets Scale Run in E minor", "Descending Triplets Scale Run in F major", "Descending Triplets Scale Run in F minor", "Descending Triplets Scale Run in F# major", "Descending Triplets Scale Run in F# minor", "Descending Triplets Scale Run in G major", "Descending Triplets Scale Run in G minor", "Descending Triplets Scale Run in G# major", "Descending Triplets Scale Run in G# minor", 75],
+                ["Play A major triplets on each string, starting on the D string's 1 fret.", "Play A major triplets on each string, starting on the D string's 2 fret.", "Play A major triplets on each string, starting on the D string's 3 fret.", "Play A major triplets on each string, starting on the D string's 4 fret.", "Play A major triplets on each string, starting on the D string's 5 fret.", "Play A major triplets on each string, starting on the D string's 6 fret.", "Play A major triplets on each string, starting on the D string's 7 fret.", "Play A major triplets on each string, starting on the D string's 8 fret.", "Play A major triplets on each string, starting on the D string's 9 fret.", "Play A major triplets on each string, starting on the D string's 10 fret.", "Play A major triplets on each string, starting on the D string's 11 fret.", "Play A major triplets on each string, starting on the D string's 12 fret.", "Play A major triplets on each string, starting on the D string's 13 fret.", "Play A major triplets on each string, starting on the D string's 14 fret.", "Play A major triplets on each string, starting on the D string's 15 fret.", 30]
                 ["1 Octave Arpeggios in  A major", "1 Octave Arpeggios in  A minor", "1 Octave Arpeggios in  A# major", "1 Octave Arpeggios in  A# minor", "1 Octave Arpeggios in  B major", "1 Octave Arpeggios in  B minor", "1 Octave Arpeggios in  C major", "1 Octave Arpeggios in  C minor", "1 Octave Arpeggios in  C# major", "1 Octave Arpeggios in  C# minor", "1 Octave Arpeggios in  D major", "1 Octave Arpeggios in  D minor", "1 Octave Arpeggios in  D# major", "1 Octave Arpeggios in  D# minor", "1 Octave Arpeggios in  E major", "1 Octave Arpeggios in  E minor", "1 Octave Arpeggios in  F major", "1 Octave Arpeggios in  F minor", "1 Octave Arpeggios in  F# major", "1 Octave Arpeggios in  F# minor", "1 Octave Arpeggios in  G major", "1 Octave Arpeggios in  G minor", "1 Octave Arpeggios in  G# major", "1 Octave Arpeggios in  G# minor", "2 Octave Arpeggios in  A major", "2 Octave Arpeggios in  A minor", "2 Octave Arpeggios in  A# major", "2 Octave Arpeggios in  A# minor", "2 Octave Arpeggios in  B major", "2 Octave Arpeggios in  B minor", "2 Octave Arpeggios in  C major", "2 Octave Arpeggios in  C minor", "2 Octave Arpeggios in  C# major", "2 Octave Arpeggios in  C# minor", "2 Octave Arpeggios in  D major", "2 Octave Arpeggios in  D minor", "2 Octave Arpeggios in  D# major", "2 Octave Arpeggios in  D# minor", "2 Octave Arpeggios in  E major", "2 Octave Arpeggios in  E minor", "2 Octave Arpeggios in  F major", "2 Octave Arpeggios in  F minor", "2 Octave Arpeggios in  F# major", "2 Octave Arpeggios in  F# minor", "2 Octave Arpeggios in  G major", "2 Octave Arpeggios in  G minor", "2 Octave Arpeggios in  G# major", "2 Octave Arpeggios in  G# minor", 75],
             ];
             /* 
@@ -792,13 +791,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 content = gist.files['currentSong.txt'].content;
                 currentBars = 1;
                 totalBars = 0;
-                n = 1;
+                n = 0;
                 while (currentBars >= totalBars) {
+                    n++;
                     currentSong = content.split("\n").slice(-n)[0];
                     fileName = currentSong.split("|")[0];
                     currentBars = parseInt(currentSong.split("|")[1]);
                     totalBars = parseInt(currentSong.split("|")[2]);
-                    n++;
                     if (n > content.split("\n").length) {
                         currentSong = content.split("\n")[Math.floor(Math.random(4867833525234) * content.split("\n").length)];
                         fileName = currentSong.split("|")[0];
@@ -806,18 +805,40 @@ document.addEventListener("DOMContentLoaded", function () {
                         totalBars = parseInt(currentSong.split("|")[2]);
                         break;
                     }
+                    console.log(n);
+                    console.log(content);
                 }
-                message = "Play through bars " + currentBars + " to " + (currentBars + 4) + " then run through till bar " + (currentBars + 4);
+                message = "Play through bars " + currentBars + " to " + (currentBars + 4) + " then run through till bar " + (currentBars + 4) + " of " + fileName.split(".gp")[0];
                 showSheet();
                 showSheetButton();
-                //fileName = "Bad.gp.musicxml";
-                // fileName = "Bad.gp.mxl";
-                fileName = "Instagram Album Mode.gpx.musicxml";
-                loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
                 techniqueText.textContent = message;
                 hideAll();
                 showTechniqueText();
-            })();
+                osmd.setOptions({drawUpToMeasureNumber: currentBars + 4});
+                loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
+                nextButton.addEventListener("click", async () => {
+                    splitContent = content.split("\n");
+                    updatedSong = [fileName, currentBars, totalBars].join("|");
+                    splitContent[splitContent.indexOf(splitContent.slice(-n)[0])] = updatedSong;
+                    updatedContent = splitContent.join("\n");
+                    const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                        method: 'PATCH',
+                        headers: {
+                        'Authorization': `token ${githubKey}`,
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                        files: {
+                            'currentSong.txt': {
+                            content: updatedContent.toString(),
+                            },
+                        },
+                        }),
+                    });
+                const gist = await response.json();
+                console.log('Gist updated:', gist);
+            });
+            });
         }
     }
 
