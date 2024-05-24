@@ -15,19 +15,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const osmdIframe = document.getElementById("osmdIframe");
     const tempOsmdContainer = document.getElementById("tempOsmdContainer");
     const revealSheet = document.getElementById("revealSheet");
+    let password = localStorage.getItem('password');
+    if (!password) {
+        password = prompt("Please enter your password:");
+        localStorage.setItem('password', password);
+    }
+    githubKey = 0;
+    (async () => {
+        githubKey  = await decrypt("BZciTknXIo7nNMHIFm3XGlzY+zztIuHPAM+cK9WTccYOOXVrzJq28QFUHbihWydggxYUKKF2JC3IQ6og9xiq3oH9t1kjDOpH7K/CCfn/Hp9BstMCUc5bfDv8XCB4Lb/EBN90FLVxrHaW0hzV3Q+JviwIJrQq0bSkgA==", password);
+    })();
     const defaultTimeout = 7;
     var fileHost = "https://raw.githubusercontent.com/MaxDevv/Music-Thingy/main/";
     // check if host is 127.0.0.1 or localhost or 0.0.0.0 or smth like that and set fileHost to nothing if true
     if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" || window.location.hostname === "0.0.0.0") {
-        fileHost = "../";
+        fileHost = "http://"+window.location.host+"/";
     }
     
     const corsProxy = ``;
     keepGoing = true;
-    modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
-    modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music", "Music-Backing-Tracks", "jazz"];
-    specialModesFolder = ["all", "sheet-music", "Music-Backing-Tracks"];
-    plainModesFolder = modesFolder.filter(item => !specialModesFolder.includes(item));
+    // modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
+    // modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music", "Music-Backing-Tracks", "jazz"];
+    modes = ["All", "Jazz", "Learning-Music", "Sheet-Music", "Ear-Training", "Technique"];
+    modesFolder = ["all", "Music-Backing-Tracks", "repertoire", "sheet-music"];
+    // plainModesFolder = modesFolder.filter(item => !specialModesFolder.includes(item));
     mode = localStorage.getItem('mode');
     vibeMode = localStorage.getItem('vibeMode');
     if (vibeMode != "true") { vibeMode = false; }
@@ -40,7 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
             backend: "svg",
             drawTitle: false,
             drawingParameters: "compacttight",
-            autoResize: true // don't display title, composer etc., smaller margins
+            autoResize: true, // don't display title, composer etc., smaller margins
+            drawUpToMeasureNumber: 8,
         });
 
     //completionsNeeded = 5;
@@ -84,9 +95,11 @@ document.addEventListener("DOMContentLoaded", function () {
         return diffucilty;
     }
     function loadSheet(source) {
+        console.log(source);
         if (tempOsmdContainer.classList.contains("hidden")){
             wasHidden = true;
         }
+        wasHidden = false;
         showSheet();
         osmd.load(source)
                     .then(function() {
@@ -230,9 +243,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     skipButton.addEventListener("click", function () {
-        if (modesFolder[modes.indexOf(mode)] != "sheet-music") {
-            startTime = getRandomStartTime(audioPlayer.duration);
-        }
+        // if (modesFolder[modes.indexOf(mode)] != "sheet-music") {
+        //     startTime = getRandomStartTime(audioPlayer.duration);
+        // }
         playRandomMP3();
     });
     modeButton.addEventListener("click", function () {
@@ -354,6 +367,93 @@ document.addEventListener("DOMContentLoaded", function () {
         return Math.floor(Math.random(486783555478) * (duration - timeout));
     }
 
+    async function getKeyFromString(password) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            "raw",
+            enc.encode(password),
+            "PBKDF2",
+            false,
+            ["deriveKey"]
+        );
+    
+        const key = await crypto.subtle.deriveKey(
+            {
+                name: "PBKDF2",
+                salt: enc.encode("some-salt"), // Use a proper salt in production
+                iterations: 100000,
+                hash: "SHA-256"
+            },
+            keyMaterial,
+            { name: "AES-GCM", length: 256 },
+            true,
+            ["encrypt", "decrypt"]
+        );
+    
+        return key;
+    }
+    
+    function arrayBufferToBase64(buffer) {
+        const binary = String.fromCharCode.apply(null, new Uint8Array(buffer));
+        return btoa(binary);
+    }
+    
+    function base64ToArrayBuffer(base64) {
+        const binary = atob(base64);
+        const len = binary.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+    
+    async function encrypt(data, password) {
+        const key = await getKeyFromString(password);
+        const iv = crypto.getRandomValues(new Uint8Array(12)); // Generate a random IV
+        const encodedData = new TextEncoder().encode(data);
+    
+        const encryptedData = await crypto.subtle.encrypt(
+            {
+                name: "AES-GCM",
+                iv: iv,
+            },
+            key,
+            encodedData
+        );
+    
+        // Combine IV and encrypted data into a single array for easy storage/transmission
+        const buffer = new Uint8Array(iv.byteLength + encryptedData.byteLength);
+        buffer.set(iv, 0);
+        buffer.set(new Uint8Array(encryptedData), iv.byteLength);
+    
+        // Convert to Base64 for string output
+        return arrayBufferToBase64(buffer);
+    }
+    
+    async function decrypt(encrypted, password) {
+        const key = await getKeyFromString(password);
+    
+        // Convert Base64 string to ArrayBuffer
+        const encryptedBuffer = base64ToArrayBuffer(encrypted);
+    
+        // Split IV and encrypted data
+        const iv = encryptedBuffer.slice(0, 12);
+        const encryptedData = encryptedBuffer.slice(12);
+    
+        const decryptedData = await crypto.subtle.decrypt(
+            {
+                name: "AES-GCM",
+                iv: iv,
+            },
+            key,
+            encryptedData
+        );
+    
+        return new TextDecoder().decode(decryptedData);
+    }
+    
+            
     // Function to handle playing the audio and setting timeout
     function playAudioWithTimeout() {
         clearTimeout(timeoutID);
@@ -433,7 +533,16 @@ document.addEventListener("DOMContentLoaded", function () {
         tempOsmdContainer.classList.add("hidden");
         tempOsmdContainer.classList.remove("shown");
     }
+    function showChords() {
+        sheetImage.classList.remove("hidden");
+        sheetImage.classList.add("shown");
+    }
 
+    function hideChords() {
+        sheetImage.classList.add("hidden");
+        sheetImage.classList.remove("shown");
+    }
+    
     function showAudio() {
         audioPlayer.classList.remove("hidden");
         audioPlayer.classList.add("shown");
@@ -455,6 +564,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tempOsmdContainer.classList.remove("shown");
         audioPlayer.classList.add("hidden");
         audioPlayer.classList.remove("shown");
+        hideChords();
     }
 
     function hideAudioShowSheet() {
@@ -483,6 +593,16 @@ document.addEventListener("DOMContentLoaded", function () {
         keyText.classList.remove("shown");
     }
 
+    function showTechniqueText() {
+        techniqueText.classList.add("shown");
+        techniqueText.classList.remove("hidden");
+    }
+
+    function hideTechniqueText() {
+        techniqueText.classList.add("hidden");
+        techniqueText.classList.remove("shown");
+    }
+
     function tips(){
         alwaysRemember = "Stay Confident, Play Like Air, And Alternate Pick!";
         if (!techniqueText.classList.contains("shown") || techniqueText.innerText.includes("Start :D")) {
@@ -498,150 +618,50 @@ document.addEventListener("DOMContentLoaded", function () {
         play();
     }
     function play() {
-        list = "list.txt"
+        list = "list.txt";
         timeout = defaultTimeout;
 
-        if (modesFolder[modes.indexOf(mode)] == "all/..") {
-            modesFolder[modes.indexOf(mode)] = "all"
-        }
-        if (modesFolder[modes.indexOf(mode)] == "all") {
+        if (mode.toLowerCase() == "all") {
             practiceType = Math.random(486783555478);
-            practiceType = 0.36;
-            if (practiceType > 0.35) {
-                // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
-                fetch(corsProxy + encodeURIComponent(fileHost + "ear-training-sources/list.txt"))
-                        // fetch("all/../studio-ghibi/list.txt")
-                        .then(response => response.text())
-                        .then(text => {
-                            randomFile = "";
-                            while (randomFile.toLowerCase().indexOf("mp3") == -1) {
-                                fileList = text.trim().split('\n');
-                                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                                randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            }
-                            audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile}`));
-                            hideAll();
-                            showAudio();
-                            playAudioWithoutTimeout();
-                            loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile.replace(new RegExp(".mp3"+ '$'), '.musicxml')}`)));
-                            showSheetButton();
-                        })
-                        .catch(error => {
-                            console.error('Error fetching file list:', error);
-                        });
-            } else if (practiceType > 0.25) {
-                fileList = [];
-                // if (fileList.length === 0) {
-                //     fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf("sheet-music")]}/${list}`))
-                //         // fetch("all/../studio-ghibi/list.txt")
-                //         .then(response => response.text())
-                //         .then(text => {
-
-                //             fileList = text.trim().split('\n');
-                //             console.log(fileList)
-                //             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                //             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                //             sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`));
-                //             hideAudioShowSheet();
-                //             audioPlayer.pause();
-                //         })
-                //         .catch(error => {
-                //             console.error('Error fetching file list:', error);
-                //         });
-                // } else {
-                //     const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                //     const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                //     sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                //     hideAudioShowSheet();
-                //     playAudioWithTimeout();
-                // }
-                loadRandomSheet();
-                hideAll();
-                showSheet();
-                audioPlayer.pause();
-
-                
-            } else if (practiceType > 0.15) {
-                oldMode = mode;
-                mode = "Music-Backing-Tracks";
-                fileList = [];
-                if (fileList.length === 0) {
-                    fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
-                        // fetch("all/../studio-ghibi/list.txt")
-                        .then(response => response.text())
-                        .then(text => {
-    
+        } else if (mode.toLowerCase() == "sheet-music") {
+            practiceType = 0.35;
+        } else if (mode.toLowerCase() == "learning-music") {
+            practiceType = 0;
+        } else if (mode.toLowerCase() == "jazz") {
+            practiceType = 0.25;
+        } else if (mode.toLowerCase() == "ear-training") {
+            practiceType = 0.45;
+        } else if (mode.toLowerCase() == "technique") {
+            practiceType = 0.10;
+        }
+        if (practiceType >= 0.45) {
+            //Melodic Replication Ear Training
+            // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
+            fetch(corsProxy + encodeURIComponent(fileHost + "ear-training-sources/list.txt"))
+                    // fetch("all/../studio-ghibi/list.txt")
+                    .then(response => response.text())
+                    .then(text => {
+                        randomFile = "";
+                        while (randomFile.toLowerCase().indexOf("mp3") == -1) {
                             fileList = text.trim().split('\n');
-                            console.log(fileList)
                             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                            audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                            keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
-                            hideSheetShowAudio();
-                            keyText.classList.add("shown");
-                            keyText.classList.remove("hidden");
-                            playAudioWithCustomTimeout(100);
-                            mode = oldMode;
-                        })
-                        .catch(error => {
-                            console.error('Error fetching file list:', error);
-                        });
-                } else {
-                    const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                    const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                    keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
-                    hideSheetShowAudio();
-                    keyText.classList.add("shown");
-                    keyText.classList.remove("hidden");
-                    playAudioWithCustomTimeout(120+(Math.random()*30));
-
-                    mode = oldMode;
-                }
-            } else {
-                hideAllShowText();
-                chords = ["Ascending Chords in A major", "Ascending Chords in A minor", "Ascending Chords in A# major", "Ascending Chords in A# minor", "Ascending Chords in B major", "Ascending Chords in B minor", "Ascending Chords in C major", "Ascending Chords in C minor", "Ascending Chords in C# major", "Ascending Chords in C# minor", "Ascending Chords in D major", "Ascending Chords in D minor", "Ascending Chords in D# major", "Ascending Chords in D# minor", "Ascending Chords in E major", "Ascending Chords in E minor", "Ascending Chords in F major", "Ascending Chords in F minor", "Ascending Chords in F# major", "Ascending Chords in F# minor", "Ascending Chords in G major", "Ascending Chords in G minor", "Ascending Chords in G# major", "Ascending Chords in G# minor", "Descending Chords in A major", "Descending Chords in A minor", "Descending Chords in A# major", "Descending Chords in A# minor", "Descending Chords in B major", "Descending Chords in B minor", "Descending Chords in C major", "Descending Chords in C minor", "Descending Chords in C# major", "Descending Chords in C# minor", "Descending Chords in D major", "Descending Chords in D minor", "Descending Chords in D# major", "Descending Chords in D# minor", "Descending Chords in E major", "Descending Chords in E minor", "Descending Chords in F major", "Descending Chords in F minor", "Descending Chords in F# major", "Descending Chords in F# minor", "Descending Chords in G major", "Descending Chords in G minor", "Descending Chords in G# major", "Descending Chords in G# minor"]
-                chords = ['Ascending 7th Chords in Bb Minor', 'Ascending 7th Chords in C Major', 'Ascending 7th Chords in F# Major', 'Ascending 7th Chords in B Minor', 'Ascending 7th Chords in G Major', 'Ascending 7th Chords in Db Major', 'Ascending 7th Chords in D Minor', 'Ascending 7th Chords in C# Minor', 'Ascending 7th Chords in A Minor', 'Ascending 7th Chords in B Major', 'Ascending 7th Chords in D Major', 'Ascending 7th Chords in Ab Major', 'Ascending 7th Chords in G# Minor', 'Ascending 7th Chords in Bb Major', 'Ascending 7th Chords in C Minor', 'Ascending 7th Chords in F# Minor', 'Ascending 7th Chords in G Minor', 'Ascending 7th Chords in A Major']
-                chords.push(55);
-                techniqueExercises = [
-                    ["Alternating Diagonal hand exercise", 37],
-                    /*["Ascending Diads in A major, on the B & E String", "Ascending Diads in A minor, on the B & E String", "Ascending Diads in A# major, on the B & E String", "Ascending Diads in A# minor, on the B & E String", "Ascending Diads in B major, on the B & E String", "Ascending Diads in B minor, on the B & E String", "Ascending Diads in C major, on the B & E String", "Ascending Diads in C minor, on the B & E String", "Ascending Diads in C# major, on the B & E String", "Ascending Diads in C# minor, on the B & E String", "Ascending Diads in D major, on the B & E String", "Ascending Diads in D minor, on the B & E String", "Ascending Diads in D# major, on the B & E String", "Ascending Diads in D# minor, on the B & E String", "Ascending Diads in E major, on the B & E String", "Ascending Diads in E minor, on the B & E String", "Ascending Diads in F major, on the B & E String", "Ascending Diads in F minor, on the B & E String", "Ascending Diads in F# major, on the B & E String", "Ascending Diads in F# minor, on the B & E String", "Ascending Diads in G major, on the B & E String", "Ascending Diads in G minor, on the B & E String", "Ascending Diads in G# major, on the B & E String", "Ascending Diads in G# minor, on the B & E String", "Descending Diads in A major, on the B & E String", "Descending Diads in A minor, on the B & E String", "Descending Diads in A# major, on the B & E String", "Descending Diads in A# minor, on the B & E String", "Descending Diads in B major, on the B & E String", "Descending Diads in B minor, on the B & E String", "Descending Diads in C major, on the B & E String", "Descending Diads in C minor, on the B & E String", "Descending Diads in C# major, on the B & E String", "Descending Diads in C# minor, on the B & E String", "Descending Diads in D major, on the B & E String", "Descending Diads in D minor, on the B & E String", "Descending Diads in D# major, on the B & E String", "Descending Diads in D# minor, on the B & E String", "Descending Diads in E major, on the B & E String", "Descending Diads in E minor, on the B & E String", "Descending Diads in F major, on the B & E String", "Descending Diads in F minor, on the B & E String", "Descending Diads in F# major, on the B & E String", "Descending Diads in F# minor, on the B & E String", "Descending Diads in G major, on the B & E String", "Descending Diads in G minor, on the B & E String", "Descending Diads in G# major, on the B & E String", "Descending Diads in G# minor, on the B & E String"],
-                    ["Ascending Diads in A major, on the G & B String", "Ascending Diads in A minor, on the G & B String", "Ascending Diads in A# major, on the G & B String", "Ascending Diads in A# minor, on the G & B String", "Ascending Diads in B major, on the G & B String", "Ascending Diads in B minor, on the G & B String", "Ascending Diads in C major, on the G & B String", "Ascending Diads in C minor, on the G & B String", "Ascending Diads in C# major, on the G & B String", "Ascending Diads in C# minor, on the G & B String", "Ascending Diads in D major, on the G & B String", "Ascending Diads in D minor, on the G & B String", "Ascending Diads in D# major, on the G & B String", "Ascending Diads in D# minor, on the G & B String", "Ascending Diads in E major, on the G & B String", "Ascending Diads in E minor, on the G & B String", "Ascending Diads in F major, on the G & B String", "Ascending Diads in F minor, on the G & B String", "Ascending Diads in F# major, on the G & B String", "Ascending Diads in F# minor, on the G & B String", "Ascending Diads in G major, on the G & B String", "Ascending Diads in G minor, on the G & B String", "Ascending Diads in G# major, on the G & B String", "Ascending Diads in G# minor, on the G & B String", "Descending Diads in A major, on the G & B String", "Descending Diads in A minor, on the G & B String", "Descending Diads in A# major, on the G & B String", "Descending Diads in A# minor, on the G & B String", "Descending Diads in B major, on the G & B String", "Descending Diads in B minor, on the G & B String", "Descending Diads in C major, on the G & B String", "Descending Diads in C minor, on the G & B String", "Descending Diads in C# major, on the G & B String", "Descending Diads in C# minor, on the G & B String", "Descending Diads in D major, on the G & B String", "Descending Diads in D minor, on the G & B String", "Descending Diads in D# major, on the G & B String", "Descending Diads in D# minor, on the G & B String", "Descending Diads in E major, on the G & B String", "Descending Diads in E minor, on the G & B String", "Descending Diads in F major, on the G & B String", "Descending Diads in F minor, on the G & B String", "Descending Diads in F# major, on the G & B String", "Descending Diads in F# minor, on the G & B String", "Descending Diads in G major, on the G & B String", "Descending Diads in G minor, on the G & B String", "Descending Diads in G# major, on the G & B String", "Descending Diads in G# minor, on the G & B String", "Ascending Diads in A major, on the D & G String", "Ascending Diads in A minor, on the D & G String", "Ascending Diads in A# major, on the D & G String", "Ascending Diads in A# minor, on the D & G String", "Ascending Diads in B major, on the D & G String", "Ascending Diads in B minor, on the D & G String", "Ascending Diads in C major, on the D & G String", "Ascending Diads in C minor, on the D & G String", "Ascending Diads in C# major, on the D & G String", "Ascending Diads in C# minor, on the D & G String", "Ascending Diads in D major, on the D & G String", "Ascending Diads in D minor, on the D & G String", "Ascending Diads in D# major, on the D & G String", "Ascending Diads in D# minor, on the D & G String", "Ascending Diads in E major, on the D & G String", "Ascending Diads in E minor, on the D & G String", "Ascending Diads in F major, on the D & G String", "Ascending Diads in F minor, on the D & G String", "Ascending Diads in F# major, on the D & G String", "Ascending Diads in F# minor, on the D & G String", "Ascending Diads in G major, on the D & G String", "Ascending Diads in G minor, on the D & G String", "Ascending Diads in G# major, on the D & G String", "Ascending Diads in G# minor, on the D & G String", "Descending Diads in A major, on the D & G String", "Descending Diads in A minor, on the D & G String", "Descending Diads in A# major, on the D & G String", "Descending Diads in A# minor, on the D & G String", "Descending Diads in B major, on the D & G String", "Descending Diads in B minor, on the D & G String", "Descending Diads in C major, on the D & G String", "Descending Diads in C minor, on the D & G String", "Descending Diads in C# major, on the D & G String", "Descending Diads in C# minor, on the D & G String", "Descending Diads in D major, on the D & G String", "Descending Diads in D minor, on the D & G String", "Descending Diads in D# major, on the D & G String", "Descending Diads in D# minor, on the D & G String", "Descending Diads in E major, on the D & G String", "Descending Diads in E minor, on the D & G String", "Descending Diads in F major, on the D & G String", "Descending Diads in F minor, on the D & G String", "Descending Diads in F# major, on the D & G String", "Descending Diads in F# minor, on the D & G String", "Descending Diads in G major, on the D & G String", "Descending Diads in G minor, on the D & G String", "Descending Diads in G# major, on the D & G String", "Descending Diads in G# minor, on the D & G String", 30],
-                    */
-                    ["Ascending Diads in A major, on the B & E String", "Ascending Diads in A minor, on the B & E String", "Ascending Diads in A# major, on the B & E String", "Ascending Diads in A# minor, on the B & E String", "Ascending Diads in B major, on the B & E String", "Ascending Diads in B minor, on the B & E String", "Ascending Diads in C major, on the B & E String", "Ascending Diads in C minor, on the B & E String", "Ascending Diads in C# major, on the B & E String", "Ascending Diads in C# minor, on the B & E String", "Ascending Diads in D major, on the B & E String", "Ascending Diads in D minor, on the B & E String", "Ascending Diads in D# major, on the B & E String", "Ascending Diads in D# minor, on the B & E String", "Ascending Diads in E major, on the B & E String", "Ascending Diads in E minor, on the B & E String", "Ascending Diads in F major, on the B & E String", "Ascending Diads in F minor, on the B & E String", "Ascending Diads in F# major, on the B & E String", "Ascending Diads in F# minor, on the B & E String", "Ascending Diads in G major, on the B & E String", "Ascending Diads in G minor, on the B & E String", "Ascending Diads in G# major, on the B & E String", "Ascending Diads in G# minor, on the B & E String", "Descending Diads in A major, on the B & E String", "Descending Diads in A minor, on the B & E String", "Descending Diads in A# major, on the B & E String", "Descending Diads in A# minor, on the B & E String", "Descending Diads in B major, on the B & E String", "Descending Diads in B minor, on the B & E String", "Descending Diads in C major, on the B & E String", "Descending Diads in C minor, on the B & E String", "Descending Diads in C# major, on the B & E String", "Descending Diads in C# minor, on the B & E String", "Descending Diads in D major, on the B & E String", "Descending Diads in D minor, on the B & E String", "Descending Diads in D# major, on the B & E String", "Descending Diads in D# minor, on the B & E String", "Descending Diads in E major, on the B & E String", "Descending Diads in E minor, on the B & E String", "Descending Diads in F major, on the B & E String", "Descending Diads in F minor, on the B & E String", "Descending Diads in F# major, on the B & E String", "Descending Diads in F# minor, on the B & E String", "Descending Diads in G major, on the B & E String", "Descending Diads in G minor, on the B & E String", "Descending Diads in G# major, on the B & E String", "Descending Diads in G# minor, on the B & E String", "Ascending Diads in A major, on the G & B String", "Ascending Diads in A minor, on the G & B String", "Ascending Diads in A# major, on the G & B String", "Ascending Diads in A# minor, on the G & B String", "Ascending Diads in B major, on the G & B String", "Ascending Diads in B minor, on the G & B String", "Ascending Diads in C major, on the G & B String", "Ascending Diads in C minor, on the G & B String", "Ascending Diads in C# major, on the G & B String", "Ascending Diads in C# minor, on the G & B String", "Ascending Diads in D major, on the G & B String", "Ascending Diads in D minor, on the G & B String", "Ascending Diads in D# major, on the G & B String", "Ascending Diads in D# minor, on the G & B String", "Ascending Diads in E major, on the G & B String", "Ascending Diads in E minor, on the G & B String", "Ascending Diads in F major, on the G & B String", "Ascending Diads in F minor, on the G & B String", "Ascending Diads in F# major, on the G & B String", "Ascending Diads in F# minor, on the G & B String", "Ascending Diads in G major, on the G & B String", "Ascending Diads in G minor, on the G & B String", "Ascending Diads in G# major, on the G & B String", "Ascending Diads in G# minor, on the G & B String", "Descending Diads in A major, on the G & B String", 30],
-                    ["Descending Diads in D# minor, on the G & B String", "Descending Diads in E major, on the G & B String", "Descending Diads in E minor, on the G & B String", "Descending Diads in F major, on the G & B String", "Descending Diads in F minor, on the G & B String", "Descending Diads in F# major, on the G & B String", "Descending Diads in F# minor, on the G & B String", "Descending Diads in G major, on the G & B String", "Descending Diads in G minor, on the G & B String", "Descending Diads in G# major, on the G & B String", "Descending Diads in G# minor, on the G & B String", "Ascending Diads in A major, on the D & G String", "Ascending Diads in A minor, on the D & G String", "Ascending Diads in A# major, on the D & G String", "Ascending Diads in A# minor, on the D & G String", "Ascending Diads in B major, on the D & G String", "Ascending Diads in B minor, on the D & G String", "Ascending Diads in C major, on the D & G String", "Ascending Diads in C minor, on the D & G String", "Ascending Diads in C# major, on the D & G String", "Ascending Diads in C# minor, on the D & G String", "Ascending Diads in D major, on the D & G String", "Ascending Diads in D minor, on the D & G String", "Ascending Diads in D# major, on the D & G String", "Ascending Diads in D# minor, on the D & G String", "Ascending Diads in E major, on the D & G String", "Ascending Diads in E minor, on the D & G String", "Ascending Diads in F major, on the D & G String", "Ascending Diads in F minor, on the D & G String", "Ascending Diads in F# major, on the D & G String", "Ascending Diads in F# minor, on the D & G String", "Ascending Diads in G major, on the D & G String", "Ascending Diads in G minor, on the D & G String", "Ascending Diads in G# major, on the D & G String", "Ascending Diads in G# minor, on the D & G String", "Descending Diads in A major, on the D & G String", "Descending Diads in A minor, on the D & G String", "Descending Diads in A# major, on the D & G String", "Descending Diads in A# minor, on the D & G String", "Descending Diads in B major, on the D & G String", "Descending Diads in B minor, on the D & G String", "Descending Diads in C major, on the D & G String", "Descending Diads in C minor, on the D & G String", "Descending Diads in C# major, on the D & G String", "Descending Diads in C# minor, on the D & G String", "Descending Diads in D major, on the D & G String", "Descending Diads in D minor, on the D & G String", "Descending Diads in D# major, on the D & G String", "Descending Diads in D# minor, on the D & G String", "Descending Diads in E major, on the D & G String", "Descending Diads in E minor, on the D & G String", "Descending Diads in F major, on the D & G String", "Descending Diads in F minor, on the D & G String", "Descending Diads in F# major, on the D & G String", "Descending Diads in F# minor, on the D & G String", "Descending Diads in G major, on the D & G String", "Descending Diads in G minor, on the D & G String", "Descending Diads in G# major, on the D & G String", "Descending Diads in G# minor, on the D & G String", "Descending Diads in C# minor, on the G & B String", "Descending Diads in D major, on the G & B String", "Descending Diads in D minor, on the G & B String", "Descending Diads in D# major, on the G & B String", "Descending Diads in B major, on the G & B String", "Descending Diads in B minor, on the G & B String", "Descending Diads in C major, on the G & B String", "Descending Diads in C minor, on the G & B String", "Descending Diads in C# major, on the G & B String", "Descending Diads in A minor, on the G & B String", "Descending Diads in A# major, on the G & B String", "Descending Diads in A# minor, on the G & B String", 30],
-                    chords,
-                    ['Spider Exercise 1234', 'Spider Exercise 1243', 'Spider Exercise 1324', 'Spider Exercise 1342', 'Spider Exercise 1423', 'Spider Exercise 1432', 'Spider Exercise 2134', 'Spider Exercise 2143', 'Spider Exercise 2314', 'Spider Exercise 2341', 'Spider Exercise 2413', 'Spider Exercise 2431', 'Spider Exercise 3124', 'Spider Exercise 3142', 'Spider Exercise 3214', 'Spider Exercise 3241', 'Spider Exercise 3412', 'Spider Exercise 3421', 'Spider Exercise 4123', 'Spider Exercise 4132', 'Spider Exercise 4213', 'Spider Exercise 4231', 'Spider Exercise 4312', 'Spider Exercise 4321', 'Diagonal Spider Exercise 1234', 'Diagonal Spider Exercise 1243', 'Diagonal Spider Exercise 1324', 'Diagonal Spider Exercise 1342', 'Diagonal Spider Exercise 1423', 'Diagonal Spider Exercise 1432', 'Diagonal Spider Exercise 2134', 'Diagonal Spider Exercise 2143', 'Diagonal Spider Exercise 2314', 'Diagonal Spider Exercise 2341', 'Diagonal Spider Exercise 2413', 'Diagonal Spider Exercise 2431', 'Diagonal Spider Exercise 3124', 'Diagonal Spider Exercise 3142', 'Diagonal Spider Exercise 3214', 'Diagonal Spider Exercise 3241', 'Diagonal Spider Exercise 3412', 'Diagonal Spider Exercise 3421', 'Diagonal Spider Exercise 4123', 'Diagonal Spider Exercise 4132', 'Diagonal Spider Exercise 4213', 'Diagonal Spider Exercise 4231', 'Diagonal Spider Exercise 4312', 'Diagonal Spider Exercise 4321', 55],
-                    ['Spider Exercise 1234 Focusing on Economy', 'Spider Exercise 1243 Focusing on Economy', 'Spider Exercise 1324 Focusing on Economy', 'Spider Exercise 1342 Focusing on Economy', 'Spider Exercise 1423 Focusing on Economy', 'Spider Exercise 1432 Focusing on Economy', 'Spider Exercise 2134 Focusing on Economy', 'Spider Exercise 2143 Focusing on Economy', 'Spider Exercise 2314 Focusing on Economy', 'Spider Exercise 2341 Focusing on Economy', 'Spider Exercise 2413 Focusing on Economy', 'Spider Exercise 2431 Focusing on Economy', 'Spider Exercise 3124 Focusing on Economy', 'Spider Exercise 3142 Focusing on Economy', 'Spider Exercise 3214 Focusing on Economy', 'Spider Exercise 3241 Focusing on Economy', 'Spider Exercise 3412 Focusing on Economy', 'Spider Exercise 3421 Focusing on Economy', 'Spider Exercise 4123 Focusing on Economy', 'Spider Exercise 4132 Focusing on Economy', 'Spider Exercise 4213 Focusing on Economy', 'Spider Exercise 4231 Focusing on Economy', 'Spider Exercise 4312 Focusing on Economy', 'Spider Exercise 4321 Focusing on Economy', 'Diagonal Spider Exercise 1234 Focusing on Economy', 'Diagonal Spider Exercise 1243 Focusing on Economy', 'Diagonal Spider Exercise 1324 Focusing on Economy', 'Diagonal Spider Exercise 1342 Focusing on Economy', 'Diagonal Spider Exercise 1423 Focusing on Economy', 'Diagonal Spider Exercise 1432 Focusing on Economy', 'Diagonal Spider Exercise 2134 Focusing on Economy', 'Diagonal Spider Exercise 2143 Focusing on Economy', 'Diagonal Spider Exercise 2314 Focusing on Economy', 'Diagonal Spider Exercise 2341 Focusing on Economy', 'Diagonal Spider Exercise 2413 Focusing on Economy', 'Diagonal Spider Exercise 2431 Focusing on Economy', 'Diagonal Spider Exercise 3124 Focusing on Economy', 'Diagonal Spider Exercise 3142 Focusing on Economy', 'Diagonal Spider Exercise 3214 Focusing on Economy', 'Diagonal Spider Exercise 3241 Focusing on Economy', 'Diagonal Spider Exercise 3412 Focusing on Economy', 'Diagonal Spider Exercise 3421 Focusing on Economy', 'Diagonal Spider Exercise 4123 Focusing on Economy', 'Diagonal Spider Exercise 4132 Focusing on Economy', 'Diagonal Spider Exercise 4213 Focusing on Economy', 'Diagonal Spider Exercise 4231 Focusing on Economy', 'Diagonal Spider Exercise 4312 Focusing on Economy', 'Diagonal Spider Exercise 4321 Focusing on Economy', 43],
-                    ['Spider Exercise 1234 Focusing on Alternante Picking', 'Spider Exercise 1243 Focusing on Alternante Picking', 'Spider Exercise 1324 Focusing on Alternante Picking', 'Spider Exercise 1342 Focusing on Alternante Picking', 'Spider Exercise 1423 Focusing on Alternante Picking', 'Spider Exercise 1432 Focusing on Alternante Picking', 'Spider Exercise 2134 Focusing on Alternante Picking', 'Spider Exercise 2143 Focusing on Alternante Picking', 'Spider Exercise 2314 Focusing on Alternante Picking', 'Spider Exercise 2341 Focusing on Alternante Picking', 'Spider Exercise 2413 Focusing on Alternante Picking', 'Spider Exercise 2431 Focusing on Alternante Picking', 'Spider Exercise 3124 Focusing on Alternante Picking', 'Spider Exercise 3142 Focusing on Alternante Picking', 'Spider Exercise 3214 Focusing on Alternante Picking', 'Spider Exercise 3241 Focusing on Alternante Picking', 'Spider Exercise 3412 Focusing on Alternante Picking', 'Spider Exercise 3421 Focusing on Alternante Picking', 'Spider Exercise 4123 Focusing on Alternante Picking', 'Spider Exercise 4132 Focusing on Alternante Picking', 'Spider Exercise 4213 Focusing on Alternante Picking', 'Spider Exercise 4231 Focusing on Alternante Picking', 'Spider Exercise 4312 Focusing on Alternante Picking', 'Spider Exercise 4321 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1234 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1243 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1324 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1342 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1423 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1432 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2134 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2143 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2314 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2341 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2413 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2431 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3124 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3142 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3214 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3241 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3412 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3421 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4123 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4132 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4213 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4231 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4312 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4321 Focusing on Alternante Picking', 43],
-                    ['Tap whilst playing the ii-V-I Jazz Standard: Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iii-VI-ii-V Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I-vi-ii-V Jazz: Cmaj7 - Am7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Imaj7-IVmaj7-ii7-V7 Jazz: Cmaj7 - Fmaj7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the vi-ii-V-I Jazz: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iim7b5-V7alt-im7 Jazz: Dm7b5 - G7alt - Cm7 progression, in the Key of C minor', 'Tap whilst playing the IVmaj7#11 - #IVdim7 - Imin7 - bII7 Jazz: Fmaj7#11 - F#dim7 - Cm7 - Db7 progression, in the Key of C minor', 'Tap whilst playing the I - #Idim7 - IImin7 - V7 Jazz: Cmaj7 - C#dim7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I7 - VI7 - II7 - V7 Jazz: C7 - A7 - D7 - G7 progression, in the Key of C major', 'Tap whilst playing the iii7 - VI7 - ii7 - V7 Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove: Em7 - A7 - D9 - G7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Groove 1: Am - C - Em - G progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion: Dm7 - G7 - C9 - Fmaj7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 2: Dm - G - Em - A progression, in the Key of D minor', 'Tap whilst playing the Funk Jam: G7 - C7 - F7 - Bb7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Arpeggios: Dmaj7 - Bm7 - F#m7 - Gmaj7 progression, in the Key of D major', 'Tap whilst playing the Funky Blues: E7 - A7 - B7 - E7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Modal: Emaj7 - F#m7 - G#m7 - Amaj7 progression, in the Key of E major', 'Tap whilst playing the Funk Fusion II: Em7 - A7 - Dmaj7 - Gmaj7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Chromatic: Dm7 - Dbmaj7 - Cm7 - Bbmaj7 progression, in the Key of C minor', 'Tap whilst playing the Jazz Blues: C7 - F7 - Gm7 - C7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove II: Em7 - A7 - D7 - G7 progression, in the Key of E minor', 'Tap whilst playing the Math Rock Groove 3: G - Bm - D - F# progression, in the Key of G major', 'Tap whilst playing the Fusion Vibe: Am7 - D7 - Gmaj7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Jazz Turnaround: Dm7 - G7 - Cmaj7 - A7 progression, in the Key of C major', 'Tap whilst playing the Funky Rhythm: G9 - C9 - F9 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Experiment: F#m - Dmaj7 - Bm - Emaj7 progression, in the Key of D major', 'Tap whilst playing the Jazz Waltz: Dm7 - G7 - Cmaj7 - Am7 progression, in the Key of C major', 'Tap whilst playing the Funk Fusion III: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Math Rock Groove 4: A - C#m - E - G#m progression, in the Key of A major', 'Tap whilst playing the Jazz Fusion: Dm7 - G7 - Cmaj7 - Fmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Groove: C7 - F9 - G7 - C9 progression, in the Key of C major', 'Tap whilst playing the Math Rock Riff: E - G - D - A progression, in the Key of E minor', 'Tap whilst playing the Jazz Modal Vibe: Dm7 - Em7 - Am7 - Dm7 progression, in the Key of A minor', 'Tap whilst playing the Funk Jam II: D9 - G9 - C9 - F9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 5: Bm - D - F#m - A progression, in the Key of B minor', 'Tap whilst playing the Jazz Ballad: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Blues II: A7 - D7 - E7 - A7 progression, in the Key of A major', 'Tap whilst playing the Math Rock Fusion: G#m - F#m - Emaj7 - B progression, in the Key of G# minor', 'Tap whilst playing the Jazz Bossa Nova: Am7 - D7 - Gmaj7 - Bm7b5 progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion IV: Cm7 - F7 - Bbmaj7 - Ebmaj7 progression, in the Key of Bb major', 'Tap whilst playing the Math Rock Groove 6: F - A#m - D# - Gm progression, in the Key of F major', 'Tap whilst playing the Jazz Funk Jam: G7 - C9 - F7 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Funky Riff: E7 - A7 - D7 - G7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Experiment II: D - F#m - Bm - G progression, in the Key of D major', 'Tap whilst playing the Jazz Fusion II: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove III: Bm7 - E7 - Am7 - D7 progression, in the Key of B minor', 'Tap whilst playing the Math Rock Groove 7: D#m - G# - C#m - F# progression, in the Key of D# minor', 'Tap whilst playing the Jazz Funk Fusion: Am7 - D9 - Gmaj7 - C9 progression, in the Key of C major', 'Tap whilst playing the Funky Modal Vibe: Gm7 - Cm7 - F7 - Bb7 progression, in the Key of Bb major', 50],
-                    ["Ascending Triplets Scale Run in A major", "Ascending Triplets Scale Run in A minor", "Ascending Triplets Scale Run in A# major", "Ascending Triplets Scale Run in A# minor", "Ascending Triplets Scale Run in B major", "Ascending Triplets Scale Run in B minor", "Ascending Triplets Scale Run in C major", "Ascending Triplets Scale Run in C minor", "Ascending Triplets Scale Run in C# major", "Ascending Triplets Scale Run in C# minor", "Ascending Triplets Scale Run in D major", "Ascending Triplets Scale Run in D minor", "Ascending Triplets Scale Run in D# major", "Ascending Triplets Scale Run in D# minor", "Ascending Triplets Scale Run in E major", "Ascending Triplets Scale Run in E minor", "Ascending Triplets Scale Run in F major", "Ascending Triplets Scale Run in F minor", "Ascending Triplets Scale Run in F# major", "Ascending Triplets Scale Run in F# minor", "Ascending Triplets Scale Run in G major", "Ascending Triplets Scale Run in G minor", "Ascending Triplets Scale Run in G# major", "Ascending Triplets Scale Run in G# minor", "Descending Triplets Scale Run in A major", "Descending Triplets Scale Run in A minor", "Descending Triplets Scale Run in A# major", "Descending Triplets Scale Run in A# minor", "Descending Triplets Scale Run in B major", "Descending Triplets Scale Run in B minor", "Descending Triplets Scale Run in C major", "Descending Triplets Scale Run in C minor", "Descending Triplets Scale Run in C# major", "Descending Triplets Scale Run in C# minor", "Descending Triplets Scale Run in D major", "Descending Triplets Scale Run in D minor", "Descending Triplets Scale Run in D# major", "Descending Triplets Scale Run in D# minor", "Descending Triplets Scale Run in E major", "Descending Triplets Scale Run in E minor", "Descending Triplets Scale Run in F major", "Descending Triplets Scale Run in F minor", "Descending Triplets Scale Run in F# major", "Descending Triplets Scale Run in F# minor", "Descending Triplets Scale Run in G major", "Descending Triplets Scale Run in G minor", "Descending Triplets Scale Run in G# major", "Descending Triplets Scale Run in G# minor", 75],
-                    ["1 Octave Arpeggios in  A major", "1 Octave Arpeggios in  A minor", "1 Octave Arpeggios in  A# major", "1 Octave Arpeggios in  A# minor", "1 Octave Arpeggios in  B major", "1 Octave Arpeggios in  B minor", "1 Octave Arpeggios in  C major", "1 Octave Arpeggios in  C minor", "1 Octave Arpeggios in  C# major", "1 Octave Arpeggios in  C# minor", "1 Octave Arpeggios in  D major", "1 Octave Arpeggios in  D minor", "1 Octave Arpeggios in  D# major", "1 Octave Arpeggios in  D# minor", "1 Octave Arpeggios in  E major", "1 Octave Arpeggios in  E minor", "1 Octave Arpeggios in  F major", "1 Octave Arpeggios in  F minor", "1 Octave Arpeggios in  F# major", "1 Octave Arpeggios in  F# minor", "1 Octave Arpeggios in  G major", "1 Octave Arpeggios in  G minor", "1 Octave Arpeggios in  G# major", "1 Octave Arpeggios in  G# minor", "2 Octave Arpeggios in  A major", "2 Octave Arpeggios in  A minor", "2 Octave Arpeggios in  A# major", "2 Octave Arpeggios in  A# minor", "2 Octave Arpeggios in  B major", "2 Octave Arpeggios in  B minor", "2 Octave Arpeggios in  C major", "2 Octave Arpeggios in  C minor", "2 Octave Arpeggios in  C# major", "2 Octave Arpeggios in  C# minor", "2 Octave Arpeggios in  D major", "2 Octave Arpeggios in  D minor", "2 Octave Arpeggios in  D# major", "2 Octave Arpeggios in  D# minor", "2 Octave Arpeggios in  E major", "2 Octave Arpeggios in  E minor", "2 Octave Arpeggios in  F major", "2 Octave Arpeggios in  F minor", "2 Octave Arpeggios in  F# major", "2 Octave Arpeggios in  F# minor", "2 Octave Arpeggios in  G major", "2 Octave Arpeggios in  G minor", "2 Octave Arpeggios in  G# major", "2 Octave Arpeggios in  G# minor", 75],
-                ];
-                temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * techniqueExercises.length-1)];
-                bpm = temp[temp.length-1];
-                
-                temp = temp[Math.floor(Math.random(4867833525234) * temp.length)];
-                keys = ["C# Minor", "G Minor", "D Minor", "E Minor", "E Major", "C Minor", "Gb Major", "C# Major", "B Minor", "Ab Major", "D Major", "F Minor", "G Major", "Bb Minor", "A Minor", "Db Major", "A# Minor", "Eb Minor", "A Major", "C Major", "Bb Major", "D# Minor", "F# Major", "Cb Major", "G# Minor", "Ab Minor", "Eb Major", "F# Minor", "B Major", "F Major"]
-                if (temp.search(/([a-g]|[A-G])(#|b|)\s(major|minor)/i) != -1) {
-                    temp = temp.replace(/([a-g]|[A-G])(#|b|)\s(major|minor)/i, keys[Math.floor(Math.random(4867833525234) * keys.length)]);
-                }
-                if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
-                techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
-                if (temp.includes("Chords")) {
-                    sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
-                    sheetImage.classList.add("shown");
-                    sheetImage.classList.remove("hidden");
-                } 
-               
-                audioPlayer.pause();
-            }
-
-
-        } else if (modesFolder[modes.indexOf(mode)] == "sheet-music") {
-            // fileList = [];
+                        }
+                        audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile}`));
+                        hideAll();
+                        showAudio();
+                        playAudioWithoutTimeout();
+                        loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile.replace(new RegExp(".mp3"+ '$'), '.musicxml')}`)));
+                        showSheetButton();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+                    });
+        } else if (practiceType >= 0.35) {
+            //Sight Reading
+            fileList = [];
             // if (fileList.length === 0) {
-            //     fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
+            //     fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf("sheet-music")]}/${list}`))
             //         // fetch("all/../studio-ghibi/list.txt")
             //         .then(response => response.text())
             //         .then(text => {
@@ -650,8 +670,9 @@ document.addEventListener("DOMContentLoaded", function () {
             //             console.log(fileList)
             //             const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
             //             randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-            //             sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
+            //             sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf("sheet-music")]}/${randomFile}`));
             //             hideAudioShowSheet();
+            //             audioPlayer.pause();
             //         })
             //         .catch(error => {
             //             console.error('Error fetching file list:', error);
@@ -667,8 +688,11 @@ document.addEventListener("DOMContentLoaded", function () {
             hideAll();
             showSheet();
             audioPlayer.pause();
-        }
-        else {
+
+            
+        } else if (practiceType >= 0.25) {
+            //Improvisation Practice
+            fileList = [];
             if (fileList.length === 0) {
                 fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
                     // fetch("all/../studio-ghibi/list.txt")
@@ -680,8 +704,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
+                        keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
                         hideSheetShowAudio();
-                        playAudioWithTimeout();
+                        keyText.classList.add("shown");
+                        keyText.classList.remove("hidden");
+                        playAudioWithCustomTimeout(100);
+                        mode = oldMode;
                     })
                     .catch(error => {
                         console.error('Error fetching file list:', error);
@@ -690,11 +718,107 @@ document.addEventListener("DOMContentLoaded", function () {
                 const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                 const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                 audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
+                keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
                 hideSheetShowAudio();
-                playAudioWithTimeout();
+                keyText.classList.add("shown");
+                keyText.classList.remove("hidden");
+                playAudioWithCustomTimeout(120+(Math.random()*30));
             }
+        } else if (practiceType >= 0.10) {
+            //Technique Practice
+            hideAllShowText();
+            chords = ["Ascending Chords in A major", "Ascending Chords in A minor", "Ascending Chords in A# major", "Ascending Chords in A# minor", "Ascending Chords in B major", "Ascending Chords in B minor", "Ascending Chords in C major", "Ascending Chords in C minor", "Ascending Chords in C# major", "Ascending Chords in C# minor", "Ascending Chords in D major", "Ascending Chords in D minor", "Ascending Chords in D# major", "Ascending Chords in D# minor", "Ascending Chords in E major", "Ascending Chords in E minor", "Ascending Chords in F major", "Ascending Chords in F minor", "Ascending Chords in F# major", "Ascending Chords in F# minor", "Ascending Chords in G major", "Ascending Chords in G minor", "Ascending Chords in G# major", "Ascending Chords in G# minor", "Descending Chords in A major", "Descending Chords in A minor", "Descending Chords in A# major", "Descending Chords in A# minor", "Descending Chords in B major", "Descending Chords in B minor", "Descending Chords in C major", "Descending Chords in C minor", "Descending Chords in C# major", "Descending Chords in C# minor", "Descending Chords in D major", "Descending Chords in D minor", "Descending Chords in D# major", "Descending Chords in D# minor", "Descending Chords in E major", "Descending Chords in E minor", "Descending Chords in F major", "Descending Chords in F minor", "Descending Chords in F# major", "Descending Chords in F# minor", "Descending Chords in G major", "Descending Chords in G minor", "Descending Chords in G# major", "Descending Chords in G# minor"]
+            chords = ['Ascending 7th Chords in Bb Minor', 'Ascending 7th Chords in C Major', 'Ascending 7th Chords in F# Major', 'Ascending 7th Chords in B Minor', 'Ascending 7th Chords in G Major', 'Ascending 7th Chords in Db Major', 'Ascending 7th Chords in D Minor', 'Ascending 7th Chords in C# Minor', 'Ascending 7th Chords in A Minor', 'Ascending 7th Chords in B Major', 'Ascending 7th Chords in D Major', 'Ascending 7th Chords in Ab Major', 'Ascending 7th Chords in G# Minor', 'Ascending 7th Chords in Bb Major', 'Ascending 7th Chords in C Minor', 'Ascending 7th Chords in F# Minor', 'Ascending 7th Chords in G Minor', 'Ascending 7th Chords in A Major']
+            chords.push(55);
+            techniqueExercises = [
+                ["Ichika tapping exercise", 40],
+                ["Alternating Diagonal hand exercise", 37],
+                /*["Ascending Diads in A major, on the B & E String", "Ascending Diads in A minor, on the B & E String", "Ascending Diads in A# major, on the B & E String", "Ascending Diads in A# minor, on the B & E String", "Ascending Diads in B major, on the B & E String", "Ascending Diads in B minor, on the B & E String", "Ascending Diads in C major, on the B & E String", "Ascending Diads in C minor, on the B & E String", "Ascending Diads in C# major, on the B & E String", "Ascending Diads in C# minor, on the B & E String", "Ascending Diads in D major, on the B & E String", "Ascending Diads in D minor, on the B & E String", "Ascending Diads in D# major, on the B & E String", "Ascending Diads in D# minor, on the B & E String", "Ascending Diads in E major, on the B & E String", "Ascending Diads in E minor, on the B & E String", "Ascending Diads in F major, on the B & E String", "Ascending Diads in F minor, on the B & E String", "Ascending Diads in F# major, on the B & E String", "Ascending Diads in F# minor, on the B & E String", "Ascending Diads in G major, on the B & E String", "Ascending Diads in G minor, on the B & E String", "Ascending Diads in G# major, on the B & E String", "Ascending Diads in G# minor, on the B & E String", "Descending Diads in A major, on the B & E String", "Descending Diads in A minor, on the B & E String", "Descending Diads in A# major, on the B & E String", "Descending Diads in A# minor, on the B & E String", "Descending Diads in B major, on the B & E String", "Descending Diads in B minor, on the B & E String", "Descending Diads in C major, on the B & E String", "Descending Diads in C minor, on the B & E String", "Descending Diads in C# major, on the B & E String", "Descending Diads in C# minor, on the B & E String", "Descending Diads in D major, on the B & E String", "Descending Diads in D minor, on the B & E String", "Descending Diads in D# major, on the B & E String", "Descending Diads in D# minor, on the B & E String", "Descending Diads in E major, on the B & E String", "Descending Diads in E minor, on the B & E String", "Descending Diads in F major, on the B & E String", "Descending Diads in F minor, on the B & E String", "Descending Diads in F# major, on the B & E String", "Descending Diads in F# minor, on the B & E String", "Descending Diads in G major, on the B & E String", "Descending Diads in G minor, on the B & E String", "Descending Diads in G# major, on the B & E String", "Descending Diads in G# minor, on the B & E String"],
+                ["Ascending Diads in A major, on the G & B String", "Ascending Diads in A minor, on the G & B String", "Ascending Diads in A# major, on the G & B String", "Ascending Diads in A# minor, on the G & B String", "Ascending Diads in B major, on the G & B String", "Ascending Diads in B minor, on the G & B String", "Ascending Diads in C major, on the G & B String", "Ascending Diads in C minor, on the G & B String", "Ascending Diads in C# major, on the G & B String", "Ascending Diads in C# minor, on the G & B String", "Ascending Diads in D major, on the G & B String", "Ascending Diads in D minor, on the G & B String", "Ascending Diads in D# major, on the G & B String", "Ascending Diads in D# minor, on the G & B String", "Ascending Diads in E major, on the G & B String", "Ascending Diads in E minor, on the G & B String", "Ascending Diads in F major, on the G & B String", "Ascending Diads in F minor, on the G & B String", "Ascending Diads in F# major, on the G & B String", "Ascending Diads in F# minor, on the G & B String", "Ascending Diads in G major, on the G & B String", "Ascending Diads in G minor, on the G & B String", "Ascending Diads in G# major, on the G & B String", "Ascending Diads in G# minor, on the G & B String", "Descending Diads in A major, on the G & B String", "Descending Diads in A minor, on the G & B String", "Descending Diads in A# major, on the G & B String", "Descending Diads in A# minor, on the G & B String", "Descending Diads in B major, on the G & B String", "Descending Diads in B minor, on the G & B String", "Descending Diads in C major, on the G & B String", "Descending Diads in C minor, on the G & B String", "Descending Diads in C# major, on the G & B String", "Descending Diads in C# minor, on the G & B String", "Descending Diads in D major, on the G & B String", "Descending Diads in D minor, on the G & B String", "Descending Diads in D# major, on the G & B String", "Descending Diads in D# minor, on the G & B String", "Descending Diads in E major, on the G & B String", "Descending Diads in E minor, on the G & B String", "Descending Diads in F major, on the G & B String", "Descending Diads in F minor, on the G & B String", "Descending Diads in F# major, on the G & B String", "Descending Diads in F# minor, on the G & B String", "Descending Diads in G major, on the G & B String", "Descending Diads in G minor, on the G & B String", "Descending Diads in G# major, on the G & B String", "Descending Diads in G# minor, on the G & B String", "Ascending Diads in A major, on the D & G String", "Ascending Diads in A minor, on the D & G String", "Ascending Diads in A# major, on the D & G String", "Ascending Diads in A# minor, on the D & G String", "Ascending Diads in B major, on the D & G String", "Ascending Diads in B minor, on the D & G String", "Ascending Diads in C major, on the D & G String", "Ascending Diads in C minor, on the D & G String", "Ascending Diads in C# major, on the D & G String", "Ascending Diads in C# minor, on the D & G String", "Ascending Diads in D major, on the D & G String", "Ascending Diads in D minor, on the D & G String", "Ascending Diads in D# major, on the D & G String", "Ascending Diads in D# minor, on the D & G String", "Ascending Diads in E major, on the D & G String", "Ascending Diads in E minor, on the D & G String", "Ascending Diads in F major, on the D & G String", "Ascending Diads in F minor, on the D & G String", "Ascending Diads in F# major, on the D & G String", "Ascending Diads in F# minor, on the D & G String", "Ascending Diads in G major, on the D & G String", "Ascending Diads in G minor, on the D & G String", "Ascending Diads in G# major, on the D & G String", "Ascending Diads in G# minor, on the D & G String", "Descending Diads in A major, on the D & G String", "Descending Diads in A minor, on the D & G String", "Descending Diads in A# major, on the D & G String", "Descending Diads in A# minor, on the D & G String", "Descending Diads in B major, on the D & G String", "Descending Diads in B minor, on the D & G String", "Descending Diads in C major, on the D & G String", "Descending Diads in C minor, on the D & G String", "Descending Diads in C# major, on the D & G String", "Descending Diads in C# minor, on the D & G String", "Descending Diads in D major, on the D & G String", "Descending Diads in D minor, on the D & G String", "Descending Diads in D# major, on the D & G String", "Descending Diads in D# minor, on the D & G String", "Descending Diads in E major, on the D & G String", "Descending Diads in E minor, on the D & G String", "Descending Diads in F major, on the D & G String", "Descending Diads in F minor, on the D & G String", "Descending Diads in F# major, on the D & G String", "Descending Diads in F# minor, on the D & G String", "Descending Diads in G major, on the D & G String", "Descending Diads in G minor, on the D & G String", "Descending Diads in G# major, on the D & G String", "Descending Diads in G# minor, on the D & G String", 30],
+                */
+                ["Ascending Diads in A major, on the B & E String", "Ascending Diads in A minor, on the B & E String", "Ascending Diads in A# major, on the B & E String", "Ascending Diads in A# minor, on the B & E String", "Ascending Diads in B major, on the B & E String", "Ascending Diads in B minor, on the B & E String", "Ascending Diads in C major, on the B & E String", "Ascending Diads in C minor, on the B & E String", "Ascending Diads in C# major, on the B & E String", "Ascending Diads in C# minor, on the B & E String", "Ascending Diads in D major, on the B & E String", "Ascending Diads in D minor, on the B & E String", "Ascending Diads in D# major, on the B & E String", "Ascending Diads in D# minor, on the B & E String", "Ascending Diads in E major, on the B & E String", "Ascending Diads in E minor, on the B & E String", "Ascending Diads in F major, on the B & E String", "Ascending Diads in F minor, on the B & E String", "Ascending Diads in F# major, on the B & E String", "Ascending Diads in F# minor, on the B & E String", "Ascending Diads in G major, on the B & E String", "Ascending Diads in G minor, on the B & E String", "Ascending Diads in G# major, on the B & E String", "Ascending Diads in G# minor, on the B & E String", "Descending Diads in A major, on the B & E String", "Descending Diads in A minor, on the B & E String", "Descending Diads in A# major, on the B & E String", "Descending Diads in A# minor, on the B & E String", "Descending Diads in B major, on the B & E String", "Descending Diads in B minor, on the B & E String", "Descending Diads in C major, on the B & E String", "Descending Diads in C minor, on the B & E String", "Descending Diads in C# major, on the B & E String", "Descending Diads in C# minor, on the B & E String", "Descending Diads in D major, on the B & E String", "Descending Diads in D minor, on the B & E String", "Descending Diads in D# major, on the B & E String", "Descending Diads in D# minor, on the B & E String", "Descending Diads in E major, on the B & E String", "Descending Diads in E minor, on the B & E String", "Descending Diads in F major, on the B & E String", "Descending Diads in F minor, on the B & E String", "Descending Diads in F# major, on the B & E String", "Descending Diads in F# minor, on the B & E String", "Descending Diads in G major, on the B & E String", "Descending Diads in G minor, on the B & E String", "Descending Diads in G# major, on the B & E String", "Descending Diads in G# minor, on the B & E String", "Ascending Diads in A major, on the G & B String", "Ascending Diads in A minor, on the G & B String", "Ascending Diads in A# major, on the G & B String", "Ascending Diads in A# minor, on the G & B String", "Ascending Diads in B major, on the G & B String", "Ascending Diads in B minor, on the G & B String", "Ascending Diads in C major, on the G & B String", "Ascending Diads in C minor, on the G & B String", "Ascending Diads in C# major, on the G & B String", "Ascending Diads in C# minor, on the G & B String", "Ascending Diads in D major, on the G & B String", "Ascending Diads in D minor, on the G & B String", "Ascending Diads in D# major, on the G & B String", "Ascending Diads in D# minor, on the G & B String", "Ascending Diads in E major, on the G & B String", "Ascending Diads in E minor, on the G & B String", "Ascending Diads in F major, on the G & B String", "Ascending Diads in F minor, on the G & B String", "Ascending Diads in F# major, on the G & B String", "Ascending Diads in F# minor, on the G & B String", "Ascending Diads in G major, on the G & B String", "Ascending Diads in G minor, on the G & B String", "Ascending Diads in G# major, on the G & B String", "Ascending Diads in G# minor, on the G & B String", "Descending Diads in A major, on the G & B String", 30],
+                ["Descending Diads in D# minor, on the G & B String", "Descending Diads in E major, on the G & B String", "Descending Diads in E minor, on the G & B String", "Descending Diads in F major, on the G & B String", "Descending Diads in F minor, on the G & B String", "Descending Diads in F# major, on the G & B String", "Descending Diads in F# minor, on the G & B String", "Descending Diads in G major, on the G & B String", "Descending Diads in G minor, on the G & B String", "Descending Diads in G# major, on the G & B String", "Descending Diads in G# minor, on the G & B String", "Ascending Diads in A major, on the D & G String", "Ascending Diads in A minor, on the D & G String", "Ascending Diads in A# major, on the D & G String", "Ascending Diads in A# minor, on the D & G String", "Ascending Diads in B major, on the D & G String", "Ascending Diads in B minor, on the D & G String", "Ascending Diads in C major, on the D & G String", "Ascending Diads in C minor, on the D & G String", "Ascending Diads in C# major, on the D & G String", "Ascending Diads in C# minor, on the D & G String", "Ascending Diads in D major, on the D & G String", "Ascending Diads in D minor, on the D & G String", "Ascending Diads in D# major, on the D & G String", "Ascending Diads in D# minor, on the D & G String", "Ascending Diads in E major, on the D & G String", "Ascending Diads in E minor, on the D & G String", "Ascending Diads in F major, on the D & G String", "Ascending Diads in F minor, on the D & G String", "Ascending Diads in F# major, on the D & G String", "Ascending Diads in F# minor, on the D & G String", "Ascending Diads in G major, on the D & G String", "Ascending Diads in G minor, on the D & G String", "Ascending Diads in G# major, on the D & G String", "Ascending Diads in G# minor, on the D & G String", "Descending Diads in A major, on the D & G String", "Descending Diads in A minor, on the D & G String", "Descending Diads in A# major, on the D & G String", "Descending Diads in A# minor, on the D & G String", "Descending Diads in B major, on the D & G String", "Descending Diads in B minor, on the D & G String", "Descending Diads in C major, on the D & G String", "Descending Diads in C minor, on the D & G String", "Descending Diads in C# major, on the D & G String", "Descending Diads in C# minor, on the D & G String", "Descending Diads in D major, on the D & G String", "Descending Diads in D minor, on the D & G String", "Descending Diads in D# major, on the D & G String", "Descending Diads in D# minor, on the D & G String", "Descending Diads in E major, on the D & G String", "Descending Diads in E minor, on the D & G String", "Descending Diads in F major, on the D & G String", "Descending Diads in F minor, on the D & G String", "Descending Diads in F# major, on the D & G String", "Descending Diads in F# minor, on the D & G String", "Descending Diads in G major, on the D & G String", "Descending Diads in G minor, on the D & G String", "Descending Diads in G# major, on the D & G String", "Descending Diads in G# minor, on the D & G String", "Descending Diads in C# minor, on the G & B String", "Descending Diads in D major, on the G & B String", "Descending Diads in D minor, on the G & B String", "Descending Diads in D# major, on the G & B String", "Descending Diads in B major, on the G & B String", "Descending Diads in B minor, on the G & B String", "Descending Diads in C major, on the G & B String", "Descending Diads in C minor, on the G & B String", "Descending Diads in C# major, on the G & B String", "Descending Diads in A minor, on the G & B String", "Descending Diads in A# major, on the G & B String", "Descending Diads in A# minor, on the G & B String", 30],
+                chords,
+                ['Spider Exercise 1234', 'Spider Exercise 1243', 'Spider Exercise 1324', 'Spider Exercise 1342', 'Spider Exercise 1423', 'Spider Exercise 1432', 'Spider Exercise 2134', 'Spider Exercise 2143', 'Spider Exercise 2314', 'Spider Exercise 2341', 'Spider Exercise 2413', 'Spider Exercise 2431', 'Spider Exercise 3124', 'Spider Exercise 3142', 'Spider Exercise 3214', 'Spider Exercise 3241', 'Spider Exercise 3412', 'Spider Exercise 3421', 'Spider Exercise 4123', 'Spider Exercise 4132', 'Spider Exercise 4213', 'Spider Exercise 4231', 'Spider Exercise 4312', 'Spider Exercise 4321', 'Diagonal Spider Exercise 1234', 'Diagonal Spider Exercise 1243', 'Diagonal Spider Exercise 1324', 'Diagonal Spider Exercise 1342', 'Diagonal Spider Exercise 1423', 'Diagonal Spider Exercise 1432', 'Diagonal Spider Exercise 2134', 'Diagonal Spider Exercise 2143', 'Diagonal Spider Exercise 2314', 'Diagonal Spider Exercise 2341', 'Diagonal Spider Exercise 2413', 'Diagonal Spider Exercise 2431', 'Diagonal Spider Exercise 3124', 'Diagonal Spider Exercise 3142', 'Diagonal Spider Exercise 3214', 'Diagonal Spider Exercise 3241', 'Diagonal Spider Exercise 3412', 'Diagonal Spider Exercise 3421', 'Diagonal Spider Exercise 4123', 'Diagonal Spider Exercise 4132', 'Diagonal Spider Exercise 4213', 'Diagonal Spider Exercise 4231', 'Diagonal Spider Exercise 4312', 'Diagonal Spider Exercise 4321', 55],
+                ['Spider Exercise 1234 Focusing on Economy', 'Spider Exercise 1243 Focusing on Economy', 'Spider Exercise 1324 Focusing on Economy', 'Spider Exercise 1342 Focusing on Economy', 'Spider Exercise 1423 Focusing on Economy', 'Spider Exercise 1432 Focusing on Economy', 'Spider Exercise 2134 Focusing on Economy', 'Spider Exercise 2143 Focusing on Economy', 'Spider Exercise 2314 Focusing on Economy', 'Spider Exercise 2341 Focusing on Economy', 'Spider Exercise 2413 Focusing on Economy', 'Spider Exercise 2431 Focusing on Economy', 'Spider Exercise 3124 Focusing on Economy', 'Spider Exercise 3142 Focusing on Economy', 'Spider Exercise 3214 Focusing on Economy', 'Spider Exercise 3241 Focusing on Economy', 'Spider Exercise 3412 Focusing on Economy', 'Spider Exercise 3421 Focusing on Economy', 'Spider Exercise 4123 Focusing on Economy', 'Spider Exercise 4132 Focusing on Economy', 'Spider Exercise 4213 Focusing on Economy', 'Spider Exercise 4231 Focusing on Economy', 'Spider Exercise 4312 Focusing on Economy', 'Spider Exercise 4321 Focusing on Economy', 'Diagonal Spider Exercise 1234 Focusing on Economy', 'Diagonal Spider Exercise 1243 Focusing on Economy', 'Diagonal Spider Exercise 1324 Focusing on Economy', 'Diagonal Spider Exercise 1342 Focusing on Economy', 'Diagonal Spider Exercise 1423 Focusing on Economy', 'Diagonal Spider Exercise 1432 Focusing on Economy', 'Diagonal Spider Exercise 2134 Focusing on Economy', 'Diagonal Spider Exercise 2143 Focusing on Economy', 'Diagonal Spider Exercise 2314 Focusing on Economy', 'Diagonal Spider Exercise 2341 Focusing on Economy', 'Diagonal Spider Exercise 2413 Focusing on Economy', 'Diagonal Spider Exercise 2431 Focusing on Economy', 'Diagonal Spider Exercise 3124 Focusing on Economy', 'Diagonal Spider Exercise 3142 Focusing on Economy', 'Diagonal Spider Exercise 3214 Focusing on Economy', 'Diagonal Spider Exercise 3241 Focusing on Economy', 'Diagonal Spider Exercise 3412 Focusing on Economy', 'Diagonal Spider Exercise 3421 Focusing on Economy', 'Diagonal Spider Exercise 4123 Focusing on Economy', 'Diagonal Spider Exercise 4132 Focusing on Economy', 'Diagonal Spider Exercise 4213 Focusing on Economy', 'Diagonal Spider Exercise 4231 Focusing on Economy', 'Diagonal Spider Exercise 4312 Focusing on Economy', 'Diagonal Spider Exercise 4321 Focusing on Economy', 43],
+                ['Spider Exercise 1234 Focusing on Alternante Picking', 'Spider Exercise 1243 Focusing on Alternante Picking', 'Spider Exercise 1324 Focusing on Alternante Picking', 'Spider Exercise 1342 Focusing on Alternante Picking', 'Spider Exercise 1423 Focusing on Alternante Picking', 'Spider Exercise 1432 Focusing on Alternante Picking', 'Spider Exercise 2134 Focusing on Alternante Picking', 'Spider Exercise 2143 Focusing on Alternante Picking', 'Spider Exercise 2314 Focusing on Alternante Picking', 'Spider Exercise 2341 Focusing on Alternante Picking', 'Spider Exercise 2413 Focusing on Alternante Picking', 'Spider Exercise 2431 Focusing on Alternante Picking', 'Spider Exercise 3124 Focusing on Alternante Picking', 'Spider Exercise 3142 Focusing on Alternante Picking', 'Spider Exercise 3214 Focusing on Alternante Picking', 'Spider Exercise 3241 Focusing on Alternante Picking', 'Spider Exercise 3412 Focusing on Alternante Picking', 'Spider Exercise 3421 Focusing on Alternante Picking', 'Spider Exercise 4123 Focusing on Alternante Picking', 'Spider Exercise 4132 Focusing on Alternante Picking', 'Spider Exercise 4213 Focusing on Alternante Picking', 'Spider Exercise 4231 Focusing on Alternante Picking', 'Spider Exercise 4312 Focusing on Alternante Picking', 'Spider Exercise 4321 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1234 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1243 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1324 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1342 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1423 Focusing on Alternante Picking', 'Diagonal Spider Exercise 1432 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2134 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2143 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2314 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2341 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2413 Focusing on Alternante Picking', 'Diagonal Spider Exercise 2431 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3124 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3142 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3214 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3241 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3412 Focusing on Alternante Picking', 'Diagonal Spider Exercise 3421 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4123 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4132 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4213 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4231 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4312 Focusing on Alternante Picking', 'Diagonal Spider Exercise 4321 Focusing on Alternante Picking', 43],
+                ['Tap whilst playing the ii-V-I Jazz Standard: Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iii-VI-ii-V Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I-vi-ii-V Jazz: Cmaj7 - Am7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Imaj7-IVmaj7-ii7-V7 Jazz: Cmaj7 - Fmaj7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the vi-ii-V-I Jazz: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the iim7b5-V7alt-im7 Jazz: Dm7b5 - G7alt - Cm7 progression, in the Key of C minor', 'Tap whilst playing the IVmaj7#11 - #IVdim7 - Imin7 - bII7 Jazz: Fmaj7#11 - F#dim7 - Cm7 - Db7 progression, in the Key of C minor', 'Tap whilst playing the I - #Idim7 - IImin7 - V7 Jazz: Cmaj7 - C#dim7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the I7 - VI7 - II7 - V7 Jazz: C7 - A7 - D7 - G7 progression, in the Key of C major', 'Tap whilst playing the iii7 - VI7 - ii7 - V7 Jazz: Em7 - A7 - Dm7 - G7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove: Em7 - A7 - D9 - G7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Groove 1: Am - C - Em - G progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion: Dm7 - G7 - C9 - Fmaj7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 2: Dm - G - Em - A progression, in the Key of D minor', 'Tap whilst playing the Funk Jam: G7 - C7 - F7 - Bb7 progression, in the Key of F major', 'Tap whilst playing the Math Rock Arpeggios: Dmaj7 - Bm7 - F#m7 - Gmaj7 progression, in the Key of D major', 'Tap whilst playing the Funky Blues: E7 - A7 - B7 - E7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Modal: Emaj7 - F#m7 - G#m7 - Amaj7 progression, in the Key of E major', 'Tap whilst playing the Funk Fusion II: Em7 - A7 - Dmaj7 - Gmaj7 progression, in the Key of G major', 'Tap whilst playing the Math Rock Chromatic: Dm7 - Dbmaj7 - Cm7 - Bbmaj7 progression, in the Key of C minor', 'Tap whilst playing the Jazz Blues: C7 - F7 - Gm7 - C7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove II: Em7 - A7 - D7 - G7 progression, in the Key of E minor', 'Tap whilst playing the Math Rock Groove 3: G - Bm - D - F# progression, in the Key of G major', 'Tap whilst playing the Fusion Vibe: Am7 - D7 - Gmaj7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Jazz Turnaround: Dm7 - G7 - Cmaj7 - A7 progression, in the Key of C major', 'Tap whilst playing the Funky Rhythm: G9 - C9 - F9 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Experiment: F#m - Dmaj7 - Bm - Emaj7 progression, in the Key of D major', 'Tap whilst playing the Jazz Waltz: Dm7 - G7 - Cmaj7 - Am7 progression, in the Key of C major', 'Tap whilst playing the Funk Fusion III: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Math Rock Groove 4: A - C#m - E - G#m progression, in the Key of A major', 'Tap whilst playing the Jazz Fusion: Dm7 - G7 - Cmaj7 - Fmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Groove: C7 - F9 - G7 - C9 progression, in the Key of C major', 'Tap whilst playing the Math Rock Riff: E - G - D - A progression, in the Key of E minor', 'Tap whilst playing the Jazz Modal Vibe: Dm7 - Em7 - Am7 - Dm7 progression, in the Key of A minor', 'Tap whilst playing the Funk Jam II: D9 - G9 - C9 - F9 progression, in the Key of F major', 'Tap whilst playing the Math Rock Groove 5: Bm - D - F#m - A progression, in the Key of B minor', 'Tap whilst playing the Jazz Ballad: Am7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funky Blues II: A7 - D7 - E7 - A7 progression, in the Key of A major', 'Tap whilst playing the Math Rock Fusion: G#m - F#m - Emaj7 - B progression, in the Key of G# minor', 'Tap whilst playing the Jazz Bossa Nova: Am7 - D7 - Gmaj7 - Bm7b5 progression, in the Key of A minor', 'Tap whilst playing the Funk Fusion IV: Cm7 - F7 - Bbmaj7 - Ebmaj7 progression, in the Key of Bb major', 'Tap whilst playing the Math Rock Groove 6: F - A#m - D# - Gm progression, in the Key of F major', 'Tap whilst playing the Jazz Funk Jam: G7 - C9 - F7 - Bb9 progression, in the Key of F major', 'Tap whilst playing the Funky Riff: E7 - A7 - D7 - G7 progression, in the Key of E major', 'Tap whilst playing the Math Rock Experiment II: D - F#m - Bm - G progression, in the Key of D major', 'Tap whilst playing the Jazz Fusion II: Em7 - A7 - Dm7 - G7 - Cmaj7 progression, in the Key of C major', 'Tap whilst playing the Funk Groove III: Bm7 - E7 - Am7 - D7 progression, in the Key of B minor', 'Tap whilst playing the Math Rock Groove 7: D#m - G# - C#m - F# progression, in the Key of D# minor', 'Tap whilst playing the Jazz Funk Fusion: Am7 - D9 - Gmaj7 - C9 progression, in the Key of C major', 'Tap whilst playing the Funky Modal Vibe: Gm7 - Cm7 - F7 - Bb7 progression, in the Key of Bb major', 50],
+                ["Ascending Triplets Scale Run in A major", "Ascending Triplets Scale Run in A minor", "Ascending Triplets Scale Run in A# major", "Ascending Triplets Scale Run in A# minor", "Ascending Triplets Scale Run in B major", "Ascending Triplets Scale Run in B minor", "Ascending Triplets Scale Run in C major", "Ascending Triplets Scale Run in C minor", "Ascending Triplets Scale Run in C# major", "Ascending Triplets Scale Run in C# minor", "Ascending Triplets Scale Run in D major", "Ascending Triplets Scale Run in D minor", "Ascending Triplets Scale Run in D# major", "Ascending Triplets Scale Run in D# minor", "Ascending Triplets Scale Run in E major", "Ascending Triplets Scale Run in E minor", "Ascending Triplets Scale Run in F major", "Ascending Triplets Scale Run in F minor", "Ascending Triplets Scale Run in F# major", "Ascending Triplets Scale Run in F# minor", "Ascending Triplets Scale Run in G major", "Ascending Triplets Scale Run in G minor", "Ascending Triplets Scale Run in G# major", "Ascending Triplets Scale Run in G# minor", "Descending Triplets Scale Run in A major", "Descending Triplets Scale Run in A minor", "Descending Triplets Scale Run in A# major", "Descending Triplets Scale Run in A# minor", "Descending Triplets Scale Run in B major", "Descending Triplets Scale Run in B minor", "Descending Triplets Scale Run in C major", "Descending Triplets Scale Run in C minor", "Descending Triplets Scale Run in C# major", "Descending Triplets Scale Run in C# minor", "Descending Triplets Scale Run in D major", "Descending Triplets Scale Run in D minor", "Descending Triplets Scale Run in D# major", "Descending Triplets Scale Run in D# minor", "Descending Triplets Scale Run in E major", "Descending Triplets Scale Run in E minor", "Descending Triplets Scale Run in F major", "Descending Triplets Scale Run in F minor", "Descending Triplets Scale Run in F# major", "Descending Triplets Scale Run in F# minor", "Descending Triplets Scale Run in G major", "Descending Triplets Scale Run in G minor", "Descending Triplets Scale Run in G# major", "Descending Triplets Scale Run in G# minor", 75],
+                ["1 Octave Arpeggios in  A major", "1 Octave Arpeggios in  A minor", "1 Octave Arpeggios in  A# major", "1 Octave Arpeggios in  A# minor", "1 Octave Arpeggios in  B major", "1 Octave Arpeggios in  B minor", "1 Octave Arpeggios in  C major", "1 Octave Arpeggios in  C minor", "1 Octave Arpeggios in  C# major", "1 Octave Arpeggios in  C# minor", "1 Octave Arpeggios in  D major", "1 Octave Arpeggios in  D minor", "1 Octave Arpeggios in  D# major", "1 Octave Arpeggios in  D# minor", "1 Octave Arpeggios in  E major", "1 Octave Arpeggios in  E minor", "1 Octave Arpeggios in  F major", "1 Octave Arpeggios in  F minor", "1 Octave Arpeggios in  F# major", "1 Octave Arpeggios in  F# minor", "1 Octave Arpeggios in  G major", "1 Octave Arpeggios in  G minor", "1 Octave Arpeggios in  G# major", "1 Octave Arpeggios in  G# minor", "2 Octave Arpeggios in  A major", "2 Octave Arpeggios in  A minor", "2 Octave Arpeggios in  A# major", "2 Octave Arpeggios in  A# minor", "2 Octave Arpeggios in  B major", "2 Octave Arpeggios in  B minor", "2 Octave Arpeggios in  C major", "2 Octave Arpeggios in  C minor", "2 Octave Arpeggios in  C# major", "2 Octave Arpeggios in  C# minor", "2 Octave Arpeggios in  D major", "2 Octave Arpeggios in  D minor", "2 Octave Arpeggios in  D# major", "2 Octave Arpeggios in  D# minor", "2 Octave Arpeggios in  E major", "2 Octave Arpeggios in  E minor", "2 Octave Arpeggios in  F major", "2 Octave Arpeggios in  F minor", "2 Octave Arpeggios in  F# major", "2 Octave Arpeggios in  F# minor", "2 Octave Arpeggios in  G major", "2 Octave Arpeggios in  G minor", "2 Octave Arpeggios in  G# major", "2 Octave Arpeggios in  G# minor", 75],
+            ];
+            /* 
+            res = Math.random(4867835363898769) * techniqueExercises.length-1;
+            console.log(res);
+            res = Math.floor(res);
+            temp = techniqueExercises[res];
+            console.log(res);
+            console.log(temp);
+            bpm = temp[temp.length-1];
+            res2 = Math.floor(Math.random(4867833525234) * temp.length-1)
+            console.log(res2);
+            temp = temp[res2];
+            console.log(temp);
+            */
+            temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * (techniqueExercises.length-1))];
+            bpm = temp[temp.length-1];
+            temp = temp[Math.floor(Math.random(4867833525234) * (temp.length-1))];
+            console.log(temp);
+            if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
+            techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
+            if (temp.includes("Chords")) {
+                sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
+                sheetImage.classList.add("shown");
+                sheetImage.classList.remove("hidden");
+            } 
+            keys = ["C# Minor", "G Minor", "D Minor", "E Minor", "E Major", "C Minor", "Gb Major", "C# Major", "B Minor", "Ab Major", "D Major", "F Minor", "G Major", "Bb Minor", "A Minor", "Db Major", "A# Minor", "Eb Minor", "A Major", "C Major", "Bb Major", "D# Minor", "F# Major", "Cb Major", "G# Minor", "Ab Minor", "Eb Major", "F# Minor", "B Major", "F Major"]
+            if (temp.search(/([a-g]|[A-G])(#|b|)\s(major|minor)/i) != -1) {
+                temp = temp.replace(/([a-g]|[A-G])(#|b|)\s(major|minor)/i, keys[Math.floor(Math.random(4867833525234) * keys.length)]);
+            }
+            
+           
+            audioPlayer.pause();
+        } else {
+            //Repatoire Building
+                console.log(githubKey);
+
+            (async () => { 
+                gistId = "63ff91244fb5afe4e68d0d80e62ae8d4";
+                response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                headers: {
+                    'Authorization': `token ${githubKey}`,
+                },
+                });
+                gist = await response.json();
+                content = gist.files['currentSong.txt'].content;
+                currentBars = 1;
+                totalBars = 0;
+                n = 1;
+                while (currentBars >= totalBars) {
+                    currentSong = content.split("\n").slice(-n)[0];
+                    fileName = currentSong.split("|")[0];
+                    currentBars = parseInt(currentSong.split("|")[1]);
+                    totalBars = parseInt(currentSong.split("|")[2]);
+                    n++;
+                    if (n > content.split("\n").length) {
+                        currentSong = content.split("\n")[Math.floor(Math.random(4867833525234) * content.split("\n").length)];
+                        fileName = currentSong.split("|")[0];
+                        currentBars = parseInt(currentSong.split("|")[1]);
+                        totalBars = parseInt(currentSong.split("|")[2]);
+                        break;
+                    }
+                }
+                message = "Play through bars " + currentBars + " to " + (currentBars + 4) + " then run through till bar " + (currentBars + 4);
+                showSheet();
+                showSheetButton();
+                //fileName = "Bad.gp.musicxml";
+                // fileName = "Bad.gp.mxl";
+                fileName = "Instagram Album Mode.gpx.musicxml";
+                loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
+                techniqueText.textContent = message;
+                hideAll();
+                showTechniqueText();
+            })();
         }
-        
     }
 
     function toggleDarkMode() {
