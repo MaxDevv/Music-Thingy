@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const osmdIframe = document.getElementById("osmdIframe");
     const tempOsmdContainer = document.getElementById("tempOsmdContainer");
     const revealSheet = document.getElementById("revealSheet");
+    const sheetPDF = document.getElementById("sheetPDF");
     let password = localStorage.getItem('password');
     if (!password) {
         password = prompt("Please enter your password:");
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
     keepGoing = true;
     // modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
     // modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music", "Music-Backing-Tracks", "jazz"];
-    modes = ["All", "Jazz", "Learning-Music", "Sheet-Music", "Ear-Training", "Technique"];
+    modes = ["All", "Jazz", "Learning-Music", "Sheet-Music", "Ear-Training", "Technique", "Music-Thoery"];
     modesFolder = ["all", "Music-Backing-Tracks", "repertoire", "sheet-music"];
     // plainModesFolder = modesFolder.filter(item => !specialModesFolder.includes(item));
     mode = localStorage.getItem('mode');
@@ -95,10 +96,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     function loadSheet(source) {
         console.log(source);
+        wasHidden = false;
         if (tempOsmdContainer.classList.contains("hidden")){
             wasHidden = true;
         }
-        wasHidden = false;
         showSheet();
         osmd.load(source)
                     .then(function() {
@@ -114,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             hideSheet();
                         }
                     });
-        
     }
     // iframe load
     function loadRandomSheet(difficulty) {
@@ -166,6 +166,12 @@ document.addEventListener("DOMContentLoaded", function () {
           window.location.href = "#" + hash;
       }
 
+    nextButton.addEventListener("click", function () {
+        audioPlayer.pause();
+    });
+    skipButton.addEventListener("click", function () { 
+        audioPlayer.pause();
+    });
     darkModeButton.addEventListener("click", function () {
         toggleDarkMode();
     });
@@ -185,16 +191,16 @@ document.addEventListener("DOMContentLoaded", function () {
             audioPlayedOnce = true;
             startButton.textContent = "Replay";
             // Mark hour as completed
-            fetch('https://practice-reminder.azurewebsites.net/api/completed_hour?code=uweYVDnQ30h3dNkQhm6X7xVDtVycyiQah1GMoIL9gmzkAzFuViCmLQ==&completed=true', {
-                method: 'GET',
-                mode: 'no-cors' // This mode prevents CORS errors
-            })
-                .then(() => {
-                    console.log('Ping request sent successfully');
-                })
-                .catch(error => {
-                    console.error('There was a problem with your fetch operation:', error);
-                });
+            // fetch('https://practice-reminder.azurewebsites.net/api/completed_hour?code=uweYVDnQ30h3dNkQhm6X7xVDtVycyiQah1GMoIL9gmzkAzFuViCmLQ==&completed=true', {
+            //     method: 'GET',
+            //     mode: 'no-cors' // This mode prevents CORS errors
+            // })
+            //     .then(() => {
+            //         console.log('Ping request sent successfully');
+            //     })
+            //     .catch(error => {
+            //         console.error('There was a problem with your fetch operation:', error);
+            //     });
         }
     });
     vibeModeButton.addEventListener("click", function () {
@@ -497,9 +503,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     function pauseAfterCertainTimeInSecs(actualStartTime, timeInSecs) {
         console.log(timeInSecs);
+        if (keyText.innerHTML != keyText.innerHTML.replace(/\d+(\.\d+)? seconds left/g, `${Math.round(timeInSecs-((Date.now() / 1000) - actualStartTime))} seconds left`)){
+            keyText.innerHTML = keyText.innerHTML.replace(/\d+(\.\d+)? seconds left/g, `${Math.round(timeInSecs-((Date.now() / 1000) - actualStartTime))} seconds left`);
+        }
+        console.log(Math.round(timeInSecs-((Date.now() / 1000) - actualStartTime)));
         if (((Date.now() / 1000) - actualStartTime) >= timeInSecs) {
             audioPlayer.pause();
             timeout = defaultTimeout;
+            
         } else {
             clearTimeout(timeoutID);
             timeoutID = setTimeout(function () {
@@ -517,7 +528,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function hideAudio() {
-        audioPlayer.src = encodeURIComponent("");
         audioPlayer.classList.add("hidden");
         audioPlayer.classList.remove("shown");
     }
@@ -556,13 +566,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function hideAll() {
-        techniqueText.classList.add("hidden");
-        techniqueText.classList.remove("shown");
-        tempOsmdContainer.classList.add("hidden");
-        tempOsmdContainer.classList.remove("shown");
-        audioPlayer.classList.add("hidden");
-        audioPlayer.classList.remove("shown");
+        hideAudio();
+        hideSheet();
         hideChords();
+        hideSheetButton();
+        hideKeyText();
+        hideTechniqueText();
+        hideSheetPDF();
     }
 
     function hideAudioShowSheet() {
@@ -585,6 +595,25 @@ document.addEventListener("DOMContentLoaded", function () {
         tips();
     }
 
+    function hideSkipButton() {
+        skipButton.classList.add("hidden");
+        skipButton.classList.remove("shown");
+    }
+
+    function showSkipButton() {
+        skipButton.classList.add("shown");
+        skipButton.classList.remove("hidden");
+    }
+
+    function showSheetPDF() {
+        sheetPDF.classList.add("shown");
+        sheetPDF.classList.remove("hidden");
+    }
+
+    function hideSheetPDF() {
+        sheetPDF.classList.add("hidden");
+        sheetPDF.classList.remove("shown");
+    }
 
     function hideKeyText() {
         keyText.classList.add("hidden");
@@ -602,7 +631,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function tips(){
-        alwaysRemember = "Stay Confident, Play Like Air, And Alternate Pick!";
+        alwaysRemember = "Stay Confident, Play Like Air, Alternate Pick, EVERY BIT COUNTS :D!";
         if (!techniqueText.classList.contains("shown") || techniqueText.innerText.includes("Start :D")) {
             techniqueText.innerText = alwaysRemember;
             techniqueText.classList.add("shown");
@@ -618,21 +647,24 @@ document.addEventListener("DOMContentLoaded", function () {
     function play() {
         list = "list.txt";
         timeout = defaultTimeout;
+        console.log(mode);
 
         if (mode.toLowerCase() == "all") {
             practiceType = Math.random(486783555478);
         } else if (mode.toLowerCase() == "sheet-music") {
-            practiceType = 0.35;
-        } else if (mode.toLowerCase() == "learning-music") {
-            practiceType = 0;
-        } else if (mode.toLowerCase() == "jazz") {
-            practiceType = 0.25;
-        } else if (mode.toLowerCase() == "ear-training") {
             practiceType = 0.45;
+        } else if (mode.toLowerCase() == "jazz") {
+            practiceType = 0.35;
+        } else if (mode.toLowerCase() == "ear-training") {
+            practiceType = 0.55;
         } else if (mode.toLowerCase() == "technique") {
+            practiceType = 0.20;
+        } else if (mode.toLowerCase() == "learning-music") {
             practiceType = 0.10;
-        }
-        if (practiceType >= 0.45) {
+        } else if (mode.toLowerCase() == "music-thoery") {
+            practiceType = 0.00;
+        } 
+        if (practiceType >= 0.55) {
             //Melodic Replication Ear Training
             // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
             fetch(corsProxy + encodeURIComponent(fileHost + "ear-training-sources/list.txt"))
@@ -647,6 +679,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                         audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile}`));
                         hideAll();
+                        tips();
                         showAudio();
                         playAudioWithoutTimeout();
                         loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`ear-training-sources/${randomFile.replace(new RegExp(".mp3"+ '$'), '.musicxml')}`)));
@@ -655,7 +688,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .catch(error => {
                         console.error('Error fetching file list:', error);
                     });
-        } else if (practiceType >= 0.35) {
+        } else if (practiceType >= 0.45) {
             //Sight Reading
             fileList = [];
             // if (fileList.length === 0) {
@@ -688,41 +721,29 @@ document.addEventListener("DOMContentLoaded", function () {
             audioPlayer.pause();
 
             
-        } else if (practiceType >= 0.25) {
+        } else if (practiceType >= 0.35) {
             //Improvisation Practice
-            fileList = [];
-            if (fileList.length === 0) {
-                fetch(corsProxy + encodeURIComponent(fileHost + `${modesFolder[modes.indexOf(mode)]}/${list}`))
-                    // fetch("all/../studio-ghibi/list.txt")
-                    .then(response => response.text())
-                    .then(text => {
-
-                        fileList = text.trim().split('\n');
-                        console.log(fileList);
-                        const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                        audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                        keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
-                        hideSheetShowAudio();
-                        keyText.classList.add("shown");
-                        keyText.classList.remove("hidden");
-                        playAudioWithCustomTimeout(100);
-                        mode = oldMode;
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file list:', error);
-                    });
-            } else {
-                const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                const randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`${modesFolder[modes.indexOf(mode)]}/${randomFile}`));
-                keyText.innerHTML = "<summary>Key: </summary>"+randomFile;
-                hideSheetShowAudio();
-                keyText.classList.add("shown");
-                keyText.classList.remove("hidden");
-                playAudioWithCustomTimeout(120+(Math.random()*30));
-            }
-        } else if (practiceType >= 0.10) {
+            fetch(corsProxy + encodeURIComponent(fileHost + `Music-Backing-Tracks/${list}`))
+                // fetch("all/../studio-ghibi/list.txt")
+                .then(response => response.text())
+                .then(text => {
+                    timeout = 120+(Math.random()*30);
+                    fileList = text.trim().split('\n');
+                    console.log(fileList);
+                    const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                    randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                    audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`Music-Backing-Tracks/${randomFile}`));
+                    keyText.innerHTML = `<summary>Key ${Math.round(timeout)} seconds left: </summary>`+randomFile;
+                    hideAll();
+                    hideSheetShowAudio();
+                    keyText.classList.add("shown");
+                    keyText.classList.remove("hidden");
+                    playAudioWithCustomTimeout(timeout);
+                })
+                .catch(error => {
+                    console.error('Error fetching file list:', error);
+                });
+        } else if (practiceType >= 0.20) {
             //Technique Practice
             hideAllShowText();
             chords = ["Ascending Chords in A major", "Ascending Chords in A minor", "Ascending Chords in A# major", "Ascending Chords in A# minor", "Ascending Chords in B major", "Ascending Chords in B minor", "Ascending Chords in C major", "Ascending Chords in C minor", "Ascending Chords in C# major", "Ascending Chords in C# minor", "Ascending Chords in D major", "Ascending Chords in D minor", "Ascending Chords in D# major", "Ascending Chords in D# minor", "Ascending Chords in E major", "Ascending Chords in E minor", "Ascending Chords in F major", "Ascending Chords in F minor", "Ascending Chords in F# major", "Ascending Chords in F# minor", "Ascending Chords in G major", "Ascending Chords in G minor", "Ascending Chords in G# major", "Ascending Chords in G# minor", "Descending Chords in A major", "Descending Chords in A minor", "Descending Chords in A# major", "Descending Chords in A# minor", "Descending Chords in B major", "Descending Chords in B minor", "Descending Chords in C major", "Descending Chords in C minor", "Descending Chords in C# major", "Descending Chords in C# minor", "Descending Chords in D major", "Descending Chords in D minor", "Descending Chords in D# major", "Descending Chords in D# minor", "Descending Chords in E major", "Descending Chords in E minor", "Descending Chords in F major", "Descending Chords in F minor", "Descending Chords in F# major", "Descending Chords in F# minor", "Descending Chords in G major", "Descending Chords in G minor", "Descending Chords in G# major", "Descending Chords in G# minor"]
@@ -776,7 +797,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
            
             audioPlayer.pause();
-        } else {
+        } else if (practiceType >= 0.10) {
             //Repatoire Building
                 console.log(githubKey);
 
@@ -808,19 +829,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log(n);
                     console.log(content);
                 }
-                message = "Play through bars " + currentBars + " to " + (currentBars + 4) + " then run through till bar " + (currentBars + 4) + " of " + fileName.split(".gp")[0];
-                showSheet();
-                showSheetButton();
-                techniqueText.textContent = message;
+                message = "Play through bars " + currentBars + " to " + (currentBars + 2) + " then run through till bar " + (currentBars + 2) + " of " + fileName.split(".gp")[0];
                 hideAll();
+                showSheet();
+                techniqueText.textContent = message;
                 showTechniqueText();
-                osmd.setOptions({drawUpToMeasureNumber: currentBars + 4});
+                osmd.setOptions({drawUpToMeasureNumber: currentBars + 4, drawFromMeasureNumber: currentBars});
                 loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
                 nextButton.addEventListener("click", async () => {
                     splitContent = content.split("\n");
+                    currentBars += 2;
                     updatedSong = [fileName, currentBars, totalBars].join("|");
+                    console.log(updatedSong);
                     splitContent[splitContent.indexOf(splitContent.slice(-n)[0])] = updatedSong;
                     updatedContent = splitContent.join("\n");
+                    console.log(updatedContent);
                     const response = await fetch(`https://api.github.com/gists/${gistId}`, {
                         method: 'PATCH',
                         headers: {
@@ -837,8 +860,42 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
                 const gist = await response.json();
                 console.log('Gist updated:', gist);
-            });
-            });
+                }, {once : true});
+                revealSheet.addEventListener("click", async () => {
+                    showSheetPDF();
+                }, {once : true});
+                showSheetButton();
+                sheetPDF.data = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName.split(".musicxml")[0] + ".pdf"));
+            })();
+        } else {
+            // Music Theory
+            fetch(corsProxy + encodeURIComponent(fileHost + `theory-training/${list}`))
+                // fetch("all/../studio-ghibi/list.txt")
+                .then(response => response.text())
+                .then(text => {
+                    fileList = text.trim().split('\n');
+                    console.log(fileList);
+                    const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                    randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                    audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`theory-training/${randomFile}`));
+                    if (randomFile.toLowerCase().includes("chord")) {
+                        keyText.innerHTML = `<summary>What chord is this: </summary>`+randomFile;
+                    } else if (randomFile.toLowerCase().includes("interval")) {
+                        keyText.innerHTML = `<summary>What interval is this: </summary>`+randomFile;
+                    } else if (randomFile.toLowerCase().includes("progression")) {
+                        keyText.innerHTML = `<summary>What chord progression is this: </summary>`+randomFile;
+                    } else if (randomFile.toLowerCase().includes("note")){
+                        keyText.innerHTML = `<summary>What note is this: </summary>`+randomFile;
+                    }
+                    hideAll();
+                    hideSheetShowAudio();
+                    keyText.classList.add("shown");
+                    keyText.classList.remove("hidden");
+                    playAudioWithCustomTimeout(timeout);
+                })
+                .catch(error => {
+                    console.error('Error fetching file list:', error);
+                });
         }
     }
 
