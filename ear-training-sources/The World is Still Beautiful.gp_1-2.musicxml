@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="4.0">
+  <movement-title>The World is Still Beautiful.gp.musicxml</movement-title>
+  <identification>
+    <creator type="composer">Music21</creator>
+    <encoding>
+      <encoding-date>2024-05-20</encoding-date>
+      <software>music21 v.9.1.0</software>
+      <software>MuseScore 4.3.0</software>
+      <supports attribute="new-system" element="print" type="yes" value="yes" />
+      <supports attribute="new-page" element="print" type="yes" value="yes" />
+    </encoding>
+  </identification>
+  <defaults>
+    <scaling>
+      <millimeters>7</millimeters>
+      <tenths>40</tenths>
+    </scaling>
+  </defaults>
+  <part-list>
+    <score-part id="P1">
+      <part-name>Classic E</part-name>
+      <part-abbreviation>Classic.G</part-abbreviation>
+      <score-instrument id="I4eb2e0f0bc4413632059862e394d1eb9">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I4eb2e0f0bc4413632059862e394d1eb9">
+        <midi-channel>1</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P2">
+      <part-name>Electric G</part-name>
+      <part-abbreviation>Electric.G</part-abbreviation>
+      <score-instrument id="Iea124b961b4942ede71f0eff3904476c">
+        <instrument-name>Electric Guitar</instrument-name>
+        <instrument-abbreviation>Elec Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="Iea124b961b4942ede71f0eff3904476c">
+        <midi-channel>3</midi-channel>
+        <midi-program>28</midi-program>
+      </midi-instrument>
+    </score-part>
+  </part-list>
+  <!--=========================== Part 1 ===========================-->
+  <part id="P1">
+    <!--========================= Measure 1 ==========================-->
+    <measure implicit="no" number="1" width="176.15">
+      <print>
+        <system-layout>
+          <system-margins>
+            <left-margin>102.74</left-margin>
+            <right-margin>0</right-margin>
+          </system-margins>
+          <top-system-distance>170</top-system-distance>
+        </system-layout>
+      </print>
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <direction placement="above">
+        <direction-type>
+          <metronome parentheses="no">
+            <beat-unit>quarter</beat-unit>
+            <per-minute>137</per-minute>
+          </metronome>
+        </direction-type>
+        <sound tempo="137" />
+      </direction>
+      <note default-x="111.68" default-y="-10">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--========================= Measure 2 ==========================-->
+    <measure implicit="no" number="2" width="107.13">
+      <note default-x="46.17" default-y="-10">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 2 ===========================-->
+  <part id="P2">
+    <!--========================= Measure 1 ==========================-->
+    <measure implicit="no" number="1" width="176.15">
+      <print>
+        <staff-layout number="1">
+          <staff-distance>63.07</staff-distance>
+        </staff-layout>
+      </print>
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <staff-details print-object="yes" />
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="111.68" default-y="-113.07">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--========================= Measure 2 ==========================-->
+    <measure implicit="no" number="2" width="107.13">
+      <note default-x="46.17" default-y="-113.07">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+</score-partwise>

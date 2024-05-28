@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="4.0">
+  <movement-title>Nasty feat. Jason Richardson.gp.musicxml</movement-title>
+  <identification>
+    <creator type="composer">Music21</creator>
+    <encoding>
+      <encoding-date>2024-05-20</encoding-date>
+      <software>music21 v.9.1.0</software>
+      <software>MuseScore 4.3.0</software>
+      <supports attribute="new-system" element="print" type="yes" value="yes" />
+      <supports attribute="new-page" element="print" type="yes" value="yes" />
+    </encoding>
+  </identification>
+  <defaults>
+    <scaling>
+      <millimeters>7</millimeters>
+      <tenths>40</tenths>
+    </scaling>
+  </defaults>
+  <part-list>
+    <score-part id="P1">
+      <part-name>Tim</part-name>
+      <part-abbreviation>Tim</part-abbreviation>
+      <score-instrument id="I278815f22ecc9797540e7608bfe03410">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I278815f22ecc9797540e7608bfe03410">
+        <midi-channel>1</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P2">
+      <part-name>Scott</part-name>
+      <part-abbreviation>Scott</part-abbreviation>
+      <score-instrument id="Iae7705b92f6a4b8cfff7d5756c3eb893">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="Iae7705b92f6a4b8cfff7d5756c3eb893">
+        <midi-channel>3</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P3">
+      <part-name>Jason Richardson</part-name>
+      <part-abbreviation>Jason</part-abbreviation>
+      <score-instrument id="I7942f8375ccda2472bd5d2bb65d52c5b">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I7942f8375ccda2472bd5d2bb65d52c5b">
+        <midi-channel>5</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P4">
+      <part-name>Jason (Harmony)</part-name>
+      <part-abbreviation>Jason</part-abbreviation>
+      <score-instrument id="If10925bc3d6d3fb3e4f181fdcc77e3ce">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="If10925bc3d6d3fb3e4f181fdcc77e3ce">
+        <midi-channel>7</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+  </part-list>
+  <!--=========================== Part 1 ===========================-->
+  <part id="P1">
+    <!--========================= Measure 99 =========================-->
+    <measure implicit="no" number="99" width="419.67">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="202.44" default-y="-10">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 100 =========================-->
+    <measure implicit="no" number="100" width="235.86">
+      <print new-page="yes">
+        <system-layout>
+          <system-margins>
+            <left-margin>64.03</left-margin>
+            <right-margin>0</right-margin>
+          </system-margins>
+          <top-system-distance>70</top-system-distance>
+        </system-layout>
+      </print>
+      <note default-x="127.98" default-y="-10">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 2 ===========================-->
+  <part id="P2">
+    <!--========================= Measure 99 =========================-->
+    <measure implicit="no" number="99" width="419.67">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="202.44" default-y="-86.08">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 100 =========================-->
+    <measure implicit="no" number="100" width="235.86">
+      <print new-page="yes">
+        <staff-layout number="1">
+          <staff-distance>112.93</staff-distance>
+        </staff-layout>
+      </print>
+      <attributes>
+        <staff-details print-object="yes" />
+      </attributes>
+      <note default-x="127.98" default-y="-162.93">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 3 ===========================-->
+  <part id="P3">
+    <!--========================= Measure 99 =========================-->
+    <measure implicit="no" number="99" width="419.67">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <direction placement="below">
+        <direction-type>
+          <words>P.M.</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <bracket line-end="none" line-type="dashed" number="1" type="start" />
+        </direction-type>
+      </direction>
+      <note default-x="20.42" default-y="-242.17">
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>3</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <accidental>flat</accidental>
+        <stem>up</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">begin</beam>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <bracket end-length="12.0" line-end="both" line-type="dashed" number="1" type="stop" />
+        </direction-type>
+      </direction>
+      <note default-x="41.18" default-y="-212.17">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+        <notations>
+          <slur number="1" type="start" />
+        </notations>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words default-y="5" enclosure="none" relative-y="10">P</words>
+        </direction-type>
+        <offset>-1260</offset>
+      </direction>
+      <note default-x="61.94" default-y="-217.17">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>up</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+        <notations>
+          <slur number="1" type="stop" />
+        </notations>
+      </note>
+      <direction placement="below">
+        <direction-type>
+          <words>P.M.</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <bracket line-end="none" line-type="dashed" number="2" type="start" />
+        </direction-type>
+      </direction>
+      <note default-x="82.7" default-y="-232.17">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>up</stem>
+        <beam number="1">end</beam>
+        <beam number="2">end</beam>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <bracket end-length="12.0" line-end="both" line-type="dashed" number="2" type="stop" />
+        </direction-type>
+      </direction>
+      <note default-x="104.19" default-y="-187.17">
+        <pitch>
+          <step>F</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">begin</beam>
+      </note>
+      <direction placement="below">
+        <direction-type>
+          <words>P.M.</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <bracket line-end="none" line-type="dashed" number="3" type="start" />
+        </direction-type>
+      </direction>
+      <note default-x="124.95" default-y="-212.17">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+      </note>
+      <note default-x="145.71" default-y="-202.17">
+        <pitch>
+          <step>C</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <bracket end-length="12.0" line-end="both" line-type="dashed" number="3" type="stop" />
+        </direction-type>
+      </direction>
+      <note default-x="166.47" default-y="-192.17">
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">end</beam>
+      </note>
+      <note default-x="201.26" default-y="-177.17">
+        <pitch>
+          <step>A</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>1680</duration>
+        <type>16th</type>
+        <time-modification>
+          <actual-notes>3</actual-notes>
+          <normal-notes>2</normal-notes>
+          <normal-type>16th</normal-type>
+        </time-modification>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">begin</beam>
+        <notations>
+          <slur number="2" type="start" />
+          <articulations>
+            <scoop />
+          </articulations>
+          <tuplet bracket="no" number="1" type="start">
+            <tuplet-actual>
+              <tuplet-number>3</tuplet-number>
+              <tuplet-type>16th</tuplet-type>
+            </tuplet-actual>
+            <tuplet-normal>
+              <tuplet-number>2</tuplet-number>
+              <tuplet-type>16th</tuplet-type>
+            </tuplet-normal>
+          </tuplet>
+        </notations>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words default-y="34.22" enclosure="none" relative-y="10">H</words>
+        </direction-type>
+        <offset>-839</offset>
+      </direction>
+      <note default-x="233.98" default-y="-172.17">
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>5</octave>
+        </pitch>
+        <duration>1680</duration>
+        <type>16th</type>
+        <accidental>flat</accidental>
+        <time-modification>
+          <actual-notes>3</actual-notes>
+          <normal-notes>2</normal-notes>
+          <normal-type>16th</normal-type>
+        </time-modification>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words default-y="32.64" enclosure="none" relative-y="10">P</words>
+        </direction-type>
+        <offset>-839</offset>
+      </direction>
+      <note default-x="256.08" default-y="-177.17">
+        <pitch>
+          <step>A</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>1680</duration>
+        <type>16th</type>
+        <time-modification>
+          <actual-notes>3</actual-notes>
+          <normal-notes>2</normal-notes>
+          <normal-type>16th</normal-type>
+        </time-modification>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+        <notations>
+          <tuplet number="1" type="stop" />
+        </notations>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words default-y="25.29" enclosure="none" relative-y="10">P</words>
+        </direction-type>
+        <offset>-839</offset>
+      </direction>
+      <note default-x="275.87" default-y="-182.17">
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+        <notations>
+          <slur number="2" type="stop" />
+        </notations>
+      </note>
+      <direction placement="below">
+        <direction-type>
+          <words>P.M.</words>
+        </direction-type>
+        <offset>0</offset>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <bracket line-end="none" line-type="dashed" number="4" type="start" />
+        </direction-type>
+      </direction>
+      <note default-x="296.63" default-y="-202.17">
+        <pitch>
+          <step>C</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">end</beam>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <bracket end-length="12.0" line-end="both" line-type="dashed" number="4" type="stop" />
+        </direction-type>
+      </direction>
+      <note default-x="317.39" default-y="-187.17">
+        <pitch>
+          <step>F</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">begin</beam>
+        <notations>
+          <slur number="3" type="start" />
+          <slide line-type="solid" number="1" type="start" />
+        </notations>
+      </note>
+      <note default-x="347.39" default-y="-182.17">
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>3780</duration>
+        <type>16th</type>
+        <dot />
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+        <notations>
+          <slur number="3" type="stop" />
+          <slide line-type="solid" number="1" type="stop" />
+        </notations>
+      </note>
+      <note default-x="387.88" default-y="-182.17">
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>3780</duration>
+        <tie type="start" />
+        <type>16th</type>
+        <dot />
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">end</beam>
+        <notations>
+          <tied type="start" />
+          <articulations>
+            <scoop />
+          </articulations>
+        </notations>
+      </note>
+    </measure>
+    <!--======================== Measure 100 =========================-->
+    <measure implicit="no" number="100" width="235.86">
+      <print new-page="yes">
+        <staff-layout number="1">
+          <staff-distance>112.93</staff-distance>
+        </staff-layout>
+      </print>
+      <attributes>
+        <staff-details print-object="yes" />
+      </attributes>
+      <note default-x="59.9" default-y="-300.85">
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>20160</duration>
+        <tie type="stop" />
+        <tie type="start" />
+        <type>half</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="stop" />
+          <tied type="start" />
+        </notations>
+      </note>
+      <note default-x="128.05" default-y="-300.85">
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="stop" />
+        <type>eighth</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="stop" />
+        </notations>
+      </note>
+      <note default-x="158.33" default-y="-315.85">
+        <pitch>
+          <step>D</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>10080</duration>
+        <tie type="start" />
+        <type>quarter</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="start" />
+          <technical>
+            <fingering alternate="no" substitution="no">None</fingering>
+          </technical>
+        </notations>
+      </note>
+      <note default-x="191.77" default-y="-315.85">
+        <pitch>
+          <step>D</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="stop" />
+        <tie type="start" />
+        <type>eighth</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="stop" />
+          <tied type="start" />
+        </notations>
+      </note>
+      <note default-x="203.77" default-y="-310.85">
+        <chord />
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="start" />
+        <type>eighth</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="start" />
+        </notations>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 4 ===========================-->
+  <part id="P4">
+    <!--========================= Measure 99 =========================-->
+    <measure implicit="no" number="99" width="419.67">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="20.42" default-y="-309.47">
+        <rest />
+        <duration>30240</duration>
+        <type>half</type>
+        <dot />
+      </note>
+      <note default-x="317.39" default-y="-299.47">
+        <pitch>
+          <step>D</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>2520</duration>
+        <type>16th</type>
+        <stem>down</stem>
+        <beam number="1">begin</beam>
+        <beam number="2">begin</beam>
+        <notations>
+          <slur number="4" type="start" />
+          <slide line-type="solid" number="2" type="start" />
+        </notations>
+      </note>
+      <note default-x="347.39" default-y="-294.47">
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>3780</duration>
+        <type>16th</type>
+        <dot />
+        <stem>down</stem>
+        <beam number="1">continue</beam>
+        <beam number="2">continue</beam>
+        <notations>
+          <slur number="4" type="stop" />
+          <slide line-type="solid" number="2" type="stop" />
+        </notations>
+      </note>
+      <note default-x="387.88" default-y="-294.47">
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>3780</duration>
+        <tie type="start" />
+        <type>16th</type>
+        <dot />
+        <stem>down</stem>
+        <beam number="1">end</beam>
+        <beam number="2">end</beam>
+        <notations>
+          <tied type="start" />
+          <articulations>
+            <scoop />
+          </articulations>
+        </notations>
+      </note>
+    </measure>
+    <!--======================== Measure 100 =========================-->
+    <measure implicit="no" number="100" width="235.86">
+      <print new-page="yes">
+        <staff-layout number="1">
+          <staff-distance>112.93</staff-distance>
+        </staff-layout>
+      </print>
+      <attributes>
+        <staff-details print-object="yes" />
+      </attributes>
+      <note default-x="59.9" default-y="-463.78">
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>20160</duration>
+        <tie type="stop" />
+        <tie type="start" />
+        <type>half</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="stop" />
+          <tied type="start" />
+        </notations>
+      </note>
+      <note default-x="128.05" default-y="-463.78">
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="stop" />
+        <type>eighth</type>
+        <stem>down</stem>
+        <notations>
+          <tied type="stop" />
+        </notations>
+      </note>
+      <note default-x="158.33" default-y="-423.78">
+        <pitch>
+          <step>F</step>
+          <octave>6</octave>
+        </pitch>
+        <duration>10080</duration>
+        <tie type="start" />
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead parentheses="no">diamond</notehead>
+        <notations>
+          <tied type="start" />
+        </notations>
+      </note>
+      <note default-x="191.77" default-y="-428.78">
+        <pitch>
+          <step>E</step>
+          <octave>6</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="start" />
+        <type>eighth</type>
+        <stem>down</stem>
+        <notehead parentheses="no">diamond</notehead>
+        <notations>
+          <tied type="start" />
+        </notations>
+      </note>
+      <note default-x="203.77" default-y="-423.78">
+        <chord />
+        <pitch>
+          <step>F</step>
+          <octave>6</octave>
+        </pitch>
+        <duration>5040</duration>
+        <tie type="stop" />
+        <tie type="start" />
+        <type>eighth</type>
+        <stem>down</stem>
+        <notehead parentheses="no">diamond</notehead>
+        <notations>
+          <tied type="stop" />
+          <tied type="start" />
+        </notations>
+      </note>
+    </measure>
+  </part>
+</score-partwise>

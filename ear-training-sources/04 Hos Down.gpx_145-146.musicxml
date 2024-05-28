@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="4.0">
+  <movement-title>04 Hos Down.gpx.musicxml</movement-title>
+  <identification>
+    <creator type="composer">Music21</creator>
+    <encoding>
+      <encoding-date>2024-05-20</encoding-date>
+      <software>music21 v.9.1.0</software>
+      <software>MuseScore 4.3.0</software>
+      <supports attribute="new-system" element="print" type="yes" value="yes" />
+      <supports attribute="new-page" element="print" type="yes" value="yes" />
+    </encoding>
+  </identification>
+  <defaults>
+    <scaling>
+      <millimeters>7</millimeters>
+      <tenths>40</tenths>
+    </scaling>
+  </defaults>
+  <part-list>
+    <score-part id="P1">
+      <part-name>Rhythm Left (RL)</part-name>
+      <part-abbreviation>RL</part-abbreviation>
+      <score-instrument id="I03184716189adc29837971e973b23d78">
+        <instrument-name>Electric Guitar</instrument-name>
+        <instrument-abbreviation>Elec Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I03184716189adc29837971e973b23d78">
+        <midi-channel>1</midi-channel>
+        <midi-program>31</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P2">
+      <part-name>Rhythm Right (RR)</part-name>
+      <part-abbreviation>RR</part-abbreviation>
+      <score-instrument id="Ie2277c5d89d1f195de4f784c4260a823">
+        <instrument-name>Electric Guitar</instrument-name>
+        <instrument-abbreviation>Elec Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="Ie2277c5d89d1f195de4f784c4260a823">
+        <midi-channel>3</midi-channel>
+        <midi-program>31</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P3">
+      <part-name>Lead</part-name>
+      <part-abbreviation>Lead</part-abbreviation>
+      <score-instrument id="I58804656f9739bf633a06fbf9f12e24c">
+        <instrument-name>Electric Guitar</instrument-name>
+        <instrument-abbreviation>Elec Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I58804656f9739bf633a06fbf9f12e24c">
+        <midi-channel>5</midi-channel>
+        <midi-program>31</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P4">
+      <part-name>Clean Lead (CL)</part-name>
+      <part-abbreviation>CL</part-abbreviation>
+      <score-instrument id="I6d7594c5bdecba1ef490f008b4235ce1">
+        <instrument-name>Electric Guitar</instrument-name>
+        <instrument-abbreviation>Elec Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I6d7594c5bdecba1ef490f008b4235ce1">
+        <midi-channel>7</midi-channel>
+        <midi-program>28</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P5">
+      <part-name>Clean Rhythm (CR)</part-name>
+      <part-abbreviation>CR</part-abbreviation>
+      <score-instrument id="I623254a75a6c44d1c34e876fbe892933">
+        <instrument-name>Electric Guitar</instrument-name>
+        <instrument-abbreviation>Elec Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I623254a75a6c44d1c34e876fbe892933">
+        <midi-channel>9</midi-channel>
+        <midi-program>28</midi-program>
+      </midi-instrument>
+    </score-part>
+  </part-list>
+  <!--=========================== Part 1 ===========================-->
+  <part id="P1">
+    <!--======================== Measure 145 =========================-->
+    <measure implicit="no" number="145" width="100.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="43.05" default-y="-10">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 146 =========================-->
+    <measure implicit="no" number="146" width="100.89">
+      <note default-x="43.05" default-y="-10">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 2 ===========================-->
+  <part id="P2">
+    <!--======================== Measure 145 =========================-->
+    <measure implicit="no" number="145" width="100.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="43.05" default-y="-132.05">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 146 =========================-->
+    <measure implicit="no" number="146" width="100.89">
+      <note default-x="43.05" default-y="-132.05">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 3 ===========================-->
+  <part id="P3">
+    <!--======================== Measure 145 =========================-->
+    <measure implicit="no" number="145" width="100.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="43.05" default-y="-254.1">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 146 =========================-->
+    <measure implicit="no" number="146" width="100.89">
+      <note default-x="43.05" default-y="-254.1">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 4 ===========================-->
+  <part id="P4">
+    <!--======================== Measure 145 =========================-->
+    <measure implicit="no" number="145" width="100.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="43.05" default-y="-376.16">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 146 =========================-->
+    <measure implicit="no" number="146" width="100.89">
+      <note default-x="43.05" default-y="-376.16">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 5 ===========================-->
+  <part id="P5">
+    <!--======================== Measure 145 =========================-->
+    <measure implicit="no" number="145" width="100.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="43.05" default-y="-498.21">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+    <!--======================== Measure 146 =========================-->
+    <measure implicit="no" number="146" width="100.89">
+      <note default-x="43.05" default-y="-498.21">
+        <rest measure="yes" />
+        <duration>40320</duration>
+      </note>
+    </measure>
+  </part>
+</score-partwise>

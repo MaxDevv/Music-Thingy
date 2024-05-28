@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE score-partwise  PUBLIC "-//Recordare//DTD MusicXML 4.0 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="4.0">
+  <movement-title>So Strange feat. Cuco.gp.musicxml</movement-title>
+  <identification>
+    <creator type="composer">Music21</creator>
+    <encoding>
+      <encoding-date>2024-05-20</encoding-date>
+      <software>music21 v.9.1.0</software>
+      <software>MuseScore 4.3.0</software>
+      <supports attribute="new-system" element="print" type="yes" value="yes" />
+      <supports attribute="new-page" element="print" type="yes" value="yes" />
+    </encoding>
+  </identification>
+  <defaults>
+    <scaling>
+      <millimeters>7</millimeters>
+      <tenths>40</tenths>
+    </scaling>
+  </defaults>
+  <part-list>
+    <score-part id="P1">
+      <part-name>Tim</part-name>
+      <part-abbreviation>Tim</part-abbreviation>
+      <score-instrument id="I73464dd466570b0b591eb5897cbffca4">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="I73464dd466570b0b591eb5897cbffca4">
+        <midi-channel>1</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+    <score-part id="P2">
+      <part-name>Scott</part-name>
+      <part-abbreviation>Scott</part-abbreviation>
+      <score-instrument id="Icb0145936f7c5314332865873c624727">
+        <instrument-name>Acoustic Guitar</instrument-name>
+        <instrument-abbreviation>Ac Gtr</instrument-abbreviation>
+      </score-instrument>
+      <midi-instrument id="Icb0145936f7c5314332865873c624727">
+        <midi-channel>3</midi-channel>
+        <midi-program>26</midi-program>
+      </midi-instrument>
+    </score-part>
+  </part-list>
+  <!--=========================== Part 1 ===========================-->
+  <part id="P1">
+    <!--========================= Measure 95 =========================-->
+    <measure implicit="no" number="95" width="202.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <direction placement="above">
+        <direction-type>
+          <words enclosure="none" relative-y="10">H</words>
+        </direction-type>
+      </direction>
+      <note default-x="25.33" default-y="-60">
+        <grace slash="yes" />
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+        </pitch>
+        <type>32nd</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="1" type="start" />
+        </notations>
+      </note>
+      <note default-x="42.54" default-y="-55">
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="1" type="stop" />
+          <articulations>
+            <staccato />
+          </articulations>
+        </notations>
+      </note>
+      <note default-x="76.4" default-y="-65">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words enclosure="none" relative-y="10">H</words>
+        </direction-type>
+      </direction>
+      <note default-x="97.5" default-y="-50">
+        <grace slash="yes" />
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+        </pitch>
+        <type>32nd</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="2" type="start" />
+        </notations>
+      </note>
+      <note default-x="118.24" default-y="-45">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="2" type="stop" />
+          <articulations>
+            <staccato />
+          </articulations>
+        </notations>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words enclosure="none" relative-y="10">H</words>
+        </direction-type>
+      </direction>
+      <note default-x="150.02" default-y="-60">
+        <grace slash="yes" />
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+        </pitch>
+        <type>32nd</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="3" type="start" />
+        </notations>
+      </note>
+      <note default-x="167.23" default-y="-55">
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="3" type="stop" />
+          <articulations>
+            <staccato />
+          </articulations>
+        </notations>
+      </note>
+    </measure>
+    <!--========================= Measure 96 =========================-->
+    <measure implicit="no" number="96" width="150.23">
+      <note default-x="13" default-y="-65">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+      </note>
+      <note default-x="46.86" default-y="-20">
+        <rest />
+        <duration>10080</duration>
+        <type>quarter</type>
+      </note>
+      <note default-x="80.72" default-y="-30">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+      </note>
+      <note default-x="114.57" default-y="-40">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+      </note>
+    </measure>
+  </part>
+  <!--=========================== Part 2 ===========================-->
+  <part id="P2">
+    <!--========================= Measure 95 =========================-->
+    <measure implicit="no" number="95" width="202.89">
+      <attributes>
+        <divisions>10080</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <transpose>
+          <diatonic>0</diatonic>
+          <chromatic>0</chromatic>
+          <octave-change>-1</octave-change>
+        </transpose>
+      </attributes>
+      <note default-x="11.05" default-y="-148.76">
+        <grace slash="yes" />
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <type>32nd</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="4" type="start" />
+          <slide line-type="solid" number="1" type="start" />
+        </notations>
+      </note>
+      <note default-x="42.54" default-y="-143.76">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notations>
+          <slur number="4" type="stop" />
+          <slide line-type="solid" number="1" type="stop" />
+          <articulations>
+            <staccato />
+          </articulations>
+        </notations>
+      </note>
+      <note default-x="76.4" default-y="-153.76">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words default-y="1.56" enclosure="none" relative-y="10">H</words>
+        </direction-type>
+      </direction>
+      <note default-x="97.5" default-y="-138.76">
+        <grace slash="yes" />
+        <pitch>
+          <step>C</step>
+          <octave>5</octave>
+        </pitch>
+        <type>32nd</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="5" type="start" />
+        </notations>
+      </note>
+      <note default-x="118.24" default-y="-133.76">
+        <pitch>
+          <step>D</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notations>
+          <slur number="5" type="stop" />
+          <articulations>
+            <staccato />
+          </articulations>
+        </notations>
+      </note>
+      <note default-x="135.74" default-y="-148.76">
+        <grace slash="yes" />
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <type>32nd</type>
+        <stem>up</stem>
+        <notations>
+          <slur number="6" type="start" />
+          <slide line-type="solid" number="2" type="start" />
+        </notations>
+      </note>
+      <note default-x="167.23" default-y="-143.76">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notations>
+          <slur number="6" type="stop" />
+          <slide line-type="solid" number="2" type="stop" />
+          <articulations>
+            <staccato />
+          </articulations>
+        </notations>
+      </note>
+    </measure>
+    <!--========================= Measure 96 =========================-->
+    <measure implicit="no" number="96" width="150.23">
+      <note default-x="13" default-y="-153.76">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>up</stem>
+      </note>
+      <note default-x="46.86" default-y="-143.76">
+        <rest />
+        <duration>10080</duration>
+        <type>quarter</type>
+      </note>
+      <note default-x="80.72" default-y="-118.76">
+        <pitch>
+          <step>G</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>down</stem>
+      </note>
+      <note default-x="114.57" default-y="-128.76">
+        <pitch>
+          <step>E</step>
+          <octave>5</octave>
+        </pitch>
+        <duration>10080</duration>
+        <type>quarter</type>
+        <stem>down</stem>
+      </note>
+    </measure>
+  </part>
+</score-partwise>
