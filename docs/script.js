@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     const corsProxy = ``;
+    const apiCorsProxy = `https://corsproxy.io/?`;
     keepGoing = true;
     // modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
     // modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music", "Music-Backing-Tracks", "jazz"];
@@ -72,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     audioPlayer.addEventListener('pause', function () { audioPlayer.isPlaying = false }, false);
     audioPlayer.addEventListener('playing', function () { audioPlayer.isPlaying = true }, false);
 
+    
 
     // Load dark mode preference from localStorage
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -288,6 +290,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    fetch (apiCorsProxy + encodeURIComponent("https://script.googleusercontent.com/macros/echo?user_content_key=lueDIP65V1TviFPlTA3pXyaqqi_Ao9QmSNoDI2MpjO3pgQhPiwDCfsS6JcYTB-VF0J-F2S-L2zOT6gNMjkM2Na1ea-3w9q_WOJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMWojr9NvTBuBLhyHCd5hHa3ys9IQszNRpJEFHjctEQPkpZk8WUUr1MJnIvaGNtMGUnI2NLV13eEdSG0b6eezwr2OHfIzJJLGtTKOuAY81JYcWd8_sQOMDQAXIuFltvcj9UvOWECdUTcChd_k7TjVvZRo9reF4hk-I&lib=MFj0A6GZBWv26Xn398IW7T7lx60PLmU9S"))
+        .then(response => response.json())
+        .then(data => {
+            // Set the completion counter
+            completed += data;
+            completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
+        })
 
     function inspireOnLoad() {
         if (window.location.hash.indexOf("inspire") > -1) {
