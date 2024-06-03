@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     //completionsNeeded = 5;
-                completionsNeeded = Math.round(20 * 1.02 ** ((((Date.now() / 1000) - 1714708800) / 86400)+9));
+    completionsNeeded = Math.ceil(20 * 1.02 ** ((((Date.now() / 1000) - 1714708800) / 86400)-25));
     completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
@@ -640,7 +640,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function tips(){
-        alwaysRemember = "Stay Confident, Play Like Air, Alternate Pick, EVERY BIT COUNTS :D!";
+        alwaysRemember = "Stay Confident, Play Like Air, Alternate Pick, EVERY BIT COUNTS and Always go 120% :D!";
         if (!techniqueText.classList.contains("shown") || techniqueText.innerText.includes("Start :D")) {
             techniqueText.innerText = alwaysRemember;
             techniqueText.classList.add("shown");
@@ -653,7 +653,24 @@ document.addEventListener("DOMContentLoaded", function () {
     function playRandomMP3() {
         play();
     }
+
+    function calculateThreshold(chances, index) {
+        // Validate input
+        if (!Array.isArray(chances) || typeof index !== 'number' || index < 0 || index >= chances.length) {
+            throw new Error('Invalid input');
+        }
+    
+        // Calculate the sum of all chances
+        const total = chances.reduce((sum, chance) => sum + chance, 0);
+    
+        // Calculate the threshold for the given index
+        const threshold = chances[index] / total;
+    
+        return threshold;
+    }
+
     function play() {
+        keyText.removeAttribute("open");
         list = "list.txt";
         timeout = defaultTimeout;
         console.log(mode);
@@ -673,7 +690,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (mode.toLowerCase() == "music-thoery") {
             practiceType = 0.00;
         } 
-        if (practiceType >= 0.55) {
+        
+        chances = [35 /*Ear Training*/, 10 /*Sight Reading*/, 10 /*Improvisation*/, 15 /*Technique*/, 10 /*Learning Music*/, 10 /*Music Theory*/];
+        if (practiceType >= calculateThreshold(chances, 0)) {
             //Melodic Replication Ear Training
             // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
             fetch(corsProxy + encodeURIComponent(fileHost + "ear-training-sources/list.txt"))
@@ -697,7 +716,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .catch(error => {
                         console.error('Error fetching file list:', error);
                     });
-        } else if (practiceType >= 0.45) {
+        } else if (practiceType >= calculateThreshold(chances, 1)) {
             //Sight Reading
             fileList = [];
             // if (fileList.length === 0) {
@@ -730,7 +749,7 @@ document.addEventListener("DOMContentLoaded", function () {
             audioPlayer.pause();
 
             
-        } else if (practiceType >= 0.35) {
+        } else if (practiceType >= calculateThreshold(chances, 2)) {
             //Improvisation Practice
             fetch(corsProxy + encodeURIComponent(fileHost + `Music-Backing-Tracks/${list}`))
                 // fetch("all/../studio-ghibi/list.txt")
@@ -752,7 +771,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => {
                     console.error('Error fetching file list:', error);
                 });
-        } else if (practiceType >= 0.20) {
+        } else if (practiceType >= calculateThreshold(chances, 3)) {
             //Technique Practice
             hideAllShowText();
             chords = ["Ascending Chords in A major", "Ascending Chords in A minor", "Ascending Chords in A# major", "Ascending Chords in A# minor", "Ascending Chords in B major", "Ascending Chords in B minor", "Ascending Chords in C major", "Ascending Chords in C minor", "Ascending Chords in C# major", "Ascending Chords in C# minor", "Ascending Chords in D major", "Ascending Chords in D minor", "Ascending Chords in D# major", "Ascending Chords in D# minor", "Ascending Chords in E major", "Ascending Chords in E minor", "Ascending Chords in F major", "Ascending Chords in F minor", "Ascending Chords in F# major", "Ascending Chords in F# minor", "Ascending Chords in G major", "Ascending Chords in G minor", "Ascending Chords in G# major", "Ascending Chords in G# minor", "Descending Chords in A major", "Descending Chords in A minor", "Descending Chords in A# major", "Descending Chords in A# minor", "Descending Chords in B major", "Descending Chords in B minor", "Descending Chords in C major", "Descending Chords in C minor", "Descending Chords in C# major", "Descending Chords in C# minor", "Descending Chords in D major", "Descending Chords in D minor", "Descending Chords in D# major", "Descending Chords in D# minor", "Descending Chords in E major", "Descending Chords in E minor", "Descending Chords in F major", "Descending Chords in F minor", "Descending Chords in F# major", "Descending Chords in F# minor", "Descending Chords in G major", "Descending Chords in G minor", "Descending Chords in G# major", "Descending Chords in G# minor"]
@@ -793,7 +812,7 @@ document.addEventListener("DOMContentLoaded", function () {
             temp = temp[Math.floor(Math.random(4867833525234) * (temp.length-1))];
             console.log(temp);
             if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
-            techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850) + " bpm";
+            techniqueText.textContent = temp + " at " + (bpm + Math.floor((Date.now() / 1000) / 86400) - 19850 - 12) + " bpm";
             if (temp.includes("Chords")) {
                 sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
                 sheetImage.classList.add("shown");
@@ -806,7 +825,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
            
             audioPlayer.pause();
-        } else if (practiceType >= 0.10) {
+        } else if (practiceType >= calculateThreshold(chances, 4)) {
             //Repatoire Building
                 console.log(githubKey);
 
@@ -843,7 +862,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 showSheet();
                 techniqueText.textContent = message;
                 showTechniqueText();
-                osmd.setOptions({drawUpToMeasureNumber: currentBars + 4, drawFromMeasureNumber: currentBars});
+                osmd.setOptions({drawUpToMeasureNumber: currentBars + 2, drawFromMeasureNumber: currentBars});
                 loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
                 nextButton.addEventListener("click", async () => {
                     splitContent = content.split("\n");
@@ -876,35 +895,60 @@ document.addEventListener("DOMContentLoaded", function () {
                 showSheetButton();
                 sheetPDF.data = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName.split(".musicxml")[0] + ".pdf"));
             })();
-        } else {
+        } else if (practiceType >= calculateThreshold(chances, 5)) {
             // Music Theory
-            fetch(corsProxy + encodeURIComponent(fileHost + `theory-training/${list}`))
-                // fetch("all/../studio-ghibi/list.txt")
-                .then(response => response.text())
-                .then(text => {
-                    fileList = text.trim().split('\n');
-                    console.log(fileList);
-                    const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
-                    randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
-                    audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`theory-training/${randomFile}`));
-                    if (randomFile.toLowerCase().includes("chord")) {
-                        keyText.innerHTML = `<summary>What chord is this: </summary>`+randomFile;
-                    } else if (randomFile.toLowerCase().includes("interval")) {
-                        keyText.innerHTML = `<summary>What interval is this: </summary>`+randomFile;
-                    } else if (randomFile.toLowerCase().includes("progression")) {
-                        keyText.innerHTML = `<summary>What chord progression is this: </summary>`+randomFile;
-                    } else if (randomFile.toLowerCase().includes("note")){
-                        keyText.innerHTML = `<summary>What note is this: </summary>`+randomFile;
-                    }
-                    hideAll();
-                    hideSheetShowAudio();
-                    keyText.classList.add("shown");
-                    keyText.classList.remove("hidden");
-                    playAudioWithCustomTimeout(timeout);
-                })
-                .catch(error => {
-                    console.error('Error fetching file list:', error);
-                });
+            if (Math.random(4867835363898769) > 0.5) {
+                theoryExercises = [
+                    []
+                ];
+                /* 
+                res = Math.random(4867835363898769) * techniqueExercises.length-1;
+                console.log(res);
+                res = Math.floor(res);
+                temp = techniqueExercises[res];
+                console.log(res);
+                console.log(temp);
+                bpm = temp[temp.length-1];
+                res2 = Math.floor(Math.random(4867833525234) * temp.length-1)
+                console.log(res2);
+                temp = temp[res2];
+                console.log(temp);
+                */
+                temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * (theoryExercises.length-1))];
+                question = temp[Math.floor(Math.random(4867833525234) * (temp.length-1)/2)*2];
+                answer = temp[temp.indexOf(question)+1];
+                console.log(question, answer);
+                keyText.innerHTML = `<summary>What is the ${question}?</summary>`+answer;
+
+            } else{
+                fetch(corsProxy + encodeURIComponent(fileHost + `theory-training/${list}`))
+                    // fetch("all/../studio-ghibi/list.txt")
+                    .then(response => response.text())
+                    .then(text => {
+                        fileList = text.trim().split('\n');
+                        console.log(fileList);
+                        const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`theory-training/${randomFile}`));
+                        if (randomFile.toLowerCase().includes("chord")) {
+                            keyText.innerHTML = `<summary>What chord is this: </summary>`+randomFile;
+                        } else if (randomFile.toLowerCase().includes("interval")) {
+                            keyText.innerHTML = `<summary>What interval is this: </summary>`+randomFile;
+                        } else if (randomFile.toLowerCase().includes("progression")) {
+                            keyText.innerHTML = `<summary>What chord progression is this: </summary>`+randomFile;
+                        } else if (randomFile.toLowerCase().includes("note")){
+                            keyText.innerHTML = `<summary>What note is this: </summary>`+randomFile;
+                        }
+                        hideAll();
+                        hideSheetShowAudio();
+                        keyText.classList.add("shown");
+                        keyText.classList.remove("hidden");
+                        playAudioWithCustomTimeout(timeout);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+                    });
+            }
         }
     }
 
