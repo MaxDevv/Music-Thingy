@@ -654,7 +654,22 @@ document.addEventListener("DOMContentLoaded", function () {
         play();
     }
 
+    // function calculateThreshold(chances, index) {
+    //     // Validate input
+    //     if (!Array.isArray(chances) || typeof index !== 'number' || index < 0 || index >= chances.length) {
+    //         throw new Error('Invalid input');
+    //     }
+    
+    //     // Calculate the sum of all chances
+    //     const total = chances.reduce((sum, chance) => sum + chance, 0);
+    
+    //     // Calculate the threshold for the given index
+    //     const threshold = chances[index] / total;
+    
+    //     return threshold;
+    // }
     function calculateThreshold(chances, index) {
+        
         // Validate input
         if (!Array.isArray(chances) || typeof index !== 'number' || index < 0 || index >= chances.length) {
             throw new Error('Invalid input');
@@ -665,7 +680,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
         // Calculate the threshold for the given index
         const threshold = chances[index] / total;
-    
+        if (index > 0){
+            return calculateThreshold(chances, index-1) + threshold;
+        }
         return threshold;
     }
 
@@ -675,24 +692,26 @@ document.addEventListener("DOMContentLoaded", function () {
         timeout = defaultTimeout;
         console.log(mode);
 
+        chances = [35 /*Ear Training*/, 10 /*Sight Reading*/, 10 /*Improvisation*/, 20 /*Technique*/, 10 /*Learning Music*/, 15 /*Music Theory*/];
         if (mode.toLowerCase() == "all") {
             practiceType = Math.random(486783555478);
-        } else if (mode.toLowerCase() == "sheet-music") {
-            practiceType = 0.45;
-        } else if (mode.toLowerCase() == "jazz") {
-            practiceType = 0.35;
         } else if (mode.toLowerCase() == "ear-training") {
-            practiceType = 0.55;
+            practiceType = calculateThreshold(chances, 0);
+        } else if (mode.toLowerCase() == "sheet-music") {
+            practiceType = calculateThreshold(chances, 1);
+            console.log(practiceType);
+        } else if (mode.toLowerCase() == "jazz") {
+            practiceType = calculateThreshold(chances, 2);
         } else if (mode.toLowerCase() == "technique") {
-            practiceType = 0.20;
+            practiceType = calculateThreshold(chances, 3);
         } else if (mode.toLowerCase() == "learning-music") {
-            practiceType = 0.10;
+            practiceType = calculateThreshold(chances, 4);
         } else if (mode.toLowerCase() == "music-thoery") {
-            practiceType = 0.00;
+            practiceType = calculateThreshold(chances, 5);
         } 
+        console.log(practiceType);
         
-        chances = [35 /*Ear Training*/, 10 /*Sight Reading*/, 10 /*Improvisation*/, 15 /*Technique*/, 10 /*Learning Music*/, 10 /*Music Theory*/];
-        if (practiceType >= calculateThreshold(chances, 0)) {
+        if (practiceType <= calculateThreshold(chances, 0)) {
             //Melodic Replication Ear Training
             // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
             fetch(corsProxy + encodeURIComponent(fileHost + "ear-training-sources/list.txt"))
@@ -716,7 +735,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     .catch(error => {
                         console.error('Error fetching file list:', error);
                     });
-        } else if (practiceType >= calculateThreshold(chances, 1)) {
+        } else if (practiceType <= calculateThreshold(chances, 1)) {
             //Sight Reading
             fileList = [];
             // if (fileList.length === 0) {
@@ -749,7 +768,7 @@ document.addEventListener("DOMContentLoaded", function () {
             audioPlayer.pause();
 
             
-        } else if (practiceType >= calculateThreshold(chances, 2)) {
+        } else if (practiceType <= calculateThreshold(chances, 2)) {
             //Improvisation Practice
             fetch(corsProxy + encodeURIComponent(fileHost + `Music-Backing-Tracks/${list}`))
                 // fetch("all/../studio-ghibi/list.txt")
@@ -771,7 +790,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => {
                     console.error('Error fetching file list:', error);
                 });
-        } else if (practiceType >= calculateThreshold(chances, 3)) {
+        } else if (practiceType <= calculateThreshold(chances, 3)) {
             //Technique Practice
             hideAllShowText();
             chords = ["Ascending Chords in A major", "Ascending Chords in A minor", "Ascending Chords in A# major", "Ascending Chords in A# minor", "Ascending Chords in B major", "Ascending Chords in B minor", "Ascending Chords in C major", "Ascending Chords in C minor", "Ascending Chords in C# major", "Ascending Chords in C# minor", "Ascending Chords in D major", "Ascending Chords in D minor", "Ascending Chords in D# major", "Ascending Chords in D# minor", "Ascending Chords in E major", "Ascending Chords in E minor", "Ascending Chords in F major", "Ascending Chords in F minor", "Ascending Chords in F# major", "Ascending Chords in F# minor", "Ascending Chords in G major", "Ascending Chords in G minor", "Ascending Chords in G# major", "Ascending Chords in G# minor", "Descending Chords in A major", "Descending Chords in A minor", "Descending Chords in A# major", "Descending Chords in A# minor", "Descending Chords in B major", "Descending Chords in B minor", "Descending Chords in C major", "Descending Chords in C minor", "Descending Chords in C# major", "Descending Chords in C# minor", "Descending Chords in D major", "Descending Chords in D minor", "Descending Chords in D# major", "Descending Chords in D# minor", "Descending Chords in E major", "Descending Chords in E minor", "Descending Chords in F major", "Descending Chords in F minor", "Descending Chords in F# major", "Descending Chords in F# minor", "Descending Chords in G major", "Descending Chords in G minor", "Descending Chords in G# major", "Descending Chords in G# minor"]
@@ -825,8 +844,8 @@ document.addEventListener("DOMContentLoaded", function () {
             
            
             audioPlayer.pause();
-        } else if (practiceType >= calculateThreshold(chances, 4)) {
-            //Repatoire Building
+        } else if (practiceType <= calculateThreshold(chances, 4)) {
+            //Repatoire Building & Learning music
                 console.log(githubKey);
 
             (async () => { 
@@ -895,13 +914,258 @@ document.addEventListener("DOMContentLoaded", function () {
                 showSheetButton();
                 sheetPDF.data = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName.split(".musicxml")[0] + ".pdf"));
             })();
-        } else if (practiceType >= calculateThreshold(chances, 5)) {
+        } else if (practiceType <= calculateThreshold(chances, 5)) {
             // Music Theory
             if (Math.random(4867835363898769) > 0.5) {
                 theoryExercises = [
-                    []
-                ];
-                /* 
+                    // Relative major/minor exercises
+                    [
+                        ['What is the relative minor of C major?', 'D#'],
+                        ['What is the relative minor of C# major?', 'E'],
+                        ['What is the relative minor of D major?', 'F'],
+                        ['What is the relative minor of D# major?', 'F#'],
+                        ['What is the relative minor of E major?', 'G'],
+                        ['What is the relative minor of F major?', 'G#'],
+                        ['What is the relative minor of F# major?', 'A'],
+                        ['What is the relative minor of G major?', 'A#'],
+                        ['What is the relative minor of G# major?', 'B'],
+                        ['What is the relative minor of A major?', 'C'],
+                        ['What is the relative minor of A# major?', 'C#'],
+                        ['What is the relative minor of B major?', 'D'],
+                    ],    // Shifting notes up and down intervals
+                    [
+                        ['Raise C by a minor 2nd', 'C#'],
+                        ['Raise C by a major 2nd', 'D'],
+                        ['Raise C by a minor 3rd', 'D#'],
+                        ['Raise C by a major 3rd', 'E'],
+                        ['Raise C by a perfect 4th', 'F'],
+                        ['Raise C by a augmented 4th', 'F#'],
+                        ['Raise C by a perfect 5th', 'G'],
+                        ['Raise C by a minor 6th', 'G#'],
+                        ['Raise C by a major 6th', 'A'],
+                        ['Raise C by a minor 7th', 'A#'],
+                        ['Raise C by a major 7th', 'B'],
+                        ['Raise C by a octave', 'C'],
+                        ['Raise C# by a minor 2nd', 'D'],
+                        ['Raise C# by a major 2nd', 'D#'],
+                        ['Raise C# by a minor 3rd', 'E'],
+                        ['Raise C# by a major 3rd', 'F'],
+                        ['Raise C# by a perfect 4th', 'F#'],
+                        ['Raise C# by a augmented 4th', 'G'],
+                        ['Raise C# by a perfect 5th', 'G#'],
+                        ['Raise C# by a minor 6th', 'A'],
+                        ['Raise C# by a major 6th', 'A#'],
+                        ['Raise C# by a minor 7th', 'B'],
+                        ['Raise C# by a major 7th', 'C'],
+                        ['Raise C# by a octave', 'C#'],
+                        ['Raise D by a minor 2nd', 'D#'],
+                        ['Raise D by a major 2nd', 'E'],
+                        ['Raise D by a minor 3rd', 'F'],
+                        ['Raise D by a major 3rd', 'F#'],
+                        ['Raise D by a perfect 4th', 'G'],
+                        ['Raise D by a augmented 4th', 'G#'],
+                        ['Raise D by a perfect 5th', 'A'],
+                        ['Raise D by a minor 6th', 'A#'],
+                        ['Raise D by a major 6th', 'B'],
+                        ['Raise D by a minor 7th', 'C'],
+                        ['Raise D by a major 7th', 'C#'],
+                        ['Raise D by a octave', 'D'],
+                        ['Raise D# by a minor 2nd', 'E'],
+                        ['Raise D# by a major 2nd', 'F'],
+                        ['Raise D# by a minor 3rd', 'F#'],
+                        ['Raise D# by a major 3rd', 'G'],
+                        ['Raise D# by a perfect 4th', 'G#'],
+                        ['Raise D# by a augmented 4th', 'A'],
+                        ['Raise D# by a perfect 5th', 'A#'],
+                        ['Raise D# by a minor 6th', 'B'],
+                        ['Raise D# by a major 6th', 'C'],
+                        ['Raise D# by a minor 7th', 'C#'],
+                        ['Raise D# by a major 7th', 'D'],
+                        ['Raise D# by a octave', 'D#'],
+                        ['Raise E by a minor 2nd', 'F'],
+                        ['Raise E by a major 2nd', 'F#'],
+                        ['Raise E by a minor 3rd', 'G'],
+                        ['Raise E by a major 3rd', 'G#'],
+                        ['Raise E by a perfect 4th', 'A'],
+                        ['Raise E by a augmented 4th', 'A#'],
+                        ['Raise E by a perfect 5th', 'B'],
+                        ['Raise E by a minor 6th', 'C'],
+                        ['Raise E by a major 6th', 'C#'],
+                        ['Raise E by a minor 7th', 'D'],
+                        ['Raise E by a major 7th', 'D#'],
+                        ['Raise E by a octave', 'E'],
+                        ['Raise F by a minor 2nd', 'F#'],
+                        ['Raise F by a major 2nd', 'G'],
+                        ['Raise F by a minor 3rd', 'G#'],
+                        ['Raise F by a major 3rd', 'A'],
+                        ['Raise F by a perfect 4th', 'A#'],
+                        ['Raise F by a augmented 4th', 'B'],
+                        ['Raise F by a perfect 5th', 'C'],
+                        ['Raise F by a minor 6th', 'C#'],
+                        ['Raise F by a major 6th', 'D'],
+                        ['Raise F by a minor 7th', 'D#'],
+                        ['Raise F by a major 7th', 'E'],
+                        ['Raise F by a octave', 'F'],
+                        ['Raise F# by a minor 2nd', 'G'],
+                        ['Raise F# by a major 2nd', 'G#'],
+                        ['Raise F# by a minor 3rd', 'A'],
+                        ['Raise F# by a major 3rd', 'A#'],
+                        ['Raise F# by a perfect 4th', 'B'],
+                        ['Raise F# by a augmented 4th', 'C'],
+                        ['Raise F# by a perfect 5th', 'C#'],
+                        ['Raise F# by a minor 6th', 'D'],
+                        ['Raise F# by a major 6th', 'D#'],
+                        ['Raise F# by a minor 7th', 'E'],
+                        ['Raise F# by a major 7th', 'F'],
+                        ['Raise F# by a octave', 'F#'],
+                        ['Raise G by a minor 2nd', 'G#'],
+                        ['Raise G by a major 2nd', 'A'],
+                        ['Raise G by a minor 3rd', 'A#'],
+                        ['Raise G by a major 3rd', 'B'],
+                        ['Raise G by a perfect 4th', 'C'],
+                        ['Raise G by a augmented 4th', 'C#'],
+                        ['Raise G by a perfect 5th', 'D'],
+                        ['Raise G by a minor 6th', 'D#'],
+                        ['Raise G by a major 6th', 'E'],
+                        ['Raise G by a minor 7th', 'F'],
+                        ['Raise G by a major 7th', 'F#'],
+                        ['Raise G by a octave', 'G'],
+                        ['Raise G# by a minor 2nd', 'A'],
+                        ['Raise G# by a major 2nd', 'A#'],
+                        ['Raise G# by a minor 3rd', 'B'],
+                        ['Raise G# by a major 3rd', 'C'],
+                        ['Raise G# by a perfect 4th', 'C#'],
+                        ['Raise G# by a augmented 4th', 'D'],
+                        ['Raise G# by a perfect 5th', 'D#'],
+                        ['Raise G# by a minor 6th', 'E'],
+                        ['Raise G# by a major 6th', 'F'],
+                        ['Raise G# by a minor 7th', 'F#'],
+                        ['Raise G# by a major 7th', 'G'],
+                        ['Raise G# by a octave', 'G#'],
+                        ['Raise A by a minor 2nd', 'A#'],
+                        ['Raise A by a major 2nd', 'B'],
+                        ['Raise A by a minor 3rd', 'C'],
+                        ['Raise A by a major 3rd', 'C#'],
+                        ['Raise A by a perfect 4th', 'D'],
+                        ['Raise A by a augmented 4th', 'D#'],
+                        ['Raise A by a perfect 5th', 'E'],
+                        ['Raise A by a minor 6th', 'F'],
+                        ['Raise A by a major 6th', 'F#'],
+                        ['Raise A by a minor 7th', 'G'],
+                        ['Raise A by a major 7th', 'G#'],
+                        ['Raise A by a octave', 'A'],
+                        ['Raise A# by a minor 2nd', 'B'],
+                        ['Raise A# by a major 2nd', 'C'],
+                        ['Raise A# by a minor 3rd', 'C#'],
+                        ['Raise A# by a major 3rd', 'D'],
+                        ['Raise A# by a perfect 4th', 'D#'],
+                        ['Raise A# by a augmented 4th', 'E'],
+                        ['Raise A# by a perfect 5th', 'F'],
+                        ['Raise A# by a minor 6th', 'F#'],
+                        ['Raise A# by a major 6th', 'G'],
+                        ['Raise A# by a minor 7th', 'G#'],
+                        ['Raise A# by a major 7th', 'A'],
+                        ['Raise A# by a octave', 'A#'],
+                        ['Raise B by a minor 2nd', 'C'],
+                        ['Raise B by a major 2nd', 'C#'],
+                        ['Raise B by a minor 3rd', 'D'],
+                        ['Raise B by a major 3rd', 'D#'],
+                        ['Raise B by a perfect 4th', 'E'],
+                        ['Raise B by a augmented 4th', 'F'],
+                        ['Raise B by a perfect 5th', 'F#'],
+                        ['Raise B by a minor 6th', 'G'],
+                        ['Raise B by a major 6th', 'G#'],
+                        ['Raise B by a minor 7th', 'A'],
+                        ['Raise B by a major 7th', 'A#'],
+                        ['Raise B by a octave', 'B'],
+                    ],    [
+                        ['Raise C by a minor 3rd', 'D#'],
+                        ['Raise C by a major 3rd', 'E'],
+                        ['Raise C by a perfect 4th', 'F'],
+                        ['Raise C by a perfect 5th', 'G'],
+                        ['Raise C by a octave', 'C'],
+                        ['Raise C# by a minor 3rd', 'E'],
+                        ['Raise C# by a major 3rd', 'F'],
+                        ['Raise C# by a perfect 4th', 'F#'],
+                        ['Raise C# by a perfect 5th', 'G#'],
+                        ['Raise C# by a octave', 'C#'],
+                        ['Raise D by a minor 3rd', 'F'],
+                        ['Raise D by a major 3rd', 'F#'],
+                        ['Raise D by a perfect 4th', 'G'],
+                        ['Raise D by a perfect 5th', 'A'],
+                        ['Raise D by a octave', 'D'],
+                        ['Raise D# by a minor 3rd', 'F#'],
+                        ['Raise D# by a major 3rd', 'G'],
+                        ['Raise D# by a perfect 4th', 'G#'],
+                        ['Raise D# by a perfect 5th', 'A#'],
+                        ['Raise D# by a octave', 'D#'],
+                        ['Raise E by a minor 3rd', 'G'],
+                        ['Raise E by a major 3rd', 'G#'],
+                        ['Raise E by a perfect 4th', 'A'],
+                        ['Raise E by a perfect 5th', 'B'],
+                        ['Raise E by a octave', 'E'],
+                        ['Raise F by a minor 3rd', 'G#'],
+                        ['Raise F by a major 3rd', 'A'],
+                        ['Raise F by a perfect 4th', 'A#'],
+                        ['Raise F by a perfect 5th', 'C'],
+                        ['Raise F by a octave', 'F'],
+                        ['Raise F# by a minor 3rd', 'A'],
+                        ['Raise F# by a major 3rd', 'A#'],
+                        ['Raise F# by a perfect 4th', 'B'],
+                        ['Raise F# by a perfect 5th', 'C#'],
+                        ['Raise F# by a octave', 'F#'],
+                        ['Raise G by a minor 3rd', 'A#'],
+                        ['Raise G by a major 3rd', 'B'],
+                        ['Raise G by a perfect 4th', 'C'],
+                        ['Raise G by a perfect 5th', 'D'],
+                        ['Raise G by a octave', 'G'],
+                        ['Raise G# by a minor 3rd', 'B'],
+                        ['Raise G# by a major 3rd', 'C'],
+                        ['Raise G# by a perfect 4th', 'C#'],
+                        ['Raise G# by a perfect 5th', 'D#'],
+                        ['Raise G# by a octave', 'G#'],
+                        ['Raise A by a minor 3rd', 'C'],
+                        ['Raise A by a major 3rd', 'C#'],
+                        ['Raise A by a perfect 4th', 'D'],
+                        ['Raise A by a perfect 5th', 'E'],
+                        ['Raise A by a octave', 'A'],
+                        ['Raise A# by a minor 3rd', 'C#'],
+                        ['Raise A# by a major 3rd', 'D'],
+                        ['Raise A# by a perfect 4th', 'D#'],
+                        ['Raise A# by a perfect 5th', 'F'],
+                        ['Raise A# by a octave', 'A#'],
+                        ['Raise B by a minor 3rd', 'D'],
+                        ['Raise B by a major 3rd', 'D#'],
+                        ['Raise B by a perfect 4th', 'E'],
+                        ['Raise B by a perfect 5th', 'F#'],
+                        ['Raise B by a octave', 'B'],
+                    ],    // Interval exercises that ask which intervals are equal
+                    [
+                        ['What interval is equal to a minor 2nd?', 'augmented unison'],
+                        ['What interval is equal to a major 2nd?', 'diminished 3rd'],
+                        ['What interval is equal to a minor 3rd?', 'augmented 2nd'],
+                        ['What interval is equal to a major 3rd?', 'diminished 4th'],
+                        ['What interval is equal to a perfect 4th?', 'augmented 3rd'],
+                        ['What interval is equal to a perfect 4th?', 'diminished 5th'],
+                        ['What interval is equal to a augmented 4th?', 'diminished 5th'],
+                        ['What interval is equal to a perfect 5th?', 'diminished 6th'],
+                        ['What interval is equal to a minor 6th?', 'augmented 5th'],
+                        ['What interval is equal to a major 6th?', 'diminished 7th'],
+                        ['What interval is equal to a minor 7th?', 'augmented 6th'],
+                        ['What interval is equal to a major 7th?', 'diminished octave'],
+                        ['What interval is equal to a octave?', 'augmented 7th'],
+                    ],    // Exercises for the number of sharps in major keys
+                    [
+                        ['How many sharps are in the key of C major?', '0 sharps'],
+                        ['How many sharps are in the key of G major?', '1 sharps'],
+                        ['How many sharps are in the key of D major?', '2 sharps'],
+                        ['How many sharps are in the key of A major?', '3 sharps'],
+                        ['How many sharps are in the key of E major?', '4 sharps'],
+                        ['How many sharps are in the key of B major?', '5 sharps'],
+                        ['How many sharps are in the key of F# major?', '6 sharps'],
+                        ['How many sharps are in the key of C# major?', '7 sharps'],
+                    ],
+                ];/* 
                 res = Math.random(4867835363898769) * techniqueExercises.length-1;
                 console.log(res);
                 res = Math.floor(res);
@@ -914,11 +1178,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 temp = temp[res2];
                 console.log(temp);
                 */
-                temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * (theoryExercises.length-1))];
-                question = temp[Math.floor(Math.random(4867833525234) * (temp.length-1)/2)*2];
-                answer = temp[temp.indexOf(question)+1];
+                temp = theoryExercises[Math.floor(Math.random(4867835363898769) * (theoryExercises.length-1))];
+                temp = temp[Math.floor(Math.random(4867833525234) * (temp.length-1)/2)*2];
+                console.log(temp);
+                question = temp[0];
+                answer = temp[1];
                 console.log(question, answer);
-                keyText.innerHTML = `<summary>What is the ${question}?</summary>`+answer;
+                keyText.innerHTML = `<summary>${question}</summary>`+answer;
+                hideAll();
+                keyText.classList.add("shown");
+                keyText.classList.remove("hidden");
+
 
             } else{
                 fetch(corsProxy + encodeURIComponent(fileHost + `theory-training/${list}`))
