@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return queryString;
     }
     function getRandomDifficulty() {
-        diffucilty = [1, (Math.floor(Math.round((((Date.now() / 1000) - 1716068447) / 86400))/10)-3), 10].sort((a,b) => a-b)[1];
+        diffucilty = [1, (Math.floor(Math.round((((Date.now() / 1000) - 1716068447) / 86400))/10)-1), 10].sort((a,b) => a-b)[1];
         return diffucilty;
     }
     function loadSheet(source) {
@@ -227,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
         playRandomMP3();
 
         completed += 1;
+        localStorage.setItem('completed', completed);
         completedSpan.textContent = completed + "/" + completionsNeeded + " Completed"
         if (completed >= completionsNeeded) {
             completedSpan.textContent = completed + "/" + completionsNeeded + " Completed :D 🎉🎉🎉"
@@ -289,12 +290,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
-
+    // load completed from storage
+    completed = parseInt(localStorage.getItem('completed'));
+    completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     fetch (apiCorsProxy + encodeURIComponent("https://script.googleusercontent.com/macros/echo?user_content_key=lueDIP65V1TviFPlTA3pXyaqqi_Ao9QmSNoDI2MpjO3pgQhPiwDCfsS6JcYTB-VF0J-F2S-L2zOT6gNMjkM2Na1ea-3w9q_WOJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMWojr9NvTBuBLhyHCd5hHa3ys9IQszNRpJEFHjctEQPkpZk8WUUr1MJnIvaGNtMGUnI2NLV13eEdSG0b6eezwr2OHfIzJJLGtTKOuAY81JYcWd8_sQOMDQAXIuFltvcj9UvOWECdUTcChd_k7TjVvZRo9reF4hk-I&lib=MFj0A6GZBWv26Xn398IW7T7lx60PLmU9S"))
         .then(response => response.json())
         .then(data => {
             // Set the completion counter
-            completed += data;
+            completed = data;
+            localStorage.setItem('completed', completed);
             completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
         })
 
@@ -685,6 +689,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return threshold;
     }
+    
+
+    async function updateRepatoire() {
+            splitContent = content.split("\n");
+            currentBars += 2;
+            updatedSong = [fileName, currentBars, totalBars].join("|");
+            console.log(updatedSong);
+            splitContent[splitContent.indexOf(splitContent.slice(-n)[0])] = updatedSong;
+            updatedContent = splitContent.join("\n");
+            console.log(updatedContent);
+            const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                method: 'PATCH',
+                headers: {
+                'Authorization': `token ${githubKey}`,
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                files: {
+                    'currentSong.txt': {
+                    content: updatedContent.toString(),
+                    },
+                },
+                }),
+            });
+            const gist = await response.json();
+            console.log('Gist updated:', gist);
+    }
 
     function play() {
         keyText.removeAttribute("open");
@@ -699,7 +730,6 @@ document.addEventListener("DOMContentLoaded", function () {
             practiceType = calculateThreshold(chances, 0);
         } else if (mode.toLowerCase() == "sheet-music") {
             practiceType = calculateThreshold(chances, 1);
-            console.log(practiceType);
         } else if (mode.toLowerCase() == "jazz") {
             practiceType = calculateThreshold(chances, 2);
         } else if (mode.toLowerCase() == "technique") {
@@ -709,8 +739,13 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (mode.toLowerCase() == "music-thoery") {
             practiceType = calculateThreshold(chances, 5);
         } 
-        console.log(practiceType);
-        
+        if (completed == completionsNeeded -1) {
+            // last exercise will be composing a short piece and making and uploading video of it
+            hideAll();
+            techniqueText.textContent = "Compose a short piece and upload a video of you playing it :D";
+            showTechniqueText();
+            return;
+        }
         if (practiceType <= calculateThreshold(chances, 0)) {
             //Melodic Replication Ear Training
             // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
@@ -797,6 +832,7 @@ document.addEventListener("DOMContentLoaded", function () {
             chords = ['Ascending 7th Chords in Bb Minor', 'Ascending 7th Chords in C Major', 'Ascending 7th Chords in F# Major', 'Ascending 7th Chords in B Minor', 'Ascending 7th Chords in G Major', 'Ascending 7th Chords in Db Major', 'Ascending 7th Chords in D Minor', 'Ascending 7th Chords in C# Minor', 'Ascending 7th Chords in A Minor', 'Ascending 7th Chords in B Major', 'Ascending 7th Chords in D Major', 'Ascending 7th Chords in Ab Major', 'Ascending 7th Chords in G# Minor', 'Ascending 7th Chords in Bb Major', 'Ascending 7th Chords in C Minor', 'Ascending 7th Chords in F# Minor', 'Ascending 7th Chords in G Minor', 'Ascending 7th Chords in A Major']
             chords.push(55);
             techniqueExercises = [
+                ["Visualize all thr notes in A major then play all of them on each string", 40],
                 ["Ichika tapping exercise", 40],
                 ["Alternating Diagonal hand exercise", 37],
                 /*["Ascending Diads in A major, on the B & E String", "Ascending Diads in A minor, on the B & E String", "Ascending Diads in A# major, on the B & E String", "Ascending Diads in A# minor, on the B & E String", "Ascending Diads in B major, on the B & E String", "Ascending Diads in B minor, on the B & E String", "Ascending Diads in C major, on the B & E String", "Ascending Diads in C minor, on the B & E String", "Ascending Diads in C# major, on the B & E String", "Ascending Diads in C# minor, on the B & E String", "Ascending Diads in D major, on the B & E String", "Ascending Diads in D minor, on the B & E String", "Ascending Diads in D# major, on the B & E String", "Ascending Diads in D# minor, on the B & E String", "Ascending Diads in E major, on the B & E String", "Ascending Diads in E minor, on the B & E String", "Ascending Diads in F major, on the B & E String", "Ascending Diads in F minor, on the B & E String", "Ascending Diads in F# major, on the B & E String", "Ascending Diads in F# minor, on the B & E String", "Ascending Diads in G major, on the B & E String", "Ascending Diads in G minor, on the B & E String", "Ascending Diads in G# major, on the B & E String", "Ascending Diads in G# minor, on the B & E String", "Descending Diads in A major, on the B & E String", "Descending Diads in A minor, on the B & E String", "Descending Diads in A# major, on the B & E String", "Descending Diads in A# minor, on the B & E String", "Descending Diads in B major, on the B & E String", "Descending Diads in B minor, on the B & E String", "Descending Diads in C major, on the B & E String", "Descending Diads in C minor, on the B & E String", "Descending Diads in C# major, on the B & E String", "Descending Diads in C# minor, on the B & E String", "Descending Diads in D major, on the B & E String", "Descending Diads in D minor, on the B & E String", "Descending Diads in D# major, on the B & E String", "Descending Diads in D# minor, on the B & E String", "Descending Diads in E major, on the B & E String", "Descending Diads in E minor, on the B & E String", "Descending Diads in F major, on the B & E String", "Descending Diads in F minor, on the B & E String", "Descending Diads in F# major, on the B & E String", "Descending Diads in F# minor, on the B & E String", "Descending Diads in G major, on the B & E String", "Descending Diads in G minor, on the B & E String", "Descending Diads in G# major, on the B & E String", "Descending Diads in G# minor, on the B & E String"],
@@ -883,33 +919,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 showTechniqueText();
                 osmd.setOptions({drawUpToMeasureNumber: currentBars + 2, drawFromMeasureNumber: currentBars});
                 loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
-                nextButton.addEventListener("click", async () => {
-                    splitContent = content.split("\n");
-                    currentBars += 2;
-                    updatedSong = [fileName, currentBars, totalBars].join("|");
-                    console.log(updatedSong);
-                    splitContent[splitContent.indexOf(splitContent.slice(-n)[0])] = updatedSong;
-                    updatedContent = splitContent.join("\n");
-                    console.log(updatedContent);
-                    const response = await fetch(`https://api.github.com/gists/${gistId}`, {
-                        method: 'PATCH',
-                        headers: {
-                        'Authorization': `token ${githubKey}`,
-                        'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                        files: {
-                            'currentSong.txt': {
-                            content: updatedContent.toString(),
-                            },
-                        },
-                        }),
-                    });
-                const gist = await response.json();
-                console.log('Gist updated:', gist);
-                }, {once : true});
-                revealSheet.addEventListener("click", async () => {
-                    showSheetPDF();
+                nextButton.addEventListener("click", updateRepatoire, {once : true});
+                revealSheet.addEventListener("click", showSheetPDF, {once : true});
+                skipButton.addEventListener("click", function(){
+                    nextButton.removeEventListener('click', updateRepatoire);
+                    revealSheet.removeEventListener("click", showSheetPDF);
                 }, {once : true});
                 showSheetButton();
                 sheetPDF.data = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName.split(".musicxml")[0] + ".pdf"));
@@ -918,6 +932,141 @@ document.addEventListener("DOMContentLoaded", function () {
             // Music Theory
             if (Math.random(4867835363898769) > 0.5) {
                 theoryExercises = [
+                    // Humming notes and intervals
+                    [
+                        ['Hum a(n) C then a(n) C#'],
+                        ['Hum a(n) C then a(n) D'],
+                        ['Hum a(n) C then a(n) D#'],
+                        ['Hum a(n) C then a(n) E'],
+                        ['Hum a(n) C then a(n) F'],
+                        ['Hum a(n) C then a(n) F#'],
+                        ['Hum a(n) C then a(n) G'],
+                        ['Hum a(n) C then a(n) G#'],
+                        ['Hum a(n) C then a(n) A'],
+                        ['Hum a(n) C then a(n) A#'],
+                        ['Hum a(n) C then a(n) B'],
+                        ['Hum a(n) C# then a(n) C'],
+                        ['Hum a(n) C# then a(n) D'],
+                        ['Hum a(n) C# then a(n) D#'],
+                        ['Hum a(n) C# then a(n) E'],
+                        ['Hum a(n) C# then a(n) F'],
+                        ['Hum a(n) C# then a(n) F#'],
+                        ['Hum a(n) C# then a(n) G'],
+                        ['Hum a(n) C# then a(n) G#'],
+                        ['Hum a(n) C# then a(n) A'],
+                        ['Hum a(n) C# then a(n) A#'],
+                        ['Hum a(n) C# then a(n) B'],
+                        ['Hum a(n) D then a(n) C'],
+                        ['Hum a(n) D then a(n) C#'],
+                        ['Hum a(n) D then a(n) D#'],
+                        ['Hum a(n) D then a(n) E'],
+                        ['Hum a(n) D then a(n) F'],
+                        ['Hum a(n) D then a(n) F#'],
+                        ['Hum a(n) D then a(n) G'],
+                        ['Hum a(n) D then a(n) G#'],
+                        ['Hum a(n) D then a(n) A'],
+                        ['Hum a(n) D then a(n) A#'],
+                        ['Hum a(n) D then a(n) B'],
+                        ['Hum a(n) D# then a(n) C'],
+                        ['Hum a(n) D# then a(n) C#'],
+                        ['Hum a(n) D# then a(n) D'],
+                        ['Hum a(n) D# then a(n) E'],
+                        ['Hum a(n) D# then a(n) F'],
+                        ['Hum a(n) D# then a(n) F#'],
+                        ['Hum a(n) D# then a(n) G'],
+                        ['Hum a(n) D# then a(n) G#'],
+                        ['Hum a(n) D# then a(n) A'],
+                        ['Hum a(n) D# then a(n) A#'],
+                        ['Hum a(n) D# then a(n) B'],
+                        ['Hum a(n) E then a(n) C'],
+                        ['Hum a(n) E then a(n) C#'],
+                        ['Hum a(n) E then a(n) D'],
+                        ['Hum a(n) E then a(n) D#'],
+                        ['Hum a(n) E then a(n) F'],
+                        ['Hum a(n) E then a(n) F#'],
+                        ['Hum a(n) E then a(n) G'],
+                        ['Hum a(n) E then a(n) G#'],
+                        ['Hum a(n) E then a(n) A'],
+                        ['Hum a(n) E then a(n) A#'],
+                        ['Hum a(n) E then a(n) B'],
+                        ['Hum a(n) F then a(n) C'],
+                        ['Hum a(n) F then a(n) C#'],
+                        ['Hum a(n) F then a(n) D'],
+                        ['Hum a(n) F then a(n) D#'],
+                        ['Hum a(n) F then a(n) E'],
+                        ['Hum a(n) F then a(n) F#'],
+                        ['Hum a(n) F then a(n) G'],
+                        ['Hum a(n) F then a(n) G#'],
+                        ['Hum a(n) F then a(n) A'],
+                        ['Hum a(n) F then a(n) A#'],
+                        ['Hum a(n) F then a(n) B'],
+                        ['Hum a(n) F# then a(n) C'],
+                        ['Hum a(n) F# then a(n) C#'],
+                        ['Hum a(n) F# then a(n) D'],
+                        ['Hum a(n) F# then a(n) D#'],
+                        ['Hum a(n) F# then a(n) E'],
+                        ['Hum a(n) F# then a(n) F'],
+                        ['Hum a(n) F# then a(n) G'],
+                        ['Hum a(n) F# then a(n) G#'],
+                        ['Hum a(n) F# then a(n) A'],
+                        ['Hum a(n) F# then a(n) A#'],
+                        ['Hum a(n) F# then a(n) B'],
+                        ['Hum a(n) G then a(n) C'],
+                        ['Hum a(n) G then a(n) C#'],
+                        ['Hum a(n) G then a(n) D'],
+                        ['Hum a(n) G then a(n) D#'],
+                        ['Hum a(n) G then a(n) E'],
+                        ['Hum a(n) G then a(n) F'],
+                        ['Hum a(n) G then a(n) F#'],
+                        ['Hum a(n) G then a(n) G#'],
+                        ['Hum a(n) G then a(n) A'],
+                        ['Hum a(n) G then a(n) A#'],
+                        ['Hum a(n) G then a(n) B'],
+                        ['Hum a(n) G# then a(n) C'],
+                        ['Hum a(n) G# then a(n) C#'],
+                        ['Hum a(n) G# then a(n) D'],
+                        ['Hum a(n) G# then a(n) D#'],
+                        ['Hum a(n) G# then a(n) E'],
+                        ['Hum a(n) G# then a(n) F'],
+                        ['Hum a(n) G# then a(n) F#'],
+                        ['Hum a(n) G# then a(n) G'],
+                        ['Hum a(n) G# then a(n) A'],
+                        ['Hum a(n) G# then a(n) A#'],
+                        ['Hum a(n) G# then a(n) B'],
+                        ['Hum a(n) A then a(n) C'],
+                        ['Hum a(n) A then a(n) C#'],
+                        ['Hum a(n) A then a(n) D'],
+                        ['Hum a(n) A then a(n) D#'],
+                        ['Hum a(n) A then a(n) E'],
+                        ['Hum a(n) A then a(n) F'],
+                        ['Hum a(n) A then a(n) F#'],
+                        ['Hum a(n) A then a(n) G'],
+                        ['Hum a(n) A then a(n) G#'],
+                        ['Hum a(n) A then a(n) A#'],
+                        ['Hum a(n) A then a(n) B'],
+                        ['Hum a(n) A# then a(n) C'],
+                        ['Hum a(n) A# then a(n) C#'],
+                        ['Hum a(n) A# then a(n) D'],
+                        ['Hum a(n) A# then a(n) D#'],
+                        ['Hum a(n) A# then a(n) E'],
+                        ['Hum a(n) A# then a(n) F'],
+                        ['Hum a(n) A# then a(n) F#'],
+                        ['Hum a(n) A# then a(n) G'],
+                        ['Hum a(n) A# then a(n) G#'],
+                        ['Hum a(n) A# then a(n) A'],
+                        ['Hum a(n) A# then a(n) B'],
+                        ['Hum a(n) B then a(n) C'],
+                        ['Hum a(n) B then a(n) C#'],
+                        ['Hum a(n) B then a(n) D'],
+                        ['Hum a(n) B then a(n) D#'],
+                        ['Hum a(n) B then a(n) E'],
+                        ['Hum a(n) B then a(n) F'],
+                        ['Hum a(n) B then a(n) F#'],
+                        ['Hum a(n) B then a(n) G'],
+                        ['Hum a(n) B then a(n) G#'],
+                        ['Hum a(n) B then a(n) A'],
+                        ['Hum a(n) B then a(n) A#']
+                    ],
                     // Relative major/minor exercises
                     [
                         ['What is the relative minor of C major?', 'D#'],
