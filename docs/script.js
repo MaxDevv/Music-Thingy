@@ -16,7 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const tempOsmdContainer = document.getElementById("tempOsmdContainer");
     const revealSheet = document.getElementById("revealSheet");
     const sheetPDF = document.getElementById("sheetPDF");
+    const metronome = document.getElementById("metronome");
+    const metronomeButton = document.getElementById("metronomeButton");
+    const tuner = document.getElementById("tuner");
+    const tunerButton = document.getElementById("tunerButton");
+
+
+
     let password = localStorage.getItem('password');
+    
     if (!password) {
         password = prompt("Please enter your password:");
         localStorage.setItem('password', password);
@@ -74,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     audioPlayer.addEventListener('playing', function () { audioPlayer.isPlaying = true }, false);
 
     
-
+tunerButton
     // Load dark mode preference from localStorage
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     if (isDarkMode) {
@@ -167,6 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Use hash to navigate to content
           window.location.href = "#" + hash;
       }
+      
 
     nextButton.addEventListener("click", function () {
         audioPlayer.pause();
@@ -182,6 +191,22 @@ document.addEventListener("DOMContentLoaded", function () {
         vibeTime = parseInt(numberInput.value);
     })
 
+    metronomeButton.addEventListener("click", function () {
+        if (metronome.classList.contains("hidden")) {
+            showMetronome();
+        } else {
+            hideMetronome();
+        }
+    });
+
+
+    tunerButton.addEventListener("click", function () {
+        if (tuner.classList.contains("hidden")) {
+            showTuner();
+        } else {
+            hideTuner();
+        }
+    });
     startButton.addEventListener("click", function () {
         if (audioPlayedOnce) {
             // Replay audio
@@ -554,6 +579,27 @@ document.addEventListener("DOMContentLoaded", function () {
         tempOsmdContainer.classList.add("hidden");
         tempOsmdContainer.classList.remove("shown");
     }
+
+    function showMetronome() {
+        metronome.classList.remove("hidden");
+        metronome.classList.add("shown");
+    }
+
+    function hideMetronome() {
+        metronome.classList.add("hidden");
+        metronome.classList.remove("shown");
+    }
+
+    function showTuner() {
+        tuner.classList.remove("hidden");
+        tuner.classList.add("shown");
+    }
+
+    function hideTuner() {
+        tuner.classList.add("hidden");
+        tuner.classList.remove("shown");
+    }
+    
     function showChords() {
         sheetImage.classList.remove("hidden");
         sheetImage.classList.add("shown");

@@ -33,44 +33,55 @@
         <span id="darkModeIcon">🌙</span>
     </button>
     <script src="opensheetmusicdisplay.min.js"></script>
-    
-    <div class="container stretch">
+    <div class="super-container">
 
-    <object id="sheetPDF" class="pdf hidden" 
-            data=
-""
-            height="600"
-            width="600">
-    </object>
-    <div id="tempOsmdContainer" class="hidden"></div>
-        <audio controls id="audioPlayer" class="hidden">
-            Your browser does not support the audio element.
-        </audio>
+        <div class="shown left" style="margin: 50%;">
+        </div>
+        <div class="container stretch center">
 
-        <details id="keyText" class="hidden" style="color: #c9c9c9; font-size: large;" >
-            <summary>Key:</summary>
-            Ballz :D
-        </details>
-        <span id="techniqueText" class="shown" style="color: #c9c9c9; font-size: large;" >Start :D</span>
-        <img src="" alt="images dont work ;-;" id="sheetImage" class="hidden">
-        <button id="startButton">Start Session :D</button>
-        <button id="revealSheet" class="hidden">Reveal Sheet</button>
-        <button id="nextButton">Next & Mark as Completed</button>
-        <button id="rewardButton">Give urself a point :D</button>
-        <button id="skipButton">Skip</button>
-        <div id="osmdContainer" style="display: block;">
-            
+            <object id="sheetPDF" class="pdf hidden" data="" height="600" width="600" type="application/pdf">
+            </object>
+            <div id="tempOsmdContainer" class="hidden"></div>
+            <audio controls id="audioPlayer" class="hidden">
+                Your browser does not support the audio element.
+            </audio>
+
+            <details id="keyText" class="hidden" style="color: #c9c9c9; font-size: large;">
+                <summary>Key:</summary>
+                Ballz :D
+            </details>
+            <span id="techniqueText" class="shown" style="color: #c9c9c9; font-size: large;">Start :D</span>
+            <img src="" alt="images dont work ;-;" id="sheetImage" class="hidden">
+            <button id="startButton">Start Session :D</button>
+            <button id="revealSheet" class="hidden">Reveal Sheet</button>
+            <button id="nextButton">Next & Mark as Completed</button>
+            <button id="rewardButton" class="hidden">Give urself a point :D</button>
+            <button id="metronomeButton">Metronome</button>
+            <button id="tunerButton">Tuner</button>
+
+            <button id="skipButton">Skip</button>
+
+            <div id="osmdContainer" style="display: block;">
+                <div>
+                    <button id="vibeButton" class="hidden" style="margin-right: 0.31vw;">Vibe On</button>
+                    <input type="number" id="numberInput" class="hidden" min="1" max="100" value="15">
+                </div>
+                <div>
+                    <span id="currentMode">Jazz - </span>
+                    <button id="modeButton">Jazz Mode</button>
+                </div>
+                <span id="completionCounter">0/5 Completed</span>
+
+            </div>
         </div>
-        <div>
-            <!-- vibe is now obsolete -->
-            <button id="vibeButton" class="hidden" style="margin-right: 0.31vw;">Vibe On</button> 
-            <input type="number" id="numberInput" class="hidden" min="1" max="100" value="15">
+        <div class="right">
+            <iframe src="https://4four.io/embed/metronome/1AvAyBHgABwEAAA" class="hidden"  id = "metronome" width="400" height="400" frameborder="0">
+                <a href="https://4four.io/metronome/1AvAyBHgABwEAAA">
+                    Metronome
+                </a>
+            </iframe>
+            <iframe src="https://guitarapp.com/tuner.html?embed=true"  class="hidden"  id = "tuner" allow="microphone" title="GuitarApp Online Tuner" style="width: 360px; height:520px; border-style: none; border-radius: 4px;"></iframe> 
         </div>
-        <div>
-            <span id="currentMode">Jazz - </span>
-            <button id="modeButton">Jazz Mode</button>
-        </div>
-        <span id="completionCounter">0/5 Completed</span>
         
     </div>
     <script src="script.js"></script>
