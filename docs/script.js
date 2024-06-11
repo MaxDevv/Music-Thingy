@@ -839,6 +839,9 @@ tunerButton
                         keyText.innerHTML = `<summary>Song Name, ${Math.round(timeout)} seconds left: </summary>`+randomFile;
                         timeout = audioPlayer.duration;
                         showAudio();
+                        
+                    keyText.classList.add("shown");
+                    keyText.classList.remove("hidden");
                         playAudioWithCustomTimeout(timeout);
                     })
                     .catch(error => {
@@ -864,6 +867,8 @@ tunerButton
                         timeout = audioPlayer.duration;
                         keyText.innerHTML = `<summary>Song Name, ${Math.round(timeout)} seconds left: </summary>`+randomFile;
                         showAudio();
+                        keyText.classList.add("shown");
+                        keyText.classList.remove("hidden");
                         playAudioWithCustomTimeout(timeout);
                     })
                     .catch(error => {
