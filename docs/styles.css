@@ -32,10 +32,10 @@ body {
     align-items: center;
 }
 .stretch {
-    /* align-self: stretch; Allow the element to stretch to the full width */
-    /* width: 100%; Ensure it takes up 100% of the available width */
+    align-self: stretch; /*Allow the element to stretch to the full width */
+    width: 100%; /*Ensure it takes up 100% of the available width*/
    align-self: center;
-    /* // box-sizing: border-box; Include padding and border in the element's total width */
+    box-sizing: border-box; /*Include padding and border in the element's total width */
 }
 audio {
     width: 300px;
