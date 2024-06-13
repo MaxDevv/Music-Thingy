@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
 
     //completionsNeeded = 5;
-    completionsNeeded = Math.ceil(20 * 1.02 ** (((new Date().setHours(0, 0, 0, 0) / 1000) - 1714708800) / 86400)) - 39;
+    completionsNeeded = Math.ceil(20 * 1.02 ** (((new Date().setHours(0, 0, 0, 0) / 1000) - 1714708800) / 86400)) - (39);
     completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
@@ -823,7 +823,7 @@ tunerButton
         if (completed == 0) {
             // last exercise will be composing a short piece and making and uploading video of it
             hideAll();
-            techniqueText.textContent = "Do your warm ups then, Keep up kiddo!";
+            techniqueText.textContent = "Do your warm ups, wipe down your strings, then Keep up kiddo!";
             showTechniqueText();
             showAudio();
             // select a random file from the "play-along" folder
@@ -836,13 +836,12 @@ tunerButton
                         const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`play-along/${randomFile}`));
-                        keyText.innerHTML = `<summary>Song Name, ${Math.round(timeout)} seconds left: </summary>`+randomFile;
                         timeout = audioPlayer.duration;
+                        keyText.innerHTML = `<summary>Song-Name: </summary>`+randomFile;
                         showAudio();
                         
                     keyText.classList.add("shown");
                     keyText.classList.remove("hidden");
-                        playAudioWithCustomTimeout(timeout);
                     })
                     .catch(error => {
                         console.error('Error fetching file list:', error);
@@ -851,7 +850,18 @@ tunerButton
         } else if (completed == completionsNeeded -2) {
             // last exercise will be composing a short piece and making and uploading video of it
             hideAll();
-            techniqueText.textContent = "Keep up kiddo!";
+            techniqueText.textContent = "Compose a short piece and upload a video of you playing it or just compose it and write it :D";
+            decrypt("7gFY+hJFAegnJJReYveCYjWIVMUJIpZbR5kAVbceiVXjoQ5s2gUqBUjNjc7MmtTBIq7WPEgssm3MzqDslkTJJgefFNzWW/+Zo7P3CvqrV9gwd1Gj+QTSXNMi4nL2yhMnRZhFqCfkHY4UAwm4Gci8fOzBMMiGYDII3giA4FZ6sZyNPhlr9S/AqRopfxsoLQsJtDhwiDy87imE", password).then((result) => {
+                keyText.innerHTML = `<summary> Inspiration </summary>`+`<a href="${result}" target="_blank"> Dropbox </a>`;
+            });
+            keyText.classList.add("shown");
+            keyText.classList.remove("hidden");
+            showTechniqueText();
+            return;
+        } else if (completed == completionsNeeded -1) {
+            // post exercise cool down
+            hideAll();
+            techniqueText.textContent = "Keep up kiddo, and make sure to wipe off those strings when you're done :D!";
             showTechniqueText();
             showAudio();
             // select a random file from the "play-along" folder
@@ -865,7 +875,7 @@ tunerButton
                         randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
                         audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`play-along/${randomFile}`));
                         timeout = audioPlayer.duration;
-                        keyText.innerHTML = `<summary>Song Name, ${Math.round(timeout)} seconds left: </summary>`+randomFile;
+                        keyText.innerHTML = `<summary>Song-Name: </summary>`+randomFile;
                         showAudio();
                         keyText.classList.add("shown");
                         keyText.classList.remove("hidden");
@@ -874,12 +884,6 @@ tunerButton
                     .catch(error => {
                         console.error('Error fetching file list:', error);
                     });
-            return;
-        } else if (completed == completionsNeeded -1) {
-            // last exercise will be composing a short piece and making and uploading video of it
-            hideAll();
-            techniqueText.textContent = "Compose a short piece and upload a video of you playing it :D";
-            showTechniqueText();
             return;
         }
         if (practiceType <= calculateThreshold(chances, 0)) {
