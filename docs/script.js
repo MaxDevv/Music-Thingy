@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
 
     //completionsNeeded = 5;
-    completionsNeeded = Math.ceil(20 * 1.02 ** (((new Date().setHours(0, 0, 0, 0) / 1000) - 1714708800) / 86400)) - (39);
+    completionsNeeded = Math.ceil(20 * 1.02 ** (((new Date().setHours(0, 0, 0, 0) / 1000) - 1714708800) / 86400));
     completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
