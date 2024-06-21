@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tunerButton = document.getElementById("tunerButton");
     const leftPlaceholder = document.getElementById("leftPlaceholder");
     const rightPlaceholder = document.getElementById("rightPlaceholder");
-
+    const reloadButton = document.getElementById("reloadButton");
 
 
     let password = localStorage.getItem('password');
@@ -34,6 +34,22 @@ document.addEventListener("DOMContentLoaded", function () {
     githubKey = 0;
     (async () => {
         githubKey  = await decrypt("BZciTknXIo7nNMHIFm3XGlzY+zztIuHPAM+cK9WTccYOOXVrzJq28QFUHbihWydggxYUKKF2JC3IQ6og9xiq3oH9t1kjDOpH7K/CCfn/Hp9BstMCUc5bfDv8XCB4Lb/EBN90FLVxrHaW0hzV3Q+JviwIJrQq0bSkgA==", password);
+        // console.log(githubKey);
+        // (async () => { 
+        //     gistId = "https://api.github.com/gists/554d4d02e04e5350c562c723903146ff";
+        //     response = await fetch(`https://api.github.com/gists/${gistId}`, {
+        //     headers: {
+        //         'Authorization': `token ${githubKey}`,
+        //     },
+        //     });
+        //     gist = await response.json();
+        //     content = gist.files['GuidedPass.txt'].content;
+        // 'GuidedPass.txt': {
+        //     content: "",
+        //     }
+        //     phonePassword = content;
+        //     console.log(phonePassword);
+        // })();  
     })();
     const defaultTimeout = 7;
     var fileHost = "https://raw.githubusercontent.com/MaxDevv/Music-Thingy/main/";
@@ -202,6 +218,11 @@ tunerButton
         }
     });
 
+
+
+    reloadButton.addEventListener("click", function () {
+        location.reload();
+    });
 
     tunerButton.addEventListener("click", function () {
         if (tuner.classList.contains("hidden")) {
