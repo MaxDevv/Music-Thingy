@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const leftPlaceholder = document.getElementById("leftPlaceholder");
     const rightPlaceholder = document.getElementById("rightPlaceholder");
     const reloadButton = document.getElementById("reloadButton");
-
+    const passwordText = document.getElementById("passwordText");
 
     let password = localStorage.getItem('password');
     
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
     keepGoing = true;
     // modes = ["All", "Jazz", "Full Neo-Soul", "Everything I Wanted", "Studio-Ghibi", "Literally Just Ichikia", "Nintendo", "Toby Fox", "sheet-music", "Music-Backing-Tracks", "jazz"];
     // modesFolder = ["all", "ezmp3s", "fullNeoSoulMp3s", "everything-i-ever-wanted", "studio-ghibi", "nito", "nintendo", "undertalexdeltarune", "sheet-music", "Music-Backing-Tracks", "jazz"];
-    modes = ["All", "Jazz", "Learning-Music", "Sheet-Music", "Ear-Training", "Technique", "Music-Thoery"];
+    modes = ["All", "Jazz", "Learning-Music", "Sheet-Music", "Ear-Training", "Technique", "Music-Thoery", "Accompaniment"];
     modesFolder = ["all", "Music-Backing-Tracks", "repertoire", "sheet-music"];
     // plainModesFolder = modesFolder.filter(item => !specialModesFolder.includes(item));
     mode = localStorage.getItem('mode');
@@ -279,7 +279,8 @@ tunerButton
         localStorage.setItem('completed', completed);
         completedSpan.textContent = completed + "/" + completionsNeeded + " Completed"
         if (completed >= completionsNeeded) {
-            completedSpan.textContent = completed + "/" + completionsNeeded + " Completed :D 🎉🎉🎉"
+            console.log("session completed :D")
+            completedSpan.textContent = completed + "/" + completionsNeeded + " Completed :D 🎉🎉🎉";
             (async () => { 
                 gistId = "554d4d02e04e5350c562c723903146ff";
                 response = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -289,8 +290,9 @@ tunerButton
                 });
                 gist = await response.json();
                 content = gist.files['GuidedPass.txt'].content;
-                phonePassword = content;
-                completedSpan.textContent += "Unlock Password: "+phonePassword;
+                phonePassword = content.split("\n")[0];
+                passwordText.innerHTML = passwordText.innerHTML.replace("#replace#", phonePassword);
+                showElement(passwordText);
             })();    
             finishedSession();
         }
@@ -361,6 +363,24 @@ tunerButton
             completed = data;
             localStorage.setItem('completed', completed);
             completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
+            if (completed >= completionsNeeded) {
+                console.log("session completed :D")
+                completedSpan.textContent = completed + "/" + completionsNeeded + " Completed :D 🎉🎉🎉";;
+                (async () => { 
+                    gistId = "554d4d02e04e5350c562c723903146ff";
+                    response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                    headers: {
+                        'Authorization': `token ${githubKey}`,
+                    },
+                    });
+                    gist = await response.json();
+                    content = gist.files['GuidedPass.txt'].content;
+                    phonePassword = content.split("\n")[0];
+                    passwordText.innerHTML = passwordText.innerHTML.replace("#replace#", phonePassword);
+                    showElement(passwordText);
+                })();    
+                finishedSession();
+            }
         })
 
     function inspireOnLoad() {
@@ -602,44 +622,37 @@ tunerButton
     }
 
     function hideAudio() {
-        audioPlayer.classList.add("hidden");
-        audioPlayer.classList.remove("shown");
+        hideElement(audioPlayer);
     }
 
     function showSheet() {
-        tempOsmdContainer.classList.remove("hidden");
-        tempOsmdContainer.classList.add("shown");
+        showElement(tempOsmdContainer);
     }
 
     function hideSheet() {
-        tempOsmdContainer.classList.add("hidden");
-        tempOsmdContainer.classList.remove("shown");
+        hideElement(tempOsmdContainer);
     }
 
     function showMetronome() {
-        metronome.classList.remove("hidden");
-        metronome.classList.add("shown");
+        showElement(metronome);
         showPlaceholders();
     }
 
     function hideMetronome() {
-        metronome.classList.add("hidden");
-        metronome.classList.remove("shown");
+        hideElement(metronome);
         hidePlaceholders();
     }
 
     function showTuner() {
-        tuner.classList.remove("hidden");
-        tuner.classList.add("shown");
+        showElement(tuner);
         showPlaceholders();
     }
 
     function hideTuner() {
-        tuner.classList.add("hidden");
-        tuner.classList.remove("shown");
+        hideElement(tuner);
         hidePlaceholders();
     }
-    
+
     function showPlaceholders() {
         showLeftPlaceholder();
         showRightPlaceholder();
@@ -651,45 +664,39 @@ tunerButton
     }
 
     function showLeftPlaceholder() {
-        leftPlaceholder.classList.remove("hidden");
-        leftPlaceholder.classList.add("shown");
+        showElement(leftPlaceholder);
     }
 
     function hideLeftPlaceholder() {
-        leftPlaceholder.classList.add("hidden");
-        leftPlaceholder.classList.remove("shown");
+        hideElement(leftPlaceholder);
     }
+
     function showRightPlaceholder() {
-        rightPlaceholder.classList.remove("hidden");
-        rightPlaceholder.classList.add("shown");
+        showElement(rightPlaceholder);
     }
 
     function hideRightPlaceholder() {
-        rightPlaceholder.classList.add("hidden");
-        rightPlaceholder.classList.remove("shown");
+        hideElement(rightPlaceholder);
     }
+
     function showChords() {
-        sheetImage.classList.remove("hidden");
-        sheetImage.classList.add("shown");
+        showElement(sheetImage);
     }
 
     function hideChords() {
-        sheetImage.classList.add("hidden");
-        sheetImage.classList.remove("shown");
+        hideElement(sheetImage);
     }
-    
+
     function showAudio() {
-        audioPlayer.classList.remove("hidden");
-        audioPlayer.classList.add("shown");
+        showElement(audioPlayer);
     }
 
     function hideSheetButton() {
-        revealSheet.classList.add("hidden");
-        revealSheet.classList.remove("shown");
+        hideElement(revealSheet);
     }
+
     function showSheetButton() {
-        revealSheet.classList.add("shown");
-        revealSheet.classList.remove("hidden");
+        showElement(revealSheet);
     }
 
     function hideAll() {
@@ -723,38 +730,41 @@ tunerButton
     }
 
     function hideSkipButton() {
-        skipButton.classList.add("hidden");
-        skipButton.classList.remove("shown");
+        hideElement(skipButton);
     }
 
     function showSkipButton() {
-        skipButton.classList.add("shown");
-        skipButton.classList.remove("hidden");
+        showElement(skipButton);
     }
 
     function showSheetPDF() {
-        sheetPDF.classList.add("shown");
-        sheetPDF.classList.remove("hidden");
+        showElement(sheetPDF);
     }
 
     function hideSheetPDF() {
-        sheetPDF.classList.add("hidden");
-        sheetPDF.classList.remove("shown");
+        hideElement(sheetPDF);
     }
 
     function hideKeyText() {
-        keyText.classList.add("hidden");
-        keyText.classList.remove("shown");
+        hideElement(keyText);
     }
 
     function showTechniqueText() {
-        techniqueText.classList.add("shown");
-        techniqueText.classList.remove("hidden");
+        showElement(techniqueText);
     }
 
     function hideTechniqueText() {
-        techniqueText.classList.add("hidden");
-        techniqueText.classList.remove("shown");
+        hideElement(techniqueText);
+    }
+
+    function showElement(element) {
+        element.classList.add("shown");
+        element.classList.remove("hidden");
+    }
+
+    function hideElement(element) {
+        element.classList.add("hidden");
+        element.classList.remove("shown");
     }
 
     function tips(){
@@ -837,7 +847,7 @@ tunerButton
         timeout = defaultTimeout;
         console.log(mode);
 
-        chances = [35 /*Ear Training*/, 20 /*Sight Reading*/, 10 /*Improvisation*/, 30 /*Technique*/, 10 /*Learning Music*/, 20 /*Music Theory*/];
+        chances = [15 /*Ear Training*/, 20 /*Sight Reading*/, 20 /*Improvisation*/, 30 /*Technique*/, 10 /*Learning Music*/, 20 /*Music Theory*/, 20 /*Accompaniment*/];
         if (mode.toLowerCase() == "all") {
             practiceType = Math.random(486783555478);
         } else if (mode.toLowerCase() == "ear-training") {
@@ -852,6 +862,8 @@ tunerButton
             practiceType = calculateThreshold(chances, 4);
         } else if (mode.toLowerCase() == "music-thoery") {
             practiceType = calculateThreshold(chances, 5);
+        }  else if (mode.toLowerCase() == "accompaniment") {
+            practiceType = calculateThreshold(chances, 6);
         } 
         if (completed == 0) {
             // last exercise will be composing a short piece and making and uploading video of it
@@ -880,7 +892,7 @@ tunerButton
                         console.error('Error fetching file list:', error);
                     });
             return;
-        } else if (completed == completionsNeeded -2) {
+        } /*else if (completed == completionsNeeded - 2) {
             // last exercise will be composing a short piece and making and uploading video of it
             hideAll();
             techniqueText.textContent = "Compose a short piece and upload a video of you playing it or just compose it and write it :D";
@@ -891,7 +903,7 @@ tunerButton
             keyText.classList.remove("hidden");
             showTechniqueText();
             return;
-        } else if (completed == completionsNeeded -1) {
+        }*/ else if (completed == completionsNeeded - 1) {
             // post exercise cool down
             hideAll();
             techniqueText.textContent = "Keep up kiddo, and make sure to wipe off those strings when you're done :D!";
@@ -918,7 +930,7 @@ tunerButton
                         console.error('Error fetching file list:', error);
                     });
             return;
-        } else if ((completed % 3) == 0) {
+        } /* else if ((completed % 4) == 0) {
             // last exercise will be composing a short piece and making and uploading video of it
             hideAll();
             techniqueText.textContent = "Keep up kiddo!";
@@ -945,7 +957,7 @@ tunerButton
                         console.error('Error fetching file list:', error);
                     });
             return;
-        }
+        } */
         if (practiceType <= calculateThreshold(chances, 0)) {
             //Melodic Replication Ear Training
             // select a random mp3 file from the ear-training-sources folder the musicxml will be stored under the same filename just swap the extension
@@ -1032,7 +1044,8 @@ tunerButton
             chords = ['Ascending 7th Chords in Bb Minor', 'Ascending 7th Chords in C Major', 'Ascending 7th Chords in F# Major', 'Ascending 7th Chords in B Minor', 'Ascending 7th Chords in G Major', 'Ascending 7th Chords in Db Major', 'Ascending 7th Chords in D Minor', 'Ascending 7th Chords in C# Minor', 'Ascending 7th Chords in A Minor', 'Ascending 7th Chords in B Major', 'Ascending 7th Chords in D Major', 'Ascending 7th Chords in Ab Major', 'Ascending 7th Chords in G# Minor', 'Ascending 7th Chords in Bb Major', 'Ascending 7th Chords in C Minor', 'Ascending 7th Chords in F# Minor', 'Ascending 7th Chords in G Minor', 'Ascending 7th Chords in A Major']
             chords.push(55);
             techniqueExercises = [
-                ["Visualize all thr notes in A major then play all of them on each string", 40],
+                ["Visualize all the notes in  A majors then play all of them on each string", 40],
+                ["A major scale run", 40],
                 ["Ichika tapping exercise", 40],
                 ["Alternating Diagonal hand chord exercise with a 3 fret seperation meaning you jump 3 frets for the next shape and down 3 frets for the next shape", 37],
                 ["Alternating Diagonal hand chord exercise", 37],
@@ -1085,52 +1098,59 @@ tunerButton
             audioPlayer.pause();
         } else if (practiceType <= calculateThreshold(chances, 4)) {
             //Repatoire Building & Learning music
-                console.log(githubKey);
+            //     console.log(githubKey);
 
-            (async () => { 
-                gistId = "63ff91244fb5afe4e68d0d80e62ae8d4";
-                response = await fetch(`https://api.github.com/gists/${gistId}`, {
-                headers: {
-                    'Authorization': `token ${githubKey}`,
-                },
-                });
-                gist = await response.json();
-                content = gist.files['currentSong.txt'].content;
-                currentBars = 1;
-                totalBars = 0;
-                n = 0;
-                while (currentBars >= totalBars) {
-                    n++;
-                    currentSong = content.split("\n").slice(-n)[0];
-                    fileName = currentSong.split("|")[0];
-                    currentBars = parseInt(currentSong.split("|")[1]);
-                    totalBars = parseInt(currentSong.split("|")[2]);
-                    if (n > content.split("\n").length) {
-                        currentSong = content.split("\n")[Math.floor(Math.random(4867833525234) * content.split("\n").length)];
-                        fileName = currentSong.split("|")[0];
-                        currentBars = parseInt(currentSong.split("|")[1]);
-                        totalBars = parseInt(currentSong.split("|")[2]);
-                        break;
-                    }
-                    console.log(n);
-                    console.log(content);
-                }
-                message = "Play through bars " + currentBars + " to " + (currentBars + 2) + " then run through till bar " + (currentBars + 2) + " of " + fileName.split(".gp")[0];
-                hideAll();
-                showSheet();
-                techniqueText.textContent = message;
-                showTechniqueText();
-                osmd.setOptions({drawUpToMeasureNumber: currentBars + 2, drawFromMeasureNumber: currentBars});
-                loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
-                nextButton.addEventListener("click", updateRepatoire, {once : true});
-                revealSheet.addEventListener("click", showSheetPDF, {once : true});
-                skipButton.addEventListener("click", function(){
-                    nextButton.removeEventListener('click', updateRepatoire);
-                    revealSheet.removeEventListener("click", showSheetPDF);
-                }, {once : true});
-                showSheetButton();
-                sheetPDF.data = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName.split(".musicxml")[0] + ".pdf"));
-            })();
+            // (async () => { 
+            //     gistId = "63ff91244fb5afe4e68d0d80e62ae8d4";
+            //     response = await fetch(`https://api.github.com/gists/${gistId}`, {
+            //     headers: {
+            //         'Authorization': `token ${githubKey}`,
+            //     },
+            //     });
+            //     gist = await response.json();
+            //     content = gist.files['currentSong.txt'].content;
+            //     currentBars = 1;
+            //     totalBars = 0;
+            //     n = 0;
+            //     while (currentBars >= totalBars) {
+            //         n++;
+            //         currentSong = content.split("\n").slice(-n)[0];
+            //         fileName = currentSong.split("|")[0];
+            //         currentBars = parseInt(currentSong.split("|")[1]);
+            //         totalBars = parseInt(currentSong.split("|")[2]);
+            //         if (n > content.split("\n").length) {
+            //             currentSong = content.split("\n")[Math.floor(Math.random(4867833525234) * content.split("\n").length)];
+            //             fileName = currentSong.split("|")[0];
+            //             currentBars = parseInt(currentSong.split("|")[1]);
+            //             totalBars = parseInt(currentSong.split("|")[2]);
+            //             break;
+            //         }
+            //         console.log(n);
+            //         console.log(content);
+            //     }
+            //     message = "Play through bars " + currentBars + " to " + (currentBars + 2) + " then run through till bar " + (currentBars + 2) + " of " + fileName.split(".gp")[0];
+            //     hideAll();
+            //     showSheet();
+            //     techniqueText.textContent = message;
+            //     showTechniqueText();
+            //     osmd.setOptions({drawUpToMeasureNumber: currentBars + 2, drawFromMeasureNumber: currentBars});
+            //     loadSheet(corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName)));
+            //     nextButton.addEventListener("click", updateRepatoire, {once : true});
+            //     revealSheet.addEventListener("click", showSheetPDF, {once : true});
+            //     skipButton.addEventListener("click", function(){
+            //         nextButton.removeEventListener('click', updateRepatoire);
+            //         revealSheet.removeEventListener("click", showSheetPDF);
+            //     }, {once : true});
+            //     showSheetButton();
+            //     sheetPDF.data = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("repertoire/" + fileName.split(".musicxml")[0] + ".pdf"));
+            // })();
+            techniqueText.textContent = "Practice the current piece you made for this weeks video";
+            decrypt("7gFY+hJFAegnJJReYveCYjWIVMUJIpZbR5kAVbceiVXjoQ5s2gUqBUjNjc7MmtTBIq7WPEgssm3MzqDslkTJJgefFNzWW/+Zo7P3CvqrV9gwd1Gj+QTSXNMi4nL2yhMnRZhFqCfkHY4UAwm4Gci8fOzBMMiGYDII3giA4FZ6sZyNPhlr9S/AqRopfxsoLQsJtDhwiDy87imE", password).then((result) => {
+                keyText.innerHTML = `<summary> Inspiration </summary>`+`<a href="${result}" target="_blank"> Dropbox </a>`;
+            });
+            hideAll();
+            showElement(keyText);
+            showTechniqueText();
         } else if (practiceType <= calculateThreshold(chances, 5)) {
             // Music Theory
             if (Math.random(4867835363898769) > 0.5) {
@@ -1272,18 +1292,31 @@ tunerButton
                     ],
                     // Relative major/minor exercises
                     [
-                        ['What is the relative minor of C major?', 'D#'],
-                        ['What is the relative minor of C# major?', 'E'],
-                        ['What is the relative minor of D major?', 'F'],
-                        ['What is the relative minor of D# major?', 'F#'],
-                        ['What is the relative minor of E major?', 'G'],
-                        ['What is the relative minor of F major?', 'G#'],
-                        ['What is the relative minor of F# major?', 'A'],
-                        ['What is the relative minor of G major?', 'A#'],
-                        ['What is the relative minor of G# major?', 'B'],
-                        ['What is the relative minor of A major?', 'C'],
-                        ['What is the relative minor of A# major?', 'C#'],
-                        ['What is the relative minor of B major?', 'D'],
+                        ['What is the relative minor of C major?', 'A minor'],
+                        ['What is the relative minor of G major?', 'E minor'],
+                        ['What is the relative minor of D major?', 'B minor'],
+                        ['What is the relative minor of A major?', 'F♯ minor'],
+                        ['What is the relative minor of E major?', 'C♯ minor'],
+                        ['What is the relative minor of B major?', 'G♯ minor'],
+                        ['What is the relative minor of F♯ major?', 'D♯ minor'],
+                        ['What is the relative minor of D♭ major (C♯ major)?', 'B♭ minor (A♯ minor)'],
+                        ['What is the relative minor of A♭ major?', 'F minor'],
+                        ['What is the relative minor of E♭ major?', 'C minor'],
+                        ['What is the relative minor of B♭ major?', 'G minor'],
+                        ['What is the relative minor of F major?', 'D minor'],
+                        ['What is the relative major of A minor?', 'C major'],
+                        ['What is the relative major of E minor?', 'G major'],
+                        ['What is the relative major of B minor?', 'D major'],
+                        ['What is the relative major of F♯ minor?', 'A major'],
+                        ['What is the relative major of C♯ minor?', 'E major'],
+                        ['What is the relative major of G♯ minor?', 'B major'],
+                        ['What is the relative major of D♯ minor (E♭ minor)?', 'F♯ major'],
+                        ['What is the relative major of B♭ minor (A♯ minor)?', 'D♭ major (C♯ major)'],
+                        ['What is the relative major of F minor?', 'A♭ major'],
+                        ['What is the relative major of C minor?', 'E♭ major'],
+                        ['What is the relative major of G minor?', 'B♭ major'],
+                        ['What is the relative major of D minor?', 'F major']
+
                     ],    // Shifting notes up and down intervals
                     [
                         ['Raise C by a minor 2nd', 'C#'],
@@ -1571,6 +1604,32 @@ tunerButton
                         console.error('Error fetching file list:', error);
                     });
             }
+        } else if (practiceType <= calculateThreshold(chances, 6)) {
+            // Accompaniment
+            hideAll();
+            techniqueText.textContent = "Make this guy sound gooddd!";
+            showTechniqueText();
+            showAudio();
+            // select a random file from the "play-along" folder
+            fetch(corsProxy + encodeURIComponent(fileHost + "play-along/list.txt"))
+                    // fetch("all/../studio-ghibi/list.txt")
+                    .then(response => response.text())
+                    .then(text => {
+                        fileList = text.trim().split('\n');
+                        console.log(fileList);
+                        const randomIndex = Math.floor(Math.random(486783555478) * fileList.length);
+                        randomFile = fileList[randomIndex].trim(); // Remove leading/trailing whitespace
+                        audioPlayer.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent(`play-along/${randomFile}`));
+                        timeout = audioPlayer.duration;
+                        keyText.innerHTML = `<summary>Song-Name: </summary>`+randomFile;
+                        showAudio();
+                        
+                    keyText.classList.add("shown");
+                    keyText.classList.remove("hidden");
+                    })
+                    .catch(error => {
+                        console.error('Error fetching file list:', error);
+            });
         }
     }
 
