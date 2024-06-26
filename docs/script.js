@@ -102,7 +102,6 @@
     audioPlayer.addEventListener('playing', function () { audioPlayer.isPlaying = true }, false);
 
     
-tunerButton
     // Load dark mode preference from localStorage
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     if (isDarkMode) {
@@ -263,7 +262,7 @@ tunerButton
     nextButton.addEventListener("click", function () {
         // Make a GET request to trigger the function for incrementing the counter
         // fetch('https://script.google.com/macros/s/AKfycbzUtqxNn8g98Z85Vih_V6eOkz3mBqzGmYhEWieHHj0YcpsjS1fnk_OUmBCRzx-ZEpRZWw/exec?action=increment')
-        fetch(apiCorsProxy + encodeURIComponent('https://script.google.com/macros/s/AKfycbymMSv_xXKYMNpPrR3PZ9EAFbLBfTq1MMqojlOy-8vumBS1w0pF4ijjZfYjjdVal9OuZg/exec?action=increment'))
+        fetch(encodeURIComponent('https://script.google.com/macros/s/AKfycbymMSv_xXKYMNpPrR3PZ9EAFbLBfTq1MMqojlOy-8vumBS1w0pF4ijjZfYjjdVal9OuZg/exec?action=increment'))
             .then(response => {
                 if (response.ok) {
                     console.log('Counter incremented successfully.');
@@ -304,7 +303,7 @@ tunerButton
     rewardButton.addEventListener("click", function () {
         // Make a GET request to trigger the function for incrementing the counter
         // fetch('https://script.google.com/macros/s/AKfycbzUtqxNn8g98Z85Vih_V6eOkz3mBqzGmYhEWieHHj0YcpsjS1fnk_OUmBCRzx-ZEpRZWw/exec?action=increment')
-        fetch(apiCorsProxy + encodeURIComponent('https://script.google.com/macros/s/AKfycbymMSv_xXKYMNpPrR3PZ9EAFbLBfTq1MMqojlOy-8vumBS1w0pF4ijjZfYjjdVal9OuZg/exec?action=increment'))
+        fetch(encodeURIComponent('https://script.google.com/macros/s/AKfycbymMSv_xXKYMNpPrR3PZ9EAFbLBfTq1MMqojlOy-8vumBS1w0pF4ijjZfYjjdVal9OuZg/exec?action=increment'))
             .then(response => {
                 if (response.ok) {
                     console.log('Counter incremented successfully.');
@@ -1094,6 +1093,8 @@ tunerButton
             temp = temp[Math.floor(Math.random(4867833525234) * (temp.length-1))];
             console.log(temp);
             if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
+            if (temp.toLowerCase().includes("economy")) bpm -= 5;
+            
             if (temp.includes("Chords")) {
                 sheetImage.src = corsProxy + encodeURIComponent(fileHost + encodeURIComponent("Chords/" + temp.replace("#", "Sharp") + ".png"));
                 sheetImage.classList.add("shown");
