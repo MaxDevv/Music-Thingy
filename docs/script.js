@@ -24,6 +24,7 @@
     const rightPlaceholder = document.getElementById("rightPlaceholder");
     const reloadButton = document.getElementById("reloadButton");
     const passwordText = document.getElementById("passwordText");
+    const doneButton = document.getElementById("doneButton");
 
     let password = localStorage.getItem('password');
     
@@ -388,7 +389,15 @@
             }
         })
 
-    
+    doneButton.addEventListener("click", function () {
+        // Click the next button
+        nextButton.click();
+        // Hide all the elements
+        hideAll();
+        showElement(techniqueText);
+        techniqueText.textContent = "Cya later :D";
+        alert("Cya later :D");
+    });
 
     function inspireOnLoad() {
         if (window.location.hash.indexOf("inspire") > -1) {
