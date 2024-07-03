@@ -85,6 +85,7 @@
 
     //completionsNeeded = 5;
     completionsNeeded = 14 + (((new Date().setHours(0, 0, 0, 0) / 1000) - 1718337600) / 86400)*4;
+    completionsNeeded = 1; // I trust myself
     completedSpan.textContent = completed + "/" + completionsNeeded + " Completed";
     if (mode) {
         modeButton.textContent = getNextMode();
@@ -774,7 +775,7 @@
     }
 
     function tips(){
-        alwaysRemember = "Stay Confident, Play Like Air, Alternate Pick, EVERY BIT COUNTS and Always go 120% :D!";
+        alwaysRemember = "Stay Confident, Play Like Air, Alternate Pick, EVERY BIT COUNTS and Always go 120%, Also focus on alternating between speedy energetic parts, motif defining/reenforcing, and melodic lines that direct your piece :D!";
         if (!techniqueText.classList.contains("shown") || techniqueText.innerText.includes("Start :D")) {
             techniqueText.innerText = alwaysRemember;
             techniqueText.classList.add("shown");
@@ -853,7 +854,7 @@
         timeout = defaultTimeout;
         console.log(mode);
 
-        chances = [15 /*Ear Training*/, 20 /*Sight Reading*/, 20 /*Improvisation*/, 30 /*Technique*/, 10 /*Learning Music*/, 20 /*Music Theory*/, 20 /*Accompaniment*/];
+        chances = [15 /*Ear Training*/, 20 /*Sight Reading*/, 20 /*Improvisation*/, 30 /*Technique*/, 10 /*Learning Music*/, 20 /*Music Theory*/, 20 /*Accompaniment*/, 10 /* Hearty Laughter*/];
         if (mode.toLowerCase() == "all") {
             practiceType = Math.random(486783555478);
         } else if (mode.toLowerCase() == "ear-training") {
@@ -1643,6 +1644,11 @@
                     .catch(error => {
                         console.error('Error fetching file list:', error);
             });
+        } else if (practiceType <= calculateThreshold(chances, 7)) {
+            // Hearty Laughter
+            hideAll();
+            techniqueText.textContent = "Gimme ur best one piece laugh! (go ze ha ha ha or smth like shi shi shi)";
+            showTechniqueText();
         }
     }
 
