@@ -294,7 +294,7 @@
                 content = gist.files['GuidedPass.txt'].content;
                 phonePassword = content.split("\n")[0];
                 passwordText.innerHTML = passwordText.innerHTML.replace("#replace#", phonePassword);
-                showElement(passwordText);
+                // showElement(passwordText);
             })();    
             finishedSession();
         }
@@ -382,7 +382,7 @@
                     content = gist.files['GuidedPass.txt'].content;
                     phonePassword = content.split("\n")[0];
                     passwordText.innerHTML = passwordText.innerHTML.replace("#replace#", phonePassword);
-                    showElement(passwordText);
+                    // showElement(passwordText);
                 })();    
                 finishedSession();
             }
