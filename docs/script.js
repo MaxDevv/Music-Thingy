@@ -1099,7 +1099,7 @@
             console.log(temp);
             */
             temp = techniqueExercises[Math.floor(Math.random(4867835363898769) * (techniqueExercises.length-1))];
-            bpm = temp[temp.length-1]-10;
+            bpm = temp[temp.length-1]-20;
             temp = temp[Math.floor(Math.random(4867833525234) * (temp.length-1))];
             console.log(temp);
             if (temp.toLowerCase().includes("diagonal")) bpm -= 5;
